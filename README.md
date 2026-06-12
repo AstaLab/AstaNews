@@ -1,5 +1,7 @@
 # AstaNews
 
+**🌐 在线网页：https://ylxmf2005.github.io/AstaNews/**
+
 AI 全栈每日情报。一条命令，从论文、模型发布、评测榜单、infra/serving、MaaS changelog、agent 生态、具身智能、安全、产品/商业、devtool 共 **13 个 stack layer** 的已验证数据源中，策展出当日最值得读的内容——**默认 5 条，最多 8 条，覆盖至少 3 层**。
 
 这是一个 Claude Code plugin：数据源注册表开放贡献，抓取与去重由确定性脚本完成，筛选与撰写由 agent 按编辑准则裁决。系统为什么这样设计、数据怎么流动，见 [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)。
@@ -50,12 +52,20 @@ cd site && python3 -m http.server 8000   # 本地预览 http://localhost:8000
 
 ## 自动部署（GitHub Actions + Pages）
 
-仓库就是部署单元：`.github/workflows/daily-digest.yml` 每天 UTC 01:00（北京 09:00）跑 digest，把产物 commit 进 `site/data/` 与 `editions/`，GitHub Pages 自动刷新。启用只需两步：
+仓库就是部署单元，Pages 已开启、站点已上线。`.github/workflows/daily-digest.yml` 每天 UTC 01:00（北京 09:00）跑 digest，把产物 commit 进 `site/data/` 与 `editions/`；`deploy-pages.yml` 在产物变化时自动部署 Pages。
 
-1. 仓库 **Settings → Secrets → Actions** 加 `ANTHROPIC_API_KEY`。
-2. 仓库 **Settings → Pages → Source 选 GitHub Actions**。
+要让定时 digest 真正跑起来，只差填一个密钥（用 **API URL + Key** 跑 Claude Code，不是 OAuth）：
 
-GitHub runner 在墙外，被墙的源直连即可（无需代理），数据覆盖反而比本机全；去重用"仓库即状态"（读历史 `site/data/*.json`），无本地依赖。原理见 [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)。
+```bash
+gh secret set ANTHROPIC_API_KEY  --repo ylxmf2005/AstaNews    # 必填
+gh secret set ANTHROPIC_BASE_URL --repo ylxmf2005/AstaNews    # 可选：自建/中转 endpoint，留空=官方
+gh variable set ANTHROPIC_MODEL  --repo ylxmf2005/AstaNews --body "claude-fable-5"   # 可选
+```
+
+GitHub runner 在墙外，被墙的源直连即可（无需代理），数据覆盖反而比本机全；去重用"仓库即状态"（读历史 `site/data/*.json`），无本地依赖。每 60 天自动 prune 旧的全量候选保持仓库精简。原理见 [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)。
+
+> 想把仓库迁到 `AstaLab` 组织：到 [github.com/organizations/plan](https://github.com/organizations/plan) 建免费组织（仅此一步需网页，GitHub 不开放 API 建组织），建好后一条命令迁移：
+> `gh api -X POST repos/ylxmf2005/AstaNews/transfer -f new_owner=AstaLab`，Pages 与 Actions 自动跟随（Pages 新地址 `astalab.github.io/AstaNews`）。
 
 ## 仓库结构
 
