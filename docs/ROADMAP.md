@@ -77,8 +77,11 @@ group  : 目标 5（上限 8），最严，微信群发
 ```
 实现：评分一次，按分数/多样性分层切；daily 是 group 的超集语境。
 
-### 3.3 多视角（perspectives.yaml）
-设计 4-5 个视角，每个 = {受众画像, 排序权重覆盖, 改写语气, 关注层偏好}：
+### 3.3 两类 filter：视角（大）× 类别（小）
+网站有**两个正交筛选维度**，可组合（再叠加级别 tier = 三维）：
+- **视角（大分类）**：受众大镜头——全栈/技术/产品/商业/研究/具身。管"怎么排、给谁看、导语怎么框"，对候选**重排序**（软）。
+- **类别（小分类）**：13 个 stack layer（model/eval/infra…）。管"只看哪一层"，对候选**硬筛**。
+可组合如"技术视角 × 评测类别"。视角定义（perspectives.yaml），每个 = {受众画像, layer_boost 排序倾向, 导语}：
 - `technical`：研究/工程师。偏 model/post-training/infra/eval，重方法与数字。
 - `product`：产品/应用。偏 product/agent/devtool/maas，重能力边界与可用性。
 - `business`：投资/商业。偏 business/funding/战略，借鉴橘鸦的商业视角。

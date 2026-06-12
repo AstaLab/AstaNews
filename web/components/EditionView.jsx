@@ -1,6 +1,6 @@
 "use client";
 import { useMemo, useState } from "react";
-import { LAYERS, lz, layerName, layerEmoji, TIERS, PERSPECTIVES } from "../lib/config";
+import { LAYERS, lz, layerName, layerEmoji, layerColor, TIERS, PERSPECTIVES } from "../lib/config";
 
 function baseScore(it, i) {
   if (typeof it.score === "number") return it.score;
@@ -67,15 +67,24 @@ function FullRows({ items }) {
 
 export default function EditionView({ edition }) {
   const [tier, setTier] = useState("daily");
-  const [persp, setPersp] = useState("all");
+  const [persp, setPersp] = useState("all");   // 视角（大）：重排+框定
+  const [cat, setCat] = useState("all");        // 类别（小）：按 layer 硬筛
   const tiers = edition.tiers || { group: edition.selected || [], daily: edition.selected || [], full: edition.all_candidates || [] };
   const perspObj = PERSPECTIVES.find((p) => p.key === persp) || PERSPECTIVES[0];
 
+  // 当前 tier 里出现的类别（只展示有内容的，按数量排序）
+  const cats = useMemo(() => {
+    const cnt = {};
+    for (const it of tiers[tier] || []) { const k = lz(it.layer); if (k) cnt[k] = (cnt[k] || 0) + 1; }
+    return Object.entries(cnt).sort((a, b) => b[1] - a[1]);
+  }, [tier, edition.date]);
+
   const items = useMemo(() => {
-    const raw = tiers[tier] || [];
-    if (tier === "full") return raw;
-    return applyPerspective(raw, perspObj);
-  }, [tier, persp, edition.date]);
+    let raw = tiers[tier] || [];
+    if (tier !== "full") raw = applyPerspective(raw, perspObj);
+    if (cat !== "all") raw = raw.filter((it) => lz(it.layer) === cat);
+    return raw;
+  }, [tier, persp, cat, edition.date]);
 
   const perspLede = edition.perspectives?.[persp]?.lede;
 
@@ -104,15 +113,34 @@ export default function EditionView({ edition }) {
         )}
       </div>
 
+      {/* 类别（小）：独立的 layer 硬筛 */}
+      <div className="cats">
+        <span className="ctl-label">类别</span>
+        <button className={`chip ${cat === "all" ? "on" : ""}`} onClick={() => setCat("all")}>全部</button>
+        {cats.map(([k, n]) => (
+          <button key={k} className={`chip ${cat === k ? "on" : ""}`} onClick={() => setCat(cat === k ? "all" : k)}
+            style={cat === k ? { background: layerColor(k), borderColor: layerColor(k), color: "#f4efe6" } : { borderColor: layerColor(k) + "66" }}>
+            {layerEmoji(k)} {layerName(k)} <span style={{ opacity: .6 }}>{n}</span>
+          </button>
+        ))}
+      </div>
+
       {tier !== "full" && persp !== "all" && (
-        <p className="persp-lede">{perspLede || `${perspObj.label}视角 — ${PERSPECTIVES.find(p=>p.key===persp)?.label}` }</p>
+        <p className="persp-lede">{perspLede || `${perspObj.label}视角`}</p>
       )}
 
-      <div className="sec">{TIERS.find((t) => t.key === tier)?.label}{tier !== "full" && persp !== "all" ? ` · ${perspObj.label}视角` : ""}</div>
+      <div className="sec">
+        {TIERS.find((t) => t.key === tier)?.label}
+        {tier !== "full" && persp !== "all" ? ` · ${perspObj.label}视角` : ""}
+        {cat !== "all" ? ` · ${layerName(cat)}` : ""}
+        <span style={{ fontFamily: "var(--mono)", color: "var(--faint)", marginLeft: 8 }}>{items.length}</span>
+      </div>
 
       {tier === "full"
         ? <FullRows items={items} />
-        : items.map((it, i) => <Story key={it.id || i} it={it} n={i + 1} />)}
+        : items.length === 0
+          ? <p className="empty">该类别下暂无条目。</p>
+          : items.map((it, i) => <Story key={it.id || i} it={it} n={i + 1} />)}
 
       {tier !== "full" && edition.gaps?.length > 0 && (
         <>
