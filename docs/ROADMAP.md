@@ -131,7 +131,7 @@ group  : 目标 5（上限 8），最严，微信群发
 - ✅ **P1-WEB** React MPA（Next 15 静态导出，真多页：home/edition/archive/search/about）读 v2，gazette 美学，构建通过；部署中
 - ✅ **P2-PERSP** 两类 filter 上线：视角(全栈/技术/产品/商业/研究/具身, 重排)×类别(13 layer, 硬筛)，网站可组合切换 + 视角导语
 - 🔵 **P2-SEARCH** 向量索引(embed.py)+ 网站关键词搜索页已上线；待加：query 向量化(transformers.js/服务) + 预计算'相关新闻'(静态)
-- 🔵 **P2-IMG** og:image 抓取脚本(enrich_images.py, 9/20)+ AI 找信息图(精选, 进行中)+ images.md how-to + 卡片展示 + schema image 字段；待提升覆盖(arXiv 图等)
+- ✅ **P2-IMG** 精选 6/6 配 AI 信息图(arXiv 架构图/行为率图)+ daily og:image 兜底(11 张上线)+ enrich_images.py + images.md how-to + 卡片渲染；待续:提升 daily/arXiv 覆盖、防盗链兜底
 - ⬜ **P2-SHARP** 犀利度档位（改写层 + 网站切换）
 - ⬜ **P3-STUDY** 研究橘鸦公众号写法/配图、Tim 的 day-day-arxiv 归档模式，沉淀到设计与 skill
 - ⬜ **P3-SELFCONTAIN** setup skill 自包含审计（cookie/Reddit/代理/RSSHub 一次配好，用户零额外研究）
