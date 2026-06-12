@@ -123,6 +123,7 @@ group  : 目标 5（上限 8），最严，微信群发
 状态：⬜ 待办 / 🔵 进行中 / ✅ 完成
 
 - ✅ **P0-DOC** 写本 ROADMAP（PO 总纲）
+- ✅ **生产** 2026-06-13 首次端到端 v2 digest 跑通并上线(往期已 2 期)；publish_site 加 facts/links 归一容错
 - ✅ **P0-CRON** 5am 北京定时任务已设（durable cron），进入持续迭代循环
 - ✅ **P1-EMBED** 本地 embedding（fastembed multilingual-MiniLM，hf-mirror，离线 CPU）+ 向量索引 + 跨语言检索，`scripts/embed.py` 自测通过
 - ✅ **P1-CONFIG** `asta-news/config/` 已建：tiers/perspectives/sharpness/site/search.yaml

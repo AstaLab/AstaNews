@@ -104,6 +104,28 @@ def rebuild_index(data_dir: Path) -> int:
     return len(entries)
 
 
+def _normalize(digest: dict) -> None:
+    """归一 tiers/selected 里每条的 facts(→list) 与 links(→dict)，容忍 agent 写串了的格式。"""
+    def fix(it):
+        fa = it.get("facts")
+        if isinstance(fa, str):
+            it["facts"] = [fa]
+        elif fa is None:
+            it["facts"] = []
+        elif not isinstance(fa, list):
+            it["facts"] = [str(fa)]
+        lk = it.get("links")
+        if isinstance(lk, str):
+            it["links"] = {"primary": lk}
+        elif not isinstance(lk, dict):
+            it["links"] = {"primary": it.get("url", "")}
+    for tier in ("group", "daily"):
+        for it in digest.get("tiers", {}).get(tier, []):
+            fix(it)
+    for it in digest.get("selected", []):
+        fix(it)
+
+
 def validate(digest: dict) -> list[str]:
     """轻校验：站点渲染依赖这些字段"""
     errs = []
@@ -142,6 +164,7 @@ def main() -> int:
         return 2
 
     digest = json.loads(Path(args.digest).read_text())
+    _normalize(digest)  # 容错：把 agent 可能写错的 facts(字符串)/links(字符串) 归一，避免前端崩
     errs = validate(digest)
     if errs:
         print("digest.json 校验失败：\n  " + "\n  ".join(errs), file=sys.stderr)
