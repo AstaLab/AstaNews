@@ -70,20 +70,39 @@ uv run ${CLAUDE_PLUGIN_ROOT}/scripts/dedup.py --filter <candidates 路径>
 4. 校验约束：覆盖 ≥ `min_layers` 层、单层 ≤ `max_per_layer`、单源 ≤ `max_per_source`。不满足就用次优候选替换补足；补不足层数时减条数也要保住多样性。
 5. 落选但接近的 3-5 条放进"雷达"。
 
-对每个入选条目，整理出一条**信息很全**的记录（这是下一步改写的输入，facts 越全越不会写错）：
-`{rank, layer, source, title（忠实转述）, facts:[尽量全的量化点/事实], why_matters, links:{primary, discussion}, scores}`。
+**多级筛选**（读 `${CLAUDE_PLUGIN_ROOT}/config/tiers.yaml`）：一次评分，切三层。
+- `group`（群聊级，~5/上限 8，最严）= 上面选出的精选。
+- `daily`（日报级，目标 ~20）= 在 group 之上放宽（score_threshold 更低、min_layers≥6、单层≤4、单源≤3），按分数补足到 ~20，覆盖更多 layer 与长尾。**daily 必须包含全部 group 条目**。
+- `full` = 全部候选（all_candidates）。
+
+对每个 group 与 daily 条目整理**信息很全**的记录（下一步改写的输入，facts 越全越不会写错）：
+`{id, rank, layer, source, title（忠实转述）, facts:[尽量全的量化点], why_matters, links:{primary, discussion}, scores}`。
 
 ## 5. Readiness 改写（独立 subagent）
 
-提取与改写分开做——派一个 subagent，喂它**上一步的完整记录** + `references/readiness.md`，让它产出面向微信群跨栈受众的稿子：每条的 `readable`（微信版正文，3-5 句）、整期的 `headline` 与 `overview`。要点全在 readiness.md：先桥接"关你什么事"、保留一个技术锚点并解释、诚实标注保留（自报基准/未发 notes）、不丢 facts 里任何数字。改写不得改动事实——它只重写 facts 的表达，不新增、不脑补。
+提取与改写分开做——派 subagent，喂它**上一步的完整记录** + `references/readiness.md`，产出面向微信群跨栈受众的稿子：
+- `group` 条目：完整 `readable`（新闻体 3-4 段，见 readiness.md）。
+- `daily` 中非 group 的条目：精简 `take`（2-3 句新闻体短评，含量化点）——日报量大，不必每条 3-4 段。
+- 整期的 `headline` 与 `overview`。
+- 各视角的一句导语（读 `${CLAUDE_PLUGIN_ROOT}/config/perspectives.yaml`，按当天 daily 内容点名该视角下最值得看的 1-2 条）。
+要点全在 readiness.md：先桥接"关你什么事"、保留技术锚点并解释、诚实标注保留、不丢任何数字。改写不改事实，只重写表达，不新增、不脑补。
 
 ## 6. 产出 digest.json + 归档 + 发布站点
 
-组装结构化产物 `digest.json`（schema 见 `references/output-format.md`），含：精选（带 readable + facts + links）、雷达、数据缺口、**以及全量候选 all_candidates**（fresh.jsonl 全部条目降维成 `{source, layer, title, url, summary, selected}`——`summary` 取原摘要截断 ~240 字；网页要展示当天全部信息含原文链接与摘要，不只精选）。写到 run 目录后发布：
+组装 `digest.json`（schema v2，见 `references/output-format.md`）：
+- `tiers`: `{group:[...], daily:[...], full:[...]}`（full = all_candidates 降维 `{source,layer,title,url,summary,selected}`，summary 截断 ~240 字）。
+- `perspectives`: `{technical:{lede},product:{lede},business:{lede},research:{lede},embodied:{lede}}`（视角重排在前端按 perspectives.yaml 权重做，这里只给导语）。
+- 顶层 `selected` = tiers.group、`all_candidates` = tiers.full（向后兼容旧消费者）。
+- `schema_version: 2`。
+写到 run 目录后，先配图再发布：
 
 ```bash
-# 一步发布：写 $OUT/data/<date>.json + 重建 index.json + 生成 $OUT/../editions/<date>.md（微信版）
+# 配图（橘鸦式"用图说话"：og:image / GitHub 社交预览 / HF 卡图；抓不到则前端用 layer 色兜底）
+uv run ${CLAUDE_PLUGIN_ROOT}/scripts/enrich_images.py --edition $DATA/runs/<today>/digest.json --tiers group,daily || true
+# 一步发布：写 $OUT/data/<date>.json + 重建 index.json + 生成 $OUT/../editions/<date>.md（微信版用 group）
 uv run ${CLAUDE_PLUGIN_ROOT}/scripts/publish_site.py --digest $DATA/runs/<today>/digest.json --site-dir $OUT
+# 重建向量索引（语义检索用；hf-mirror 自动）
+uv run ${CLAUDE_PLUGIN_ROOT}/scripts/embed.py --build $OUT/data || echo "embed 失败不阻塞"
 # 仅本地交互模式额外登记去重库（仓库模式无需——commit 后的 digest.json 即状态）
 uv run ${CLAUDE_PLUGIN_ROOT}/scripts/dedup.py --record <选中+雷达条目.jsonl> --status published
 ```

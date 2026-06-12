@@ -37,6 +37,11 @@
     "leading_edge": 3,
     "impact": 4,
     "cross_stack": 3
+   },
+   "image": {
+    "url": "https://cdn-thumbnails.huggingface.co/social-thumbnails/models/moonshotai/Kimi-K2.7-Code.png",
+    "credit": "huggingface.co",
+    "source": "https://huggingface.co/moonshotai/Kimi-K2.7-Code"
    }
   },
   {
@@ -59,6 +64,11 @@
     "leading_edge": 5,
     "impact": 4,
     "cross_stack": 3
+   },
+   "image": {
+    "url": "https://cdn-thumbnails.huggingface.co/social-thumbnails/papers/2606.13392/gradient.png",
+    "credit": "huggingface.co",
+    "source": "https://huggingface.co/papers/2606.13392"
    }
   },
   {
@@ -103,6 +113,11 @@
     "leading_edge": 3,
     "impact": 3,
     "cross_stack": 3
+   },
+   "image": {
+    "url": "https://res.cloudinary.com/lesswrong-2-0/image/upload/f_auto,q_auto/v1/mirroredImages/aTcsN5ZZDnMFJvRiG/m7vjmpong0dqbb3hdrdc",
+    "credit": "alignmentforum.org",
+    "source": "https://www.alignmentforum.org/posts/aTcsN5ZZDnMFJvRiG/models-may-behave-worse-when-eval-aware"
    }
   },
   {
@@ -125,6 +140,11 @@
     "leading_edge": 4,
     "impact": 3,
     "cross_stack": 3
+   },
+   "image": {
+    "url": "https://images.zed.dev/blog/deltadb-early-access/thumbnail.webp",
+    "credit": "zed.dev",
+    "source": "https://zed.dev/blog/introducing-deltadb"
    }
   },
   {
@@ -4077,6 +4097,11 @@
      "leading_edge": 3,
      "impact": 4,
      "cross_stack": 3
+    },
+    "image": {
+     "url": "https://cdn-thumbnails.huggingface.co/social-thumbnails/models/moonshotai/Kimi-K2.7-Code.png",
+     "credit": "huggingface.co",
+     "source": "https://huggingface.co/moonshotai/Kimi-K2.7-Code"
     }
    },
    {
@@ -4099,6 +4124,11 @@
      "leading_edge": 5,
      "impact": 4,
      "cross_stack": 3
+    },
+    "image": {
+     "url": "https://cdn-thumbnails.huggingface.co/social-thumbnails/papers/2606.13392/gradient.png",
+     "credit": "huggingface.co",
+     "source": "https://huggingface.co/papers/2606.13392"
     }
    },
    {
@@ -4143,6 +4173,11 @@
      "leading_edge": 3,
      "impact": 3,
      "cross_stack": 3
+    },
+    "image": {
+     "url": "https://res.cloudinary.com/lesswrong-2-0/image/upload/f_auto,q_auto/v1/mirroredImages/aTcsN5ZZDnMFJvRiG/m7vjmpong0dqbb3hdrdc",
+     "credit": "alignmentforum.org",
+     "source": "https://www.alignmentforum.org/posts/aTcsN5ZZDnMFJvRiG/models-may-behave-worse-when-eval-aware"
     }
    },
    {
@@ -4165,6 +4200,11 @@
      "leading_edge": 4,
      "impact": 3,
      "cross_stack": 3
+    },
+    "image": {
+     "url": "https://images.zed.dev/blog/deltadb-early-access/thumbnail.webp",
+     "credit": "zed.dev",
+     "source": "https://zed.dev/blog/introducing-deltadb"
     }
    },
    {
@@ -4205,7 +4245,12 @@
      "primary": "https://huggingface.co/papers/2606.13392",
      "discussion": ""
     },
-    "score": 4.5
+    "score": 4.5,
+    "image": {
+     "url": "https://cdn-thumbnails.huggingface.co/social-thumbnails/papers/2606.13392/gradient.png",
+     "credit": "huggingface.co",
+     "source": "https://huggingface.co/papers/2606.13392"
+    }
    },
    {
     "id": "hf-trending-models:kimi-k2.7-code",
@@ -4221,7 +4266,12 @@
      "primary": "https://huggingface.co/moonshotai/Kimi-K2.7-Code",
      "discussion": "https://news.ycombinator.com/item?id=48502347"
     },
-    "score": 4.4
+    "score": 4.4,
+    "image": {
+     "url": "https://cdn-thumbnails.huggingface.co/social-thumbnails/models/moonshotai/Kimi-K2.7-Code.png",
+     "credit": "huggingface.co",
+     "source": "https://huggingface.co/moonshotai/Kimi-K2.7-Code"
+    }
    },
    {
     "id": "hf-daily-papers:1728977adfe6",
@@ -4237,7 +4287,12 @@
      "primary": "https://huggingface.co/papers/2606.13473",
      "discussion": ""
     },
-    "score": 4.2
+    "score": 4.2,
+    "image": {
+     "url": "https://cdn-thumbnails.huggingface.co/social-thumbnails/papers/2606.13473/gradient.png",
+     "credit": "huggingface.co",
+     "source": "https://huggingface.co/papers/2606.13473"
+    }
    },
    {
     "id": "arxiv-cs-ro:ftp-1",
@@ -4269,7 +4324,12 @@
      "primary": "https://www.alignmentforum.org/posts/aTcsN5ZZDnMFJvRiG/models-may-behave-worse-when-eval-aware",
      "discussion": ""
     },
-    "score": 3.8
+    "score": 3.8,
+    "image": {
+     "url": "https://res.cloudinary.com/lesswrong-2-0/image/upload/f_auto,q_auto/v1/mirroredImages/aTcsN5ZZDnMFJvRiG/m7vjmpong0dqbb3hdrdc",
+     "credit": "alignmentforum.org",
+     "source": "https://www.alignmentforum.org/posts/aTcsN5ZZDnMFJvRiG/models-may-behave-worse-when-eval-aware"
+    }
    },
    {
     "id": "arxiv-cs-ai:auto-mas",
@@ -4301,7 +4361,12 @@
      "primary": "https://zed.dev/blog/introducing-deltadb",
      "discussion": "https://news.ycombinator.com/item?id=48492533"
     },
-    "score": 3.6
+    "score": 3.6,
+    "image": {
+     "url": "https://images.zed.dev/blog/deltadb-early-access/thumbnail.webp",
+     "credit": "zed.dev",
+     "source": "https://zed.dev/blog/introducing-deltadb"
+    }
    },
    {
     "id": "gh-trl:35b32a402f1f",
@@ -4317,7 +4382,12 @@
      "primary": "https://github.com/huggingface/trl/releases/tag/v1.6.0",
      "discussion": ""
     },
-    "score": 3.5
+    "score": 3.5,
+    "image": {
+     "url": "https://opengraph.githubassets.com/1/huggingface/trl",
+     "credit": "github.com",
+     "source": "https://github.com/huggingface/trl/releases/tag/v1.6.0"
+    }
    },
    {
     "id": "hn-frontpage:d200a923aece",
@@ -4333,7 +4403,12 @@
      "primary": "https://www.endorlabs.com/learn/claude-fable-5-mythos-grade-hype",
      "discussion": "https://news.ycombinator.com/item?id=48492210"
     },
-    "score": 3.4
+    "score": 3.4,
+    "image": {
+     "url": "https://cdn.prod.website-files.com/6574c9e538a34feac8cec013/6a2a386899570e6f8d646e19_new%20model%20claude.png",
+     "credit": "endorlabs.com",
+     "source": "https://www.endorlabs.com/learn/claude-fable-5-mythos-grade-hype"
+    }
    },
    {
     "id": "hf-daily-papers:e5e78730c2e1",
@@ -4349,7 +4424,12 @@
      "primary": "https://huggingface.co/papers/2606.13681",
      "discussion": ""
     },
-    "score": 3.3
+    "score": 3.3,
+    "image": {
+     "url": "https://cdn-thumbnails.huggingface.co/social-thumbnails/papers/2606.13681/gradient.png",
+     "credit": "huggingface.co",
+     "source": "https://huggingface.co/papers/2606.13681"
+    }
    },
    {
     "id": "hn-frontpage:3a70713e652f",
@@ -4461,7 +4541,12 @@
      "primary": "https://github.com/rtk-ai/rtk",
      "discussion": ""
     },
-    "score": 2.5
+    "score": 2.5,
+    "image": {
+     "url": "https://opengraph.githubassets.com/1/rtk-ai/rtk",
+     "credit": "github.com",
+     "source": "https://github.com/rtk-ai/rtk"
+    }
    },
    {
     "id": "arxiv-cs-dc:15194d00329b",

@@ -2,7 +2,25 @@
 
 两个产物用同一份数据：**digest.json**（喂静态站点，信息全）和 **archive/<date>.md**（微信可读，给人看）。中文为主，专有名词/术语保留英文。
 
-## digest.json schema（站点与 publish_site.py 依赖）
+## digest.json schema v2（多级 + 多视角；站点与 publish_site.py 依赖）
+
+v2 在 v1 基础上加 `tiers` 与 `perspectives`，并保留 `selected`/`all_candidates` 向后兼容：
+```jsonc
+{
+  "date","weekday","headline","overview","stats","schema_version":2,
+  "tiers": {
+    "group": [ {rank,layer,source,title,readable(3-4段),facts,links,scores,image?} ],   // ~5
+    "daily": [ {id,layer,source,title,take(2-3句)|readable,facts,links,score,image?} ], // ~20，含 group
+    "full":  [ {source,layer,title,url,summary,selected} ]                              // 全部
+  },
+  "perspectives": { "technical":{"lede":"…"},"product":{…},"business":{…},"research":{…},"embodied":{…} },
+  "radar":[…], "gaps":[…],
+  "selected": "= tiers.group（兼容）", "all_candidates": "= tiers.full（兼容）"
+}
+```
+item 可选 `image`: `{url, credit, source}`（配图，见 enrich-images skill / scripts/enrich_images.py）。
+
+## v1 字段（兼容保留）
 
 ```json
 {
