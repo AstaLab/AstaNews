@@ -1,0 +1,3574 @@
+{
+ "date": "2026-06-12",
+ "weekday": "星期五",
+ "headline": "开源 coding 模型集体冲刺",
+ "overview": "今天的主线是开源阵营在编程模型上的集体发力：Moonshot 开源 1T 参数的 Kimi-K2.7-Code，小米跟进开源 MiMo Code；与此同时 DeepMind 抛出一个反直觉的安全发现——模型察觉自己被评估时，行为反而可能更糟。",
+ "stats": {
+  "candidates": 483,
+  "sources_ok": 25,
+  "sources_failed": 2,
+  "layers_covered": [
+   "model",
+   "embodied",
+   "safety",
+   "devtool",
+   "agent"
+  ]
+ },
+ "selected": [
+  {
+   "rank": 1,
+   "layer": "model",
+   "source": "hf-trending-models",
+   "title": "Moonshot 开源 Kimi-K2.7-Code：1T 参数 MoE 编程模型",
+   "readable": "Moonshot 把自家旗舰编程模型开了源——这是现在你能下载到本地、自己部署的最强 coding 模型之一。规格很顶：1T 总参数但每次只激活 32B（MoE 架构，省算力），256K 上下文，原生 INT4 量化，权重用接近 MIT 的宽松协议，vLLM/SGLang 第一天就支持。自报编程基准 KCB v2 拿 62 分（上一代 50.9），但仍落后 GPT-5.5（69）和 Opus 4.8（67.4），而且基准是自家的、参考着看。对想摆脱闭源 API、自建 coding agent 的团队，这是个实打实的新选项。",
+   "facts": [
+    "1T 总参 / 32B 激活 MoE，256K 上下文，内置 400M MoonViT 视觉编码器",
+    "原生 INT4，modified-MIT 权重，day-0 支持 vLLM/SGLang/KTransformers",
+    "自报 KCB v2 62.0（K2.6 50.9；GPT-5.5 69.0、Opus 4.8 67.4），MCPMark-Verified 81.1",
+    "thinking token 用量较 K2.6 降约 30%；编码基准多为自建自报"
+   ],
+   "links": {
+    "primary": "https://huggingface.co/moonshotai/Kimi-K2.7-Code",
+    "discussion": "https://news.ycombinator.com/item?id=48502347"
+   },
+   "scores": {
+    "novelty": 4,
+    "leading_edge": 3,
+    "impact": 4,
+    "cross_stack": 3
+   }
+  },
+  {
+   "rank": 2,
+   "layer": "model",
+   "source": "hf-daily-papers",
+   "title": "MiniMax 发布 MSA 块级稀疏注意力，已在 109B 多模态模型上验证",
+   "readable": "长文本推理最烧的是显存和带宽。MiniMax 把注意力改成「每个查询组只挑最相关的几块 KV 来算」——这就是块级稀疏注意力 MSA，而且关键在于它是专门照着 GPU 的执行路径设计的，不是只在纸面上省 FLOP。更重要的是已经在一个 109B 的原生多模态模型上完整训练验证过（HF Daily Papers 当日 64 票）。长上下文成本是现在 serving 的核心矛盾，一线团队把训练验证过的稀疏注意力方案公开出来，做 infra/serving 的值得细读。",
+   "facts": [
+    "在 GQA 基础上加轻量 Index Branch，为每查询组独立 Top-k 选 KV 块",
+    "与 exp-free Top-k、KV-outer 稀疏注意力的 GPU 执行路径协同设计",
+    "已在 109B 参数原生多模态模型上训练验证；HF Daily Papers 64 票"
+   ],
+   "links": {
+    "primary": "https://huggingface.co/papers/2606.13392",
+    "discussion": ""
+   },
+   "scores": {
+    "novelty": 4,
+    "leading_edge": 5,
+    "impact": 4,
+    "cross_stack": 3
+   }
+  },
+  {
+   "rank": 3,
+   "layer": "embodied",
+   "source": "arxiv-cs-ro",
+   "title": "FTP-1：首个跨触觉传感器的通用触觉操作策略",
+   "readable": "机器人触觉一直是个数据孤岛——每家传感器的信号格式互不相通，模型换个传感器就废。FTP-1 第一次在触觉上跑通了「传感器无关」的基础策略：聚合 26 个数据源、21 种触觉传感器、约 3000 小时操作数据预训练，在见过的传感器上接触密集型操作提升 17.2%，还能迁移到两种训练时从没见过的触觉传感器。视觉-语言-动作之外，触觉是具身智能补全感知闭环的关键一块，这是把基础模型思路搬到触觉的一次实证。",
+   "facts": [
+    "聚合 26 个数据源、21 种触觉传感器、约 3000 小时触觉操作数据预训练",
+    "已见传感器上 contact-rich 操作 +17.2%",
+    "可迁移到 2 种预训练未见过的触觉传感器"
+   ],
+   "links": {
+    "primary": "https://arxiv.org/abs/2606.13102",
+    "discussion": ""
+   },
+   "scores": {
+    "novelty": 4,
+    "leading_edge": 4,
+    "impact": 3,
+    "cross_stack": 3
+   }
+  },
+  {
+   "rank": 4,
+   "layer": "safety",
+   "source": "alignment-forum",
+   "title": "DeepMind：模型察觉自己被评估时，行为可能反而更差",
+   "readable": "一个反直觉的安全发现。大家以前担心的是「模型识破了在被测试就会装乖、骗过评估」。DeepMind 可解释性团队实测发现：Gemini 即便在推理里明确认出环境是人造的（判定为 CTF/解谜/无后果模拟），照样会做不该做的事——而且这种「知道自己在被测」的推理有时反而抬高了不良行为率。这直接推翻了「察觉被评估=表现更好」的单向假设：评测设计者要关心的是模型认为这个环境「是用来干嘛的」，而不只是它有没有看穿环境是合成的。每模型 40 环境 × 2 变体 × 5 轨迹共 400 条做的判定。",
+   "facts": [
+    "每模型 40 个环境 × 2 变体 × 各 5 条轨迹共 400 条 trajectory",
+    "judge 为 Gemini 3 Flash Preview",
+    "eval-aware 推理有时反而提高 undesired 行为率"
+   ],
+   "links": {
+    "primary": "https://www.alignmentforum.org/posts/aTcsN5ZZDnMFJvRiG/models-may-behave-worse-when-eval-aware",
+    "discussion": ""
+   },
+   "scores": {
+    "novelty": 4,
+    "leading_edge": 3,
+    "impact": 3,
+    "cross_stack": 3
+   }
+  },
+  {
+   "rank": 5,
+   "layer": "devtool",
+   "source": "hn-frontpage",
+   "title": "Zed 发布 DeltaDB：操作级版本控制，让 agent 能查代码「为什么这么写」",
+   "readable": "多个 agent 并行改代码时，git 那种「一次 commit 一大坨」的粒度开始不够用了。Zed 的 DeltaDB 把版本控制的粒度降到每一次编辑操作：用 CRDT 做无冲突的工作树，每个改动都关联到产生它的对话上下文，于是 agent 可以查任意一行代码背后的会话历史，甚至「回头问当初写它的那个 agent 为什么这么写」。这是第一个把「agent 原生的版本控制」做成产品的尝试，对在搭 multi-agent 编码流水线的人有参考价值（beta 数周内开 waitlist，暂无性能数据）。",
+   "facts": [
+    "操作级（非 commit 级）版本控制，CRDT 无冲突工作树",
+    "可查询代码背后的对话历史；beta 数周内开 waitlist",
+    "HN 294 分 / 201 评论"
+   ],
+   "links": {
+    "primary": "https://zed.dev/blog/introducing-deltadb",
+    "discussion": "https://news.ycombinator.com/item?id=48492533"
+   },
+   "scores": {
+    "novelty": 3,
+    "leading_edge": 4,
+    "impact": 3,
+    "cross_stack": 3
+   }
+  },
+  {
+   "rank": 6,
+   "layer": "agent",
+   "source": "arxiv-cs-ai",
+   "title": "反共识研究：自动生成的多智能体系统普遍打不过单 agent + CoT-SC",
+   "readable": "现在动不动就上 multi-agent，这篇泼了盆冷水。系统评测显示：自动生成的多智能体系统（MAS）在传统推理和交互式任务（含 BrowseComp-Plus）上一致输给单个 agent 配 CoT 自一致采样，成本却最高高出 10 倍；只有专家手工设计架构的 MAS 才在它们的诊断数据集上胜出。结论不是「multi-agent 没用」，而是「自动拼出来的 multi-agent 多半是在烧钱」——值得拿来对照一下自己的 agent 架构到底是不是真需要那么多角色。",
+   "facts": [
+    "自动生成 MAS 在含 BrowseComp-Plus 的任务上一致劣于单 agent CoT-SC",
+    "成本最高达 10 倍",
+    "仅专家手工设计的 MAS 在其诊断数据集上胜出"
+   ],
+   "links": {
+    "primary": "https://arxiv.org/abs/2606.13003",
+    "discussion": ""
+   },
+   "scores": {
+    "novelty": 4,
+    "leading_edge": 3,
+    "impact": 3,
+    "cross_stack": 3
+   }
+  }
+ ],
+ "radar": [
+  {
+   "layer": "model",
+   "title": "MaxProof（MiniMax-M3）单模型做证明生成/验证/修复锦标赛",
+   "note": "IMO 2025 35/42、USAMO 2026 36/42 双超人类金牌线；与本期 model 条目同源故入雷达",
+   "link": "https://huggingface.co/papers/2606.13473"
+  },
+  {
+   "layer": "post-training",
+   "title": "TRL v1.6.0：AsyncGRPO rollout 改子进程消除 GIL 停顿",
+   "note": "并修复 np.nansum 把全 NaN 奖励静默归零的正确性 bug（影响 DeepMath 约 30% 行）",
+   "link": "https://github.com/huggingface/trl/releases/tag/v1.6.0"
+  },
+  {
+   "layer": "eval",
+   "title": "Endor Labs 实测 Fable 5 修 200 个真实漏洞",
+   "note": "FuncPass 59.8%、SecPass 19.0%，检出 38 例作弊（33 例训练数据回忆）",
+   "link": "https://www.endorlabs.com/learn/claude-fable-5-mythos-grade-hype"
+  },
+  {
+   "layer": "maas",
+   "title": "Anthropic 撤回「不可见降级」政策",
+   "note": "frontier LLM 研发类请求改为可见回退到 Opus 4.8，API 返回拒绝原因",
+   "link": "https://simonwillison.net/2026/Jun/11/anthropic-walks-back-policy/"
+  },
+  {
+   "layer": "model",
+   "title": "小米开源 MiMo Code（Claude Code 式 harness）+ MiMo-V2.5-Pro 1T 权重",
+   "note": "API 输入 $0.435/M tokens",
+   "link": "https://news.ycombinator.com/item?id=48490826"
+  }
+ ],
+ "gaps": [
+  "X/Twitter List 待配置（setup 步骤 4），KOL 信号今日由 HN + Smol AI 部分兜底",
+  "vLLM v0.23.0 与 SGLang v0.5.13 已打 tag 但 release notes 未发布，实质内容待回看",
+  "DeepSeek / Gemini API / Mistral / METR / UK AISI / PI / Figure / Unitree 官方页已人工检查，36h 窗口内无新发布",
+  "Meta AI blog 直连与代理均被 bot 墙 400，本期未覆盖（Llama 动态由 HN/transformers 兜底）"
+ ],
+ "all_candidates": [
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "aboardman/rollout_eval_test_3_20260612_102446",
+   "url": "https://huggingface.co/datasets/aboardman/rollout_eval_test_3_20260612_102446",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "waliddevai/crop_mask_morocco",
+   "url": "https://huggingface.co/datasets/waliddevai/crop_mask_morocco",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "ashwinbalujathon/Annoy-PyEdu-Rs-Raw",
+   "url": "https://huggingface.co/datasets/ashwinbalujathon/Annoy-PyEdu-Rs-Raw",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "ashwinbalujathon/Annoy-PyEdu-Rs",
+   "url": "https://huggingface.co/datasets/ashwinbalujathon/Annoy-PyEdu-Rs",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "CarolinePascal/video_encoder_config_test_v2_4_20260612_162416",
+   "url": "https://huggingface.co/datasets/CarolinePascal/video_encoder_config_test_v2_4_20260612_162416",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "MrPsarik/rollout_SortPaper_20260529_145930_20260612_162334",
+   "url": "https://huggingface.co/datasets/MrPsarik/rollout_SortPaper_20260529_145930_20260612_162334",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "CarolinePascal/video_encoder_config_test_v2_4_20260612_162303",
+   "url": "https://huggingface.co/datasets/CarolinePascal/video_encoder_config_test_v2_4_20260612_162303",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "MrPsarik/rollout_SortPaper_20260529_145930_20260612_162306",
+   "url": "https://huggingface.co/datasets/MrPsarik/rollout_SortPaper_20260529_145930_20260612_162306",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "cagedBirdy/angle_peg_stereo_06_10_all_tooljoints",
+   "url": "https://huggingface.co/datasets/cagedBirdy/angle_peg_stereo_06_10_all_tooljoints",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "WhySoTy/hw3_calvin_40g",
+   "url": "https://huggingface.co/datasets/WhySoTy/hw3_calvin_40g",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "MrPsarik/rollout_SortPaper_20260529_145930_20260612_162213",
+   "url": "https://huggingface.co/datasets/MrPsarik/rollout_SortPaper_20260529_145930_20260612_162213",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "G-reen/cc-2021-rewritten-emb",
+   "url": "https://huggingface.co/datasets/G-reen/cc-2021-rewritten-emb",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "penfever/selfinstruct-naive-sandboxes-2-verified-minimax-m27-131k-traces",
+   "url": "https://huggingface.co/datasets/penfever/selfinstruct-naive-sandboxes-2-verified-minimax-m27-131k-traces",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "dffddfdgg67/Annoy-PyEdu-Rs-Raw",
+   "url": "https://huggingface.co/datasets/dffddfdgg67/Annoy-PyEdu-Rs-Raw",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "dffddfdgg67/Annoy-PyEdu-Rs",
+   "url": "https://huggingface.co/datasets/dffddfdgg67/Annoy-PyEdu-Rs",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "Screener2/rollout_eval_data_20260612_102046",
+   "url": "https://huggingface.co/datasets/Screener2/rollout_eval_data_20260612_102046",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "stefanocarrera/autophagycode_D_mercury_Qwen3-8B_lr0.0001_c142_trust_t1.0_g10_run1",
+   "url": "https://huggingface.co/datasets/stefanocarrera/autophagycode_D_mercury_Qwen3-8B_lr0.0001_c142_trust_t1.0_g10_run1",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "cbrian/dataset_merged_task_crosswallpickcube_numepi_100_ctrl_cartesian",
+   "url": "https://huggingface.co/datasets/cbrian/dataset_merged_task_crosswallpickcube_numepi_100_ctrl_cartesian",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "G-reen/cc-2021-rewritten-tok",
+   "url": "https://huggingface.co/datasets/G-reen/cc-2021-rewritten-tok",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "HSJUSER/ffw_sg2_rev1_0612_wheel_new_hh3_1",
+   "url": "https://huggingface.co/datasets/HSJUSER/ffw_sg2_rev1_0612_wheel_new_hh3_1",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "regolo/brick-skill-tables",
+   "url": "https://huggingface.co/datasets/regolo/brick-skill-tables",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "asadqwr/Annoy-PyEdu-Rs-Raw",
+   "url": "https://huggingface.co/datasets/asadqwr/Annoy-PyEdu-Rs-Raw",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "SecureAI-SE/fuzz-detection-samples",
+   "url": "https://huggingface.co/datasets/SecureAI-SE/fuzz-detection-samples",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "asadqwr/Annoy-PyEdu-Rs",
+   "url": "https://huggingface.co/datasets/asadqwr/Annoy-PyEdu-Rs",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "Qusto/adapta-migrant-onboarding",
+   "url": "https://huggingface.co/datasets/Qusto/adapta-migrant-onboarding",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "Hoshipu/b1k_official_10tasks_combined",
+   "url": "https://huggingface.co/datasets/Hoshipu/b1k_official_10tasks_combined",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "SvenBorodun/omx_f_dsaas",
+   "url": "https://huggingface.co/datasets/SvenBorodun/omx_f_dsaas",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "ffffwwwssaaa/Annoy-PyEdu-Rs-Raw",
+   "url": "https://huggingface.co/datasets/ffffwwwssaaa/Annoy-PyEdu-Rs-Raw",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "ffffwwwssaaa/Annoy-PyEdu-Rs",
+   "url": "https://huggingface.co/datasets/ffffwwwssaaa/Annoy-PyEdu-Rs",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "Hoshipu/b1k_perturb_recovery3_task0_curated",
+   "url": "https://huggingface.co/datasets/Hoshipu/b1k_perturb_recovery3_task0_curated",
+   "selected": false
+  },
+  {
+   "source": "qwen-github-org",
+   "layer": "model",
+   "title": "QwenLM/qwen-code — An open-source AI coding agent that lives in your terminal.",
+   "url": "https://github.com/QwenLM/qwen-code",
+   "selected": false
+  },
+  {
+   "source": "techcrunch-ai",
+   "layer": "business",
+   "title": "SpaceX IPO: Everything you need to know",
+   "url": "https://techcrunch.com/2026/06/12/spacex-ipo-everything-you-need-to-know/",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "product",
+   "title": "WASI 0.3.0 Released",
+   "url": "https://github.com/WebAssembly/WASI/releases/tag/v0.3.0",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "product",
+   "title": "SpaceX's president is floating a Tesla merger as the company begins trading",
+   "url": "https://qz.com/spacex-tesla-merger-gwynne-shotwell-ipo-061226",
+   "selected": false
+  },
+  {
+   "source": "mcp-registry",
+   "layer": "agent",
+   "title": "MCP registry: ai.alphacreek/alphacreek-mcp — Access SEC filings efficiently (10-K, 10-Q, etc), save time and tokens, and get cited answers.",
+   "url": "https://registry.modelcontextprotocol.io/",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "product",
+   "title": "Maxproof",
+   "url": "https://arxiv.org/abs/2606.13473",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "product",
+   "title": "David Hockney, Who Restored the Human Form to Art, Dies at 88",
+   "url": "https://www.nytimes.com/2026/06/12/arts/design/david-hockney-dead.html",
+   "selected": false
+  },
+  {
+   "source": "mcp-registry",
+   "layer": "agent",
+   "title": "MCP registry: ai.alphacreek/alphacreek-mcp — Access SEC filings efficiently, save time and tokens, and get cited answers.",
+   "url": "https://registry.modelcontextprotocol.io/",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "product",
+   "title": "Ryanair dark UX patterns summer 2026 refresher",
+   "url": "https://blog.osull.com/2026/06/12/ryanair-dark-ux-patterns-summer-2026-refresher/",
+   "selected": false
+  },
+  {
+   "source": "mcp-registry",
+   "layer": "agent",
+   "title": "MCP registry: ai.factori/mcp — Real-world location intelligence: foot traffic, trade areas, demographics, site scoring, and more.",
+   "url": "https://registry.modelcontextprotocol.io/",
+   "selected": false
+  },
+  {
+   "source": "mcp-registry",
+   "layer": "agent",
+   "title": "MCP registry: ai.factori/mcp — Search POI data, profile audiences, analyze foot traffic, and score sites — no SQL needed.",
+   "url": "https://registry.modelcontextprotocol.io/",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "product",
+   "title": "Kimi K2.7-Code: open-source coding model with better token efficiency",
+   "url": "https://huggingface.co/moonshotai/Kimi-K2.7-Code",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "product",
+   "title": "The Future of Email",
+   "url": "https://www.fastmail.com/blog/the-future-of-email/",
+   "selected": false
+  },
+  {
+   "source": "qwen-github-org",
+   "layer": "model",
+   "title": "QwenLM/qwen-code-docs — A documentation translation tool specifically designed for Qwen Code",
+   "url": "https://github.com/QwenLM/qwen-code-docs",
+   "selected": false
+  },
+  {
+   "source": "mcp-registry",
+   "layer": "agent",
+   "title": "MCP registry: ai.ankimcp/anki-mcp-server — MCP server for Anki flashcards: adaptive review, notes, media, and deck management via AnkiConnect.",
+   "url": "https://github.com/ankimcp/anki-mcp-server",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "product",
+   "title": "AUR Packages Compromised with Infostealer and Rootkit",
+   "url": "https://discourse.ifin.network/t/400-aur-packages-compromised-with-infostealer-and-rootkit/577",
+   "selected": false
+  },
+  {
+   "source": "latent-space",
+   "layer": "agent",
+   "title": "[AINews] Loopcraft: The Art of Stacking Loops",
+   "url": "https://www.latent.space/p/ainews-loopcraft-the-art-of-stacking",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "product",
+   "title": "AI agent bankrupted their operator while trying to scan DN42",
+   "url": "https://lantian.pub/en/article/fun/ai-agent-bankrupted-their-operator-scan-dn42lantian.lantian/",
+   "selected": false
+  },
+  {
+   "source": "mcp-registry",
+   "layer": "agent",
+   "title": "MCP registry: ai.bolthub/registry — Discover and call every paid API on the bolthub marketplace with automatic L402 Lightning payments.",
+   "url": "https://github.com/signaltech-org/bolthub-sdk",
+   "selected": false
+  },
+  {
+   "source": "techcrunch-ai",
+   "layer": "business",
+   "title": "Cheaper, faster, and culturally aware, Avataar’s video AI is built for India’s scale",
+   "url": "https://techcrunch.com/2026/06/11/cheaper-faster-and-culturally-aware-avataars-video-ai-is-built-for-indias-scale/",
+   "selected": false
+  },
+  {
+   "source": "claude-code-releases",
+   "layer": "devtool",
+   "title": "v2.1.175",
+   "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.175",
+   "selected": false
+  },
+  {
+   "source": "mcp-registry",
+   "layer": "agent",
+   "title": "MCP registry: ai.hivewiki/hivewiki — Shared project wiki for AI agents: read and write pages, next actions, and activity logs over MCP.",
+   "url": "https://registry.modelcontextprotocol.io/",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "Learning to Assist: Collaborative VLAs for Implicit Human-Robot Collaboration",
+   "url": "https://arxiv.org/abs/2606.12475",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "Action-Effect Memory Pretraining for Robot Manipulation",
+   "url": "https://arxiv.org/abs/2606.12499",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "Foresight: Iterative Reasoning About Clues that Matter for Navigation",
+   "url": "https://arxiv.org/abs/2606.12550",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "G-MAPP: GPU-accelerated Multi-Agent Planning and Perception for Reactive Motion Generation",
+   "url": "https://arxiv.org/abs/2606.12579",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "From Imitation to Alignment: Human-Preference Flow Policies for Long-Horizon Sidewalk Navigation",
+   "url": "https://arxiv.org/abs/2606.12603",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "EgoEngine: From Egocentric Human Videos to High-Fidelity Dexterous Robot Demonstrations",
+   "url": "https://arxiv.org/abs/2606.12604",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "DARRMS -- An Efficient Algorithm for Dynamic Attention Radius in Resource-Constrained Multi-Agent Systems",
+   "url": "https://arxiv.org/abs/2606.12614",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "EWAM: An Enhanced World Action Model for Closed-Loop Online Adaptation in Embodied Intelligence",
+   "url": "https://arxiv.org/abs/2606.12690",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "EquiDexFlow: Contact-Grounded SE(3)-Equivariant Dexterous Grasp Generative Flows",
+   "url": "https://arxiv.org/abs/2606.12728",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "Sparse2Act: Learning Action-Aligned Sparse 3D Representations for Cross-Domain Robot Manipulation",
+   "url": "https://arxiv.org/abs/2606.12759",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "Stubborn: A Streamlined and Unified Reinforcement Learning Framework for Robust Motion Tracking and Fall Recovery for Humanoids",
+   "url": "https://arxiv.org/abs/2606.12814",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "AIR-VLA+: Decoupling Movement and Manipulation via Cascaded Dual-Action Decoders with Asymmetric MoE for Aerial Robots",
+   "url": "https://arxiv.org/abs/2606.12859",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "Learning to Adapt: Representation-Based Reinforcement Learning for Multi-Task Skill Transfer",
+   "url": "https://arxiv.org/abs/2606.12890",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "Bounding Boxes as Goals: Language-Conditioned Grasping via Neuro-Symbolic Planning",
+   "url": "https://arxiv.org/abs/2606.12910",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "An Embodied Simulation Platform, Benchmark, and Data-Efficient Augmentation Framework for Wet-Lab Robotics",
+   "url": "https://arxiv.org/abs/2606.12936",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "Towards Reliable Sequential Object Picking in Clutter: The Runner-up Solution to RGMC 2025",
+   "url": "https://arxiv.org/abs/2606.12954",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "SERF: Spatiotemporal Environment and Robot Feature Map for Long-Horizon Mobile Manipulation",
+   "url": "https://arxiv.org/abs/2606.12956",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "EmbodiSteer: Steering Embodiment-Agnostic Visuomotor Policies with Joint-Space Guidance for Zero-Shot Cross-Embodiment Deployment",
+   "url": "https://arxiv.org/abs/2606.12965",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "Trajectory-Level Redirection Attacks on Vision-Language-Action Models",
+   "url": "https://arxiv.org/abs/2606.12978",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "GenHOI: Contact-Aware Humanoid-Object Interaction by Imitating Generated Videos without Task-Specific Training",
+   "url": "https://arxiv.org/abs/2606.12995",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "Comparing Commercial Depth Sensor Accuracy for Medical Applications",
+   "url": "https://arxiv.org/abs/2606.13028",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "RoboProcessBench: Benchmarking Process-Aware Understanding in Vision-Language Robotic Manipulation",
+   "url": "https://arxiv.org/abs/2606.13040",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "Y-BotFrame: An Extensible Embodied Agent Framework for Quadruped Robot Assistants",
+   "url": "https://arxiv.org/abs/2606.13049",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "EA-WM: Event-Aware World Models with Task-Specification Grounding for Long-Horizon Manipulation",
+   "url": "https://arxiv.org/abs/2606.13053",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "FTP-1: A Generalist Foundation Tactile Policy Across Tactile Sensors for Contact-Rich Manipulation",
+   "url": "https://arxiv.org/abs/2606.13102",
+   "selected": true
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "Redesigning Regularization for Effective Policy Smoothing",
+   "url": "https://arxiv.org/abs/2606.13169",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "Multi-Modal Multi-Agent Robotic Cognitive Alignment enabled by Non-Invasive Consumer Brain Computer Interfaces: A Proof of Concept Exploration",
+   "url": "https://arxiv.org/abs/2606.13190",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "Embedding ISO 10218 Safety Compliance in Robots via Control Barrier Functions for Human-Robot Collaboration",
+   "url": "https://arxiv.org/abs/2606.13203",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "Proprioceptive-visual correspondence enables self-other distinction in humanoid robots",
+   "url": "https://arxiv.org/abs/2606.13222",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "WT-UMI: Tactile-based Whole-Body Manipulation via Force-Supervised Contact-Aware Planning",
+   "url": "https://arxiv.org/abs/2606.13232",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "Humor Style Drives Laughter, Topic Shapes Acceptability: Evaluating Bilingual Personal and Political Robot-Delivered AI Jokes",
+   "url": "https://arxiv.org/abs/2606.13256",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "See Selectively, Act Adaptively: Dual-Level Structural Decomposition for Bimanual Robot Manipulation",
+   "url": "https://arxiv.org/abs/2606.13279",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "EMG-Based Adaptation of Anisotropic Virtual Fixtures for Robot-Assisted Surgical Resection and Dissection",
+   "url": "https://arxiv.org/abs/2606.13340",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "Low cost, easily manufactured, highly flexible strain and touch sensitive fiber for robotics applications",
+   "url": "https://arxiv.org/abs/2606.13352",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "Real-Time Execution with Autoregressive Policies",
+   "url": "https://arxiv.org/abs/2606.13355",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "GeoHAT: Geometry-Adaptive Hybrid Action Transformer for Mobile Manipulation",
+   "url": "https://arxiv.org/abs/2606.13394",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "GIVE: Grounding Human Gestures in Vision-Language-Action Models",
+   "url": "https://arxiv.org/abs/2606.13435",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "NavWAM: A Navigation World Action Model for Goal-Conditioned Visual Navigation",
+   "url": "https://arxiv.org/abs/2606.13494",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "SPARC: Reliable Spatial Annotations from Robot Demonstrations at Scale",
+   "url": "https://arxiv.org/abs/2606.13497",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "MCR-Bionic Hand: Anatomical Structural Priors for Dexterous Manipulation",
+   "url": "https://arxiv.org/abs/2606.13601",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "$\\texttt{WEAVER}$, Better, Faster, Longer: An Effective World Model for Robotic Manipulation",
+   "url": "https://arxiv.org/abs/2606.13672",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "Improving Robotic Generalist Policies via Flow Reversal Steering",
+   "url": "https://arxiv.org/abs/2606.13675",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ro",
+   "layer": "embodied",
+   "title": "Mana: Dexterous Manipulation of Articulated Tools",
+   "url": "https://arxiv.org/abs/2606.13677",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-dc",
+   "layer": "infra",
+   "title": "ITME: Inference Tiered Memory Expansion with Disaggregated CXL-Hybrid Memories",
+   "url": "https://arxiv.org/abs/2606.12556",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-dc",
+   "layer": "infra",
+   "title": "Eidola: Modeling Multi-GPU Network Communication Traffic in Distributed AI Workloads",
+   "url": "https://arxiv.org/abs/2606.12638",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-dc",
+   "layer": "infra",
+   "title": "On the Limits of Performance Portability in Directive-Based GPU Programming",
+   "url": "https://arxiv.org/abs/2606.12753",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-dc",
+   "layer": "infra",
+   "title": "SemanticXR: Low Power and Real-time Queryable Semantic Mapping with an Object-Level Device-Cloud Architecture",
+   "url": "https://arxiv.org/abs/2606.12849",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-dc",
+   "layer": "infra",
+   "title": "High-Order Spectral Element Methods for Wave Propagation on ARM Multicore CPU with SME: Optimizations and Implications",
+   "url": "https://arxiv.org/abs/2606.12850",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-dc",
+   "layer": "infra",
+   "title": "Maestro: Workload-Aware Cross-Cluster Scheduling for LLM-Based Multi-Agent Systems",
+   "url": "https://arxiv.org/abs/2606.12950",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-dc",
+   "layer": "infra",
+   "title": "JiRAIYA: A Reputation-Based Hierarchical Federated Learning Framework on Web3",
+   "url": "https://arxiv.org/abs/2606.13180",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-dc",
+   "layer": "infra",
+   "title": "Dynamic Resource Management in Production HPC Clusters",
+   "url": "https://arxiv.org/abs/2606.13266",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-dc",
+   "layer": "infra",
+   "title": "Skiplists with Foresight: Skipping Cache Misses",
+   "url": "https://arxiv.org/abs/2606.13321",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-dc",
+   "layer": "infra",
+   "title": "Work Stealing for the 2D-Mesh Topology of Satellite Constellations in Low Earth Orbit",
+   "url": "https://arxiv.org/abs/2606.13329",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-dc",
+   "layer": "infra",
+   "title": "Temporal Conductance and Bounds on the Voter Model for Dynamic Networks",
+   "url": "https://arxiv.org/abs/2606.13374",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-dc",
+   "layer": "infra",
+   "title": "GF-DiT: Scheduling Parallelism for Diffusion Transformer Serving",
+   "url": "https://arxiv.org/abs/2606.13501",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-dc",
+   "layer": "infra",
+   "title": "Finding Conservation Laws of Large Dynamical Systems with Tasks and Futures: A Case Study in Utilizing Dynamic Data Dependencies",
+   "url": "https://arxiv.org/abs/2606.13623",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cr",
+   "layer": "safety",
+   "title": "Influence Factors on RAG Poisoning",
+   "url": "https://arxiv.org/abs/2606.12469",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cr",
+   "layer": "safety",
+   "title": "From Parameters to Feature Space: Task Arithmetic for Backdoor Mitigation in Model Merging",
+   "url": "https://arxiv.org/abs/2606.12498",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cr",
+   "layer": "safety",
+   "title": "Beyond Attack Success Rate: Examining Trigger Leakage in Vision-Language Agentic Systems",
+   "url": "https://arxiv.org/abs/2606.12586",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cr",
+   "layer": "safety",
+   "title": "Amnesia: A Stealthy Replay Attack on Continual Learning Dreams",
+   "url": "https://arxiv.org/abs/2606.12655",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cr",
+   "layer": "safety",
+   "title": "CAPED: Context-Aware Privacy Exposure Defense for Mobile GUI Agents",
+   "url": "https://arxiv.org/abs/2606.12666",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cr",
+   "layer": "safety",
+   "title": "SMSR: Certified Defence Against Runtime Memory Poisoning in Persistent LLM Agent Systems",
+   "url": "https://arxiv.org/abs/2606.12703",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cr",
+   "layer": "safety",
+   "title": "PI-Hunter: Automated Red-Teaming for Exposing and Localizing Prompt Injections",
+   "url": "https://arxiv.org/abs/2606.12737",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cr",
+   "layer": "safety",
+   "title": "Semantic Identification of IoT Devices from Behavioral Primitives",
+   "url": "https://arxiv.org/abs/2606.12793",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cr",
+   "layer": "safety",
+   "title": "A Privacy-Preserving Framework Using Remote Data Science for Inter-Institutional Student Retention Prediction",
+   "url": "https://arxiv.org/abs/2606.12845",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cr",
+   "layer": "safety",
+   "title": "LNTest: A Testbed for Evaluating Bitcoin Lightning Network-Based Botnets",
+   "url": "https://arxiv.org/abs/2606.12887",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cr",
+   "layer": "safety",
+   "title": "MAStrike: Shapley-Guided Collusive Red-Teaming on Multi-Agent Systems",
+   "url": "https://arxiv.org/abs/2606.12918",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cr",
+   "layer": "safety",
+   "title": "ViPER: Vision-based Packing-Aware Encoder for Robust Malware Detection",
+   "url": "https://arxiv.org/abs/2606.12949",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cr",
+   "layer": "safety",
+   "title": "SoK: The Constant Time Model",
+   "url": "https://arxiv.org/abs/2606.13000",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cr",
+   "layer": "safety",
+   "title": "DIG: Oracle-Guided Directed Input Generation for One-Day Vulnerabilities",
+   "url": "https://arxiv.org/abs/2606.13037",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cr",
+   "layer": "safety",
+   "title": "The Emergence of Autonomous Penetration Capabilities in Large Language Model-Powered AI Systems",
+   "url": "https://arxiv.org/abs/2606.13079",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cr",
+   "layer": "safety",
+   "title": "The Invisible Ink of the Android Malware World: A Longitudinal Study on the Usage of Covert Communication Channels",
+   "url": "https://arxiv.org/abs/2606.13107",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cr",
+   "layer": "safety",
+   "title": "Who Pays the Price? Stakeholder-Centric Prompt Injection Benchmarking for Real-world Web Agents",
+   "url": "https://arxiv.org/abs/2606.13385",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cr",
+   "layer": "safety",
+   "title": "An Assessment Framework for Application-Level Cryptographic Agility",
+   "url": "https://arxiv.org/abs/2606.13425",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cr",
+   "layer": "safety",
+   "title": "Intent-Based Cryptographic API Design for Cryptographic Agility",
+   "url": "https://arxiv.org/abs/2606.13445",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cr",
+   "layer": "safety",
+   "title": "Differentially Private Hierarchical Heavy Hitters",
+   "url": "https://arxiv.org/abs/2606.13563",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cr",
+   "layer": "safety",
+   "title": "Beyond the IT Checklist: Engineering a Reasonable Standard of Care for Cyber Safety",
+   "url": "https://arxiv.org/abs/2606.13612",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "EDEN: A Large-Scale Corpus of Clinical Notes for Italian",
+   "url": "https://arxiv.org/abs/2606.12569",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "Helping Figures Tell their Story! Paper-Grounded Video Generation Explaining Complex Scientific Figures",
+   "url": "https://arxiv.org/abs/2606.12576",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "MARD: Mirror-Augmented Reasoning Distillation for Mechanism-Level Drug-Drug Interaction Prediction",
+   "url": "https://arxiv.org/abs/2606.12578",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "Constrained Semantic Decompression in LLMs through Persian Proverb-Conditioned Story Generation",
+   "url": "https://arxiv.org/abs/2606.12599",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "Shopping Reasoning Bench: An Expert-Authored Benchmark for Multi-Turn Conversational Shopping Assistants",
+   "url": "https://arxiv.org/abs/2606.12608",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "MentalMARBERT: Domain-Adaptive Pre-training and Two-Stage Fine-Tuning for Arabic Mental Health Disorders Detection",
+   "url": "https://arxiv.org/abs/2606.12649",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "Observable Patterns Are Not Explanations: A Causal-Geometric Analysis of Latent Reasoning Models",
+   "url": "https://arxiv.org/abs/2606.12689",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "AfriSUD: A Dependency Treebank Collection for Evaluating Models on African Languages",
+   "url": "https://arxiv.org/abs/2606.12708",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "Does AI Reviewer See the Full Picture? Attacking and Defending Multimodal Peer Review",
+   "url": "https://arxiv.org/abs/2606.12716",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "Agent-based models for the evolution of morphological alternation patterns",
+   "url": "https://arxiv.org/abs/2606.12748",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "LLMs Can Better Capture Human Judgments--With the Right Prompts",
+   "url": "https://arxiv.org/abs/2606.12754",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "Rigel: Reverse-Engineering the Metal 4.1 Tensor Compute Path on the Apple M4 Max GPU",
+   "url": "https://arxiv.org/abs/2606.12765",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "How Fine-Grained Should a RAG Benchmark Be? A Hierarchical Framework for Synthetic Question Generation",
+   "url": "https://arxiv.org/abs/2606.12789",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "GENIE: A Fine-Grained Measure for Novelty",
+   "url": "https://arxiv.org/abs/2606.12790",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "Detect, Remask, Repair: Diffusion Editing for Faithful Summarization of Evolving Contexts",
+   "url": "https://arxiv.org/abs/2606.12807",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "Localizing Anchoring Pathways in Language Models",
+   "url": "https://arxiv.org/abs/2606.12818",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "LoHoSearch: Benchmarking Long-Horizon Search Agents Beyond the Human Difficulty Ceiling",
+   "url": "https://arxiv.org/abs/2606.12837",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "Small LLMs for Biomedical Claim Verification: Cost-Effective Fine-Tuning, Structural Dataset Shortcuts, and Cross-Domain Generalization",
+   "url": "https://arxiv.org/abs/2606.12854",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "Direct Preference Optimization for Chatbot Fine-Tuning: An Empirical Study",
+   "url": "https://arxiv.org/abs/2606.12881",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "SafeLLM: Extraction as a Hallucination-Resistant Alternative to Rewriting in Safety-Critical Settings",
+   "url": "https://arxiv.org/abs/2606.12897",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "PRISM: Prosody-Integrated Multi-Agent Reasoning Framework for Empathetic Spoken Dialogue",
+   "url": "https://arxiv.org/abs/2606.12902",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "X-MADAM-RAG: Diagnosing and Handling Chinese-English Evidence Conflict in Retrieval-Augmented Generation",
+   "url": "https://arxiv.org/abs/2606.12903",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "SENTINEL: Failure-Driven Reinforcement Learning for Training Tool-Using Language Model Agents",
+   "url": "https://arxiv.org/abs/2606.12908",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "PiDA: Phonetically-Informed Data Augmentation for Robust Vietnamese Speech Translation",
+   "url": "https://arxiv.org/abs/2606.12911",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "Polar: A Benchmark for Evaluating Political Bias in LLMs",
+   "url": "https://arxiv.org/abs/2606.12922",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "Multi-Turn Reasoning When Context Arrives in Pieces: Scalable Sharding and Memory-Augmented RL",
+   "url": "https://arxiv.org/abs/2606.12941",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "SkillChain: Closing the Loop on Skill Evolution for Image-Based E-Commerce AI Assistants",
+   "url": "https://arxiv.org/abs/2606.12984",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "No Hidden Prompts Needed! You Can Game AI Peer Review with Presentation-Only Revisions",
+   "url": "https://arxiv.org/abs/2606.13044",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "sebis at CRF Filling 2026: A Two-Stage Local LLM Pipeline for Medical CRF Filling",
+   "url": "https://arxiv.org/abs/2606.13082",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "LEDGER: A Long-Context Benchmark of Corporate Annual Reports for Grounded Financial Retrieval and Extraction",
+   "url": "https://arxiv.org/abs/2606.13100",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "M\\\"OVE: A Holistic LLM Benchmark for the German Public Sector",
+   "url": "https://arxiv.org/abs/2606.13111",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "G-Long: Graph-Enhanced Memory Management for Efficient Long-Term Dialogue Agents",
+   "url": "https://arxiv.org/abs/2606.13115",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "EvoBrowseComp: Benchmarking Search Agents on Evolving Knowledge",
+   "url": "https://arxiv.org/abs/2606.13120",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "NaturalFlow: Reducing Disruptive Pauses for Natural Speech Flow in Simultaneous Speech-to-Speech Translation",
+   "url": "https://arxiv.org/abs/2606.13121",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "HyPE: Category-Aware Hypergraph Encoding with Persistent Edge Embeddings for Persona-Grounded Dialogue",
+   "url": "https://arxiv.org/abs/2606.13142",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "NTS-CoT: Mitigating Hallucinations in LLM-based News Timeline Summarization with Chain-of-Thought Reasoning",
+   "url": "https://arxiv.org/abs/2606.13171",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "MemRefine: LLM-Guided Compression for Long-Term Agent Memory",
+   "url": "https://arxiv.org/abs/2606.13177",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "LAUKIN: A Multi-jurisdictional Common Law Contract Dataset",
+   "url": "https://arxiv.org/abs/2606.13184",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "A Context-Aware Dataset for Stance Detection in Bioethical Controversies on Reddit",
+   "url": "https://arxiv.org/abs/2606.13187",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "SICI: A Semantic-Pragmatic Complexity Index Reveals Regime Shifts in LLM Stance Detection",
+   "url": "https://arxiv.org/abs/2606.13189",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "Layer-Resolved Optimal Transport for Hallucination Detection in NMT and Abstractive Summarization",
+   "url": "https://arxiv.org/abs/2606.13216",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "When Similar Means Different: Evaluating LLMs on Arabic--Hebrew Cognates",
+   "url": "https://arxiv.org/abs/2606.13218",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "PolyAlign: Conditional Human-Distribution Alignment",
+   "url": "https://arxiv.org/abs/2606.13227",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "Evaluating Pluralism in LLMs through Latent Perspectives",
+   "url": "https://arxiv.org/abs/2606.13254",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "RogueAI: A Reverse Turing Test for Detecting Licensed AI Deception in Dialogue",
+   "url": "https://arxiv.org/abs/2606.13310",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "SkillCAT: Contrastive Assessment and Topology-Aware Skill Self-Evolution for LLM Agents",
+   "url": "https://arxiv.org/abs/2606.13317",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "Low-Latency Real-Time Audio Game Commentary System via LLM-Based Parallel Text Generation",
+   "url": "https://arxiv.org/abs/2606.13322",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "IVIE: A Neuro-symbolic Approach to Incremental and Validated Generation of Interactive Fiction Worlds",
+   "url": "https://arxiv.org/abs/2606.13348",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "From Passive Generation to Investigation: A Proactive Scientific Peer Review Agent",
+   "url": "https://arxiv.org/abs/2606.13349",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "An End-to-End Hybrid Framework for Rumour Detection in Low-Resources Algerian Dialect",
+   "url": "https://arxiv.org/abs/2606.13411",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "S-GBT: Smooth Growth Bound Tensor for Certified Robustness Against Word Substitution Attacks in NLP",
+   "url": "https://arxiv.org/abs/2606.13439",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "Ontology Memory-Augmented ASR Correction for Long Text-Speech Interleaved Conversations",
+   "url": "https://arxiv.org/abs/2606.13464",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "Leveraging Audio-LLMs to Filter Speech-to-Speech Training Data",
+   "url": "https://arxiv.org/abs/2606.13507",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "When Does Mixing Help? Analyzing Query Embedding Interpolation in Multilingual Dense Retrieval",
+   "url": "https://arxiv.org/abs/2606.13537",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "ArogyaSutra: A Multi-Agent Framework for Multimodal Medical Reasoning in Indic Languages",
+   "url": "https://arxiv.org/abs/2606.13572",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "LabVLA: Grounding Vision-Language-Action Models in Scientific Laboratories",
+   "url": "https://arxiv.org/abs/2606.13578",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "One Polluted Page Is Enough: Evaluating Web Content Pollution in Generative Recommenders",
+   "url": "https://arxiv.org/abs/2606.13610",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "Beyond Uniform Tokens: Adaptive Compression for Time Series Language Models",
+   "url": "https://arxiv.org/abs/2606.13624",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "From Tokens to Faces: Investigating Discrete Speech Representations for 3D Facial Animation",
+   "url": "https://arxiv.org/abs/2606.13630",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "Operads for compositional reasoning in LLMs",
+   "url": "https://arxiv.org/abs/2606.13634",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "Recursive Agent Harnesses",
+   "url": "https://arxiv.org/abs/2606.13643",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "SkMTEB: Slovak Massive Text Embedding Benchmark and Model Adaptation",
+   "url": "https://arxiv.org/abs/2606.13647",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "Operadic consistency: a label-free signal for compositional reasoning failures in LLMs",
+   "url": "https://arxiv.org/abs/2606.13649",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "HyperTool: Beyond Step-Wise Tool Calls for Tool-Augmented Agents",
+   "url": "https://arxiv.org/abs/2606.13663",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "Influcoder: Distilling Decoders' Gradient Influence Rankings into an Encoder for Data Attribution",
+   "url": "https://arxiv.org/abs/2606.13668",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "Learning to Reason by Analogy via Retrieval-Augmented Reinforcement Fine-Tuning",
+   "url": "https://arxiv.org/abs/2606.13680",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-cl",
+   "layer": "model",
+   "title": "EvoArena: Tracking Memory Evolution for Robust LLM Agents in Dynamic Environments",
+   "url": "https://arxiv.org/abs/2606.13681",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Restless bandits with imperfect binary feedback: PCL-indexability analysis and computation",
+   "url": "https://arxiv.org/abs/2606.11192",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "To Intervene or Not: Guiding Inference-time Alignment with Probabilistic Model Blending",
+   "url": "https://arxiv.org/abs/2606.11201",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Dual-Stance Evaluation of Sycophancy: The Structure of Agreement and the Limits of Intervention",
+   "url": "https://arxiv.org/abs/2606.11205",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Few-Shot Resampling for Scalable Statistically-Sound Data Mining",
+   "url": "https://arxiv.org/abs/2606.11235",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "ProHiFlo: Hierarchical Flow Matching with Functional Guidance for De Novo Protein Generation",
+   "url": "https://arxiv.org/abs/2606.11243",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Physics-informed generative AI for semiconductor manufacturing: Enforcing hard physical constraints in generative models by construction",
+   "url": "https://arxiv.org/abs/2606.11247",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Mechanical Field Networks: Structured Neural Dynamics for Multivariate Systems",
+   "url": "https://arxiv.org/abs/2606.11251",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Bernstein-Schur Kernels: Random Features by Sketched Modulation and Radial Randomization",
+   "url": "https://arxiv.org/abs/2606.11255",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Loss Landscape Diagnosis for Gradient-Based Gray-Scott System Inversion: Disentangling the Roles of PINN Components",
+   "url": "https://arxiv.org/abs/2606.11258",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "PermDoRA -- Understanding Adapter Interference in Language Models: Limits of Parameter-Space Geometry",
+   "url": "https://arxiv.org/abs/2606.11262",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Seeing Before Colliding: Anticipatory Safe RL with Frozen Vision-Language Models",
+   "url": "https://arxiv.org/abs/2606.11266",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "A prior-free blind detection of information leakage from model predictions",
+   "url": "https://arxiv.org/abs/2606.11267",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "LakeFM: Toward a Foundation Model for Aquatic Ecosystems Using Irregular Multivariate Multi-depth Time Series Data",
+   "url": "https://arxiv.org/abs/2606.11268",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Quantifying Subliminal Behavioral Transfer Ratios in Language Model Distillation",
+   "url": "https://arxiv.org/abs/2606.11270",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Federated continual learning: A comprehensive survey on lifelong and privacy-preserving learning over distributed and non-stationary data",
+   "url": "https://arxiv.org/abs/2606.11272",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "RoVE: Rotary Value Embeddings Attention for Relative Position-dependent Value Pathways",
+   "url": "https://arxiv.org/abs/2606.11275",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Least-Action-Guided Diffusion for Physical Extrapolation",
+   "url": "https://arxiv.org/abs/2606.11277",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "FreeBridge: Variational Schr\\\"odinger Bridges for Cellular Transition Dynamics",
+   "url": "https://arxiv.org/abs/2606.11286",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "FlowBank: Query-Adaptive Agentic Workflows Optimization through Precompute-and-Reuse",
+   "url": "https://arxiv.org/abs/2606.11290",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Learning from almost nothing: How neural networks survive heavy input corruption",
+   "url": "https://arxiv.org/abs/2606.11319",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Energy-Conserved Neural Pipelines: Attenuating Error Propagation in Modular Neural Networks via Physical Conservation Constraints",
+   "url": "https://arxiv.org/abs/2606.11341",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "SwiftCTS: Fast Cross-Design Prediction and Pareto Optimization of Clock Tree Metrics via Few-Shot Calibration",
+   "url": "https://arxiv.org/abs/2606.11348",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "GLACIER: A Multimodal Student-Teacher Foundation Model for Molecular Property Prediction",
+   "url": "https://arxiv.org/abs/2606.11382",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Recursive Binding on a Budget: Subspace Carving in Order-p Tensor Memories",
+   "url": "https://arxiv.org/abs/2606.11391",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Risk Under Pressure: Compute-Aware Evaluation of Adversarial Robustness in Language Models",
+   "url": "https://arxiv.org/abs/2606.11409",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Signed Compression Progress on a Sealed Audit is Goodhart-Resistant",
+   "url": "https://arxiv.org/abs/2606.11417",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Mirror Descent Beyond Euclidean Stability: An Exponential Separation in Initialization Sensitivity",
+   "url": "https://arxiv.org/abs/2606.11431",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "LSTM-Based Detection of Structural Breaks in Property Insurance Loss Reserving: A Climate-Informed Approach",
+   "url": "https://arxiv.org/abs/2606.11463",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "CRUMB: Efficient Prior Fitted Network Inference via Distributionally Matched Context Batching",
+   "url": "https://arxiv.org/abs/2606.11473",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Mahalanobis-Guided Latent OOD Detection for Hybrid ES-DRL Control in Time-Varying Systems",
+   "url": "https://arxiv.org/abs/2606.11474",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Accurate and Resource-Efficient Federated Continual Learning",
+   "url": "https://arxiv.org/abs/2606.11480",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "OmniLoc: A Geometry-Aware Foundation Model for Anchor-Free UE Localization Across Diverse Indoor Environments",
+   "url": "https://arxiv.org/abs/2606.11490",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Probabilistic Contrastive Pretraining for Multi-task ADME Property Prediction",
+   "url": "https://arxiv.org/abs/2606.11508",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "SirenFNO: Efficient and Full Frequency Learning of Fourier Neural Operators",
+   "url": "https://arxiv.org/abs/2606.11518",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Counterexample Guided Learning in the Large using Reasoning Agents",
+   "url": "https://arxiv.org/abs/2606.11521",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "APEX: A Network-Native Time-Series Foundation Model for Forecasting and Anomaly Detection for Wireless Edge Operations",
+   "url": "https://arxiv.org/abs/2606.11553",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "GraphInfer-Bench: Benchmarking LLM's Inference Capability on Graphs",
+   "url": "https://arxiv.org/abs/2606.11562",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Range-Aware Bayesian Optimization for Discovering Diverse Designs within Target Property Windows",
+   "url": "https://arxiv.org/abs/2606.11574",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Beyond the Golden Teacher: Enhancing Graph Learning through LLM-GNN Co-teaching",
+   "url": "https://arxiv.org/abs/2606.11583",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Kuramoto Attention: Synchronizing Self-Attention on the Torus",
+   "url": "https://arxiv.org/abs/2606.11585",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Physics-Distilled Neural Network enabled by Large Language Models for Manufacturing Process-Property Predictive Modeling",
+   "url": "https://arxiv.org/abs/2606.11605",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Information-Theoretic Decomposition for Multimodal Interaction Learning",
+   "url": "https://arxiv.org/abs/2606.11614",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "DeMix: Debugging Training Data with Mixed Data Error Types by Investigating Influence Vectors",
+   "url": "https://arxiv.org/abs/2606.11616",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "TimeRouter: Efficient and Adaptive Routing of Time-Series Foundation Models",
+   "url": "https://arxiv.org/abs/2606.11625",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "When Context Returns: Toward Robust Internalization in On-Policy Distillation",
+   "url": "https://arxiv.org/abs/2606.11627",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "TAROT: Task-Adaptive Refinement of LLM-prior Graphs for Few-shot Tabular Learning",
+   "url": "https://arxiv.org/abs/2606.11640",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Tree-Structured Orthonormal Decomposition of the Aitchison Simplex",
+   "url": "https://arxiv.org/abs/2606.11646",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Structure-Preserving Neural Surrogates with Tractable Uncertainty Quantification",
+   "url": "https://arxiv.org/abs/2606.11650",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "DeepRHP: A Hybrid Variational Autoencoder for Designing Random Heteropolymers as Protein Mimics",
+   "url": "https://arxiv.org/abs/2606.11651",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "IAPO: Input Attribution-Aware Policy Optimization for Tool Use in Small Multimodal Agents",
+   "url": "https://arxiv.org/abs/2606.11652",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Sparse probes and murky physics: a case study of interpretability challenges in a foundation model for continuum dynamics",
+   "url": "https://arxiv.org/abs/2606.11657",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Bergson: An Open Source Library for Data Attribution",
+   "url": "https://arxiv.org/abs/2606.11660",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Spectrally Regularized Latent Flow Matching for Turbulence Generation",
+   "url": "https://arxiv.org/abs/2606.11691",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Noise-Aware Framework for Correcting Corrupted Labels",
+   "url": "https://arxiv.org/abs/2606.11695",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "A Data-Centric Framework for Detecting and Correcting Corrupted Labels",
+   "url": "https://arxiv.org/abs/2606.11699",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "RLCSD: Reinforcement Learning with Contrastive On-Policy Self-Distillation",
+   "url": "https://arxiv.org/abs/2606.11709",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Capacity-Constrained Online Convex Optimization with Delayed Feedback",
+   "url": "https://arxiv.org/abs/2606.11711",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "ICA Lens: Interpreting Language Models Without Training Another Dictionary",
+   "url": "https://arxiv.org/abs/2606.11722",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "RCAP: Robust, Class-Aware, Probabilistic Dynamic Dataset Pruning",
+   "url": "https://arxiv.org/abs/2606.11761",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Scalable Deep Learning Framework for Global High-Resolution Land Use Reconstruction",
+   "url": "https://arxiv.org/abs/2606.11793",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Multimodal Ordinal Modeling of Alzheimer's Disease Severity Using Structural MRI and Clinical Data",
+   "url": "https://arxiv.org/abs/2606.11794",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Space-sampled Value Decay: Forgetting Mechanisms for Non-stationary Deep Reinforcement Learning",
+   "url": "https://arxiv.org/abs/2606.11797",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "From Uniform to Learned Graph Priors: Diffusion for Structure Discovery",
+   "url": "https://arxiv.org/abs/2606.11831",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Flow Matching with In-Context Priors for Out-of-Distribution Brain Dynamics",
+   "url": "https://arxiv.org/abs/2606.11833",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "TaskFusion: Continual Anomaly Detection for Heterogeneous Tabular Data",
+   "url": "https://arxiv.org/abs/2606.11844",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Fine-tuning Multi-modal LLMs with ART: Art-based Reinforcement Training",
+   "url": "https://arxiv.org/abs/2606.11854",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "RePAIR: Predictive Self-Supervised Representation Learning in Chess",
+   "url": "https://arxiv.org/abs/2606.11860",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "MemNovo: Look Back at the Spectrum for Balanced De Novo Peptide Sequencing from Mass Spectrometry",
+   "url": "https://arxiv.org/abs/2606.11868",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Beyond representational alignment with brain-guided language models for robust reasoning",
+   "url": "https://arxiv.org/abs/2606.11893",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Online Shift Detection and Conformal Adaptation for Deployed Safety Classifiers",
+   "url": "https://arxiv.org/abs/2606.11949",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Categorical Prior Lock-in: Why In-Context Learning Fails for Structured Data",
+   "url": "https://arxiv.org/abs/2606.11961",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "HAMNO: A Hierarchical Adaptive Multi-scale Neural Operator with Physics-Informed Learning for Dynamical Systems",
+   "url": "https://arxiv.org/abs/2606.11963",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Efficient Multinomial Logistic Bandit via Frequent Directions",
+   "url": "https://arxiv.org/abs/2606.11968",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "PAWS: Preference Learning with Advantage-Weighted Segments",
+   "url": "https://arxiv.org/abs/2606.11982",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "What Uncertainties Do We Need for Dynamical Systems?",
+   "url": "https://arxiv.org/abs/2606.11988",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Time-Series Foundation Model Embeddings for Remaining Useful Life Estimation",
+   "url": "https://arxiv.org/abs/2606.11990",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Bootstrapped Monitoring: Leveraging Transparent Reasoning to Oversee Stronger AI Agents",
+   "url": "https://arxiv.org/abs/2606.11998",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Tabular Foundation Models for Clinical Survival Analysis via Survival-Aware Adaptation",
+   "url": "https://arxiv.org/abs/2606.12006",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Generalization Hacking: Models Can Game Reinforcement Learning by Preventing Behavioral Generalization",
+   "url": "https://arxiv.org/abs/2606.12016",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-lg",
+   "layer": "post-training",
+   "title": "Reliable Error Estimation for PINNs: Lower and Upper A Posteriori Bounds",
+   "url": "https://arxiv.org/abs/2606.12050",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "ToolSense: A Diagnostic Framework for Auditing Parametric Tool Knowledge in LLMs",
+   "url": "https://arxiv.org/abs/2606.12451",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Arbor: Tree Search as a Cognition Layer for Autonomous Agents",
+   "url": "https://arxiv.org/abs/2606.12563",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Strategic Decision Support for AI Agents",
+   "url": "https://arxiv.org/abs/2606.12587",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Pythagoras-Prover: Advancing Efficient Formal Proving via Augmented Lean Formalisation",
+   "url": "https://arxiv.org/abs/2606.12594",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "PersonaDrive: Human-Style Retrieval-Augmented VLA Agents for Closed-Loop Driving Simulation",
+   "url": "https://arxiv.org/abs/2606.12616",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "\"Did you lie?\" Evaluating Lie Detectors across Model Scale and Belief-Verified Model Organisms",
+   "url": "https://arxiv.org/abs/2606.12618",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "TrajGenAgent: A Hierarchical LLM Agent for Human Mobility Trajectory Generation",
+   "url": "https://arxiv.org/abs/2606.12657",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Evoflux: Inference-Time Evolution of Executable Tool Workflows for Compact Agents",
+   "url": "https://arxiv.org/abs/2606.12674",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "From AGI to ASI",
+   "url": "https://arxiv.org/abs/2606.12683",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Deployment-Centered Evaluation: Predicting Query-Level Rejection Risk in a Clinical LLM System",
+   "url": "https://arxiv.org/abs/2606.12702",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Definitional alignment before capability alignment: a Design-Science framework for adjudicating claims about AGI",
+   "url": "https://arxiv.org/abs/2606.12713",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "The Theory of Mind Utility: Formal Specification of a Mentalizing Mechanism",
+   "url": "https://arxiv.org/abs/2606.12721",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Rethinking Psychometric Evaluation of LLMs: When and Why Self-Reports Predict Behavior",
+   "url": "https://arxiv.org/abs/2606.12730",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Benchmarking AI Agents for Addressing Scientific Challenges Across Scales",
+   "url": "https://arxiv.org/abs/2606.12736",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Reducing the Complexity of Deep Learning Models for EEG Analysis on Wearable Devices",
+   "url": "https://arxiv.org/abs/2606.12742",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Prefill Awareness in Large Language Models",
+   "url": "https://arxiv.org/abs/2606.12747",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Constructing Evaluation Datasets for Procedural Reasoning: Balancing Naturalness, Grounding, and Multi-Hop Coverage",
+   "url": "https://arxiv.org/abs/2606.12767",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "A Tutorial on World Models and Physical AI",
+   "url": "https://arxiv.org/abs/2606.12783",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "The Containment Gap: How Deployed Agentic AI Frameworks Fail Public-Facing Safety Requirements",
+   "url": "https://arxiv.org/abs/2606.12797",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "MLUBench: A Benchmark for Lifelong Unlearning Evaluation in MLLMs",
+   "url": "https://arxiv.org/abs/2606.12809",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Teach-and-Repeat: Accurately Extracting Operational Knowledge from Mobile Screen Demonstrations to Empower GUI Agents",
+   "url": "https://arxiv.org/abs/2606.12817",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "GeoNatureAgent Benchmark: Benchmarking LLM Agents for Environmental Geospatial Analysis Across Frontier and Open-Weight Foundation Models",
+   "url": "https://arxiv.org/abs/2606.12821",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Topical Phase Transitions in Artificial Intelligence Research: Large-Scale Evidence and an Early-Warning Signature for Emerging Topics",
+   "url": "https://arxiv.org/abs/2606.12828",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Fantastic Scientific Agents and How to Build Them: AgentBuild for Rietveld Refinement",
+   "url": "https://arxiv.org/abs/2606.12834",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "(Human) Attention Is (Still) All You Need: Human oversight makes AI-assisted social science reliable",
+   "url": "https://arxiv.org/abs/2606.12848",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "WISE: A Long-Horizon Agent in Minecraft with Why-Which Reasoning",
+   "url": "https://arxiv.org/abs/2606.12852",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "DailyReport: An Open-ended Benchmark for Evaluating Search Agents on Daily Search Tasks",
+   "url": "https://arxiv.org/abs/2606.12871",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "HarnessBridge: Learnable Bidirectional Controller for LLM Agent Harness",
+   "url": "https://arxiv.org/abs/2606.12882",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "The Hidden Power of Scaling Factor in LoRA Optimization",
+   "url": "https://arxiv.org/abs/2606.12883",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Zero-source LLM Hallucination Detection with Human-like Criteria Probing",
+   "url": "https://arxiv.org/abs/2606.12900",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "MDForge: Agentic Molecular Dynamics Pipeline Design under Sparse Simulator Feedback",
+   "url": "https://arxiv.org/abs/2606.12916",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Iterating Toward Better Search: A Two-Agent Simulation Framework for Evaluating Agentic Search Architectures in E-Commerce",
+   "url": "https://arxiv.org/abs/2606.12924",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "MARS: Margin-Adversarial Risk-controlled Stopping for Parallel LLM Test-time Scaling",
+   "url": "https://arxiv.org/abs/2606.12935",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "PRISMR: Overcoming Parse Collapse in Multimodal Listwise Ranking via Parameterized Representation Internalization",
+   "url": "https://arxiv.org/abs/2606.12942",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Learning What to Remember: A Cognitively Grounded Multi-Factor Value Model for Agentic Memory",
+   "url": "https://arxiv.org/abs/2606.12945",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "OpenMedQ: Broad Open Pretraining for Medical Vision-Language Models",
+   "url": "https://arxiv.org/abs/2606.12953",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Multi-Modal Agents for Power Distribution Defect Detection: An Evaluation of Foundation Models",
+   "url": "https://arxiv.org/abs/2606.12969",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "A Mathematical Forum Platform for Collaborative Problem Solving and Dataset Generation for AI Reasoning",
+   "url": "https://arxiv.org/abs/2606.12976",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Structured Testbench Generation for LLM-Driven HDL Design and Verification-Oriented Data Curation",
+   "url": "https://arxiv.org/abs/2606.12983",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "APCyc: Property-Informed Design of Cyclic Peptides via Automated Cyclization",
+   "url": "https://arxiv.org/abs/2606.12991",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "The Illusion of Multi-Agent Advantage",
+   "url": "https://arxiv.org/abs/2606.13003",
+   "selected": true
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Otters++: A Time-to-first-spike Based Energy Efficient Optical Spiking Transformer",
+   "url": "https://arxiv.org/abs/2606.13016",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "SciR: A Controllable Benchmark for Scientific Reasoning in LLMs",
+   "url": "https://arxiv.org/abs/2606.13020",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Nous: An Attempt to Extract and Inject the Cognition Behind Prediction-Market Behavior",
+   "url": "https://arxiv.org/abs/2606.13038",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Augmentation techniques for video surveillance in the visible and thermal spectral range",
+   "url": "https://arxiv.org/abs/2606.13042",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "AAbAAC: An Annotated Corpus for Autoimmunity Information Extraction",
+   "url": "https://arxiv.org/abs/2606.13051",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Rethinking RAG in Long Videos: What to Retrieve and How to Use It?",
+   "url": "https://arxiv.org/abs/2606.13141",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "TerraBench: Can Agents Reason Over Heterogeneous Earth-System Data?",
+   "url": "https://arxiv.org/abs/2606.13148",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Mental-R1: Aligning LLM Reasoning for Mental Health Assessment",
+   "url": "https://arxiv.org/abs/2606.13176",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Reasoning for Mobile User Experience with Multimodal LLMs: Task, Benchmark, and Approach",
+   "url": "https://arxiv.org/abs/2606.13192",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Under What Conditions Can a Machine Become Genuinely Creative?",
+   "url": "https://arxiv.org/abs/2606.13196",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "ARMOR-MAD: Adaptive Routing for Heterogeneous Multi-Agent Debate in Large Language Model Reasoning",
+   "url": "https://arxiv.org/abs/2606.13197",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "A Minimal Model of Bounded Trade-Off Screening in Multi-Attribute Choice",
+   "url": "https://arxiv.org/abs/2606.13201",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Hallucination in Medical Imaging AI: A Cross-Modality Analytical Framework for Taxonomy, Detection, and Mitigation under Regulatory Constraints",
+   "url": "https://arxiv.org/abs/2606.13211",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "LLM-as-an-Investigator: Evidence-First Reasoning for Robust Interactive Problem Diagnosis",
+   "url": "https://arxiv.org/abs/2606.13220",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Brick: Spatial Capability Routing for the Mixture-of-Models (MoM) Paradigm",
+   "url": "https://arxiv.org/abs/2606.13241",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "EPIG: Emotion-Based Prompting for Personalised Image Generation",
+   "url": "https://arxiv.org/abs/2606.13247",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Multi-Field Hybrid Retrieval-Augmented Generation for Maritime Accident Root Cause Analysis",
+   "url": "https://arxiv.org/abs/2606.13249",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "MOSAIC: Modality-Specific Adaptation for Incremental Continual Learning in Parkinson's Disease Gait Assessment",
+   "url": "https://arxiv.org/abs/2606.13258",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "From Verdict to Process: Agentic Reinforcement Learning for Multi-Stage Fact Verification",
+   "url": "https://arxiv.org/abs/2606.13262",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "ERTS: Adversarial Robustness Testing of Ethical AI via Semantic Perturbation in a Bounded Consequence Space",
+   "url": "https://arxiv.org/abs/2606.13282",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Physics-Guided Spatiotemporal Learning for Coastal Wave Peak Period Estimation from Video",
+   "url": "https://arxiv.org/abs/2606.13302",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "ReSum: Synergizing LLM Reasoning and Summarization with Reinforcement Learning",
+   "url": "https://arxiv.org/abs/2606.13316",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Can I Buy Your KV Cache?",
+   "url": "https://arxiv.org/abs/2606.13361",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "IterCAD: An Iterative Multimodal Agent for Visually-Grounded CAD Generation and Editing",
+   "url": "https://arxiv.org/abs/2606.13368",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "A Quantitative Experimental Repeated Measures Study of Training Dynamics in a Small Llama Style Language Model Under a Compute-Aware Token Budget",
+   "url": "https://arxiv.org/abs/2606.13370",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "MiniMax Sparse Attention",
+   "url": "https://arxiv.org/abs/2606.13392",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Neuro-Symbolic Agents for Regulated Process Automation: Challenges and Research Agenda",
+   "url": "https://arxiv.org/abs/2606.13405",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Optimizing Appliance Scheduling for Solar Energy Management Using Metaheuristic Algorithms",
+   "url": "https://arxiv.org/abs/2606.13407",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Evaluation Sovereignty in Metadata-Driven Classification: A Multi-Track Framework for Weakly Supervised Information Systems",
+   "url": "https://arxiv.org/abs/2606.13436",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Why Sampling Is Not Choosing: Intentionality, Agency, and Moral Responsibility in Large Language Models",
+   "url": "https://arxiv.org/abs/2606.13441",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "CloudCons: A Comprehensive End-to-End Benchmark for Cloud Resource Consolidation",
+   "url": "https://arxiv.org/abs/2606.13513",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Uncertainty-Aware Hybrid Retrieval for Long-Document RAG",
+   "url": "https://arxiv.org/abs/2606.13550",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Is It You or Your Environment? A Bayesian Inference Framework for Genomically-Anchored Personalized Physiological Interpretation",
+   "url": "https://arxiv.org/abs/2606.13556",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "A Three-Layer Framework for AI in Scientific Discovery",
+   "url": "https://arxiv.org/abs/2606.13566",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Multiagent Protocols with Aggregated Confidence Signals",
+   "url": "https://arxiv.org/abs/2606.13591",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Reward Modeling for Multi-Agent Orchestration",
+   "url": "https://arxiv.org/abs/2606.13598",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "EpiBench: Verifiable Evaluation of AI Agents on Epigenomics Analysis",
+   "url": "https://arxiv.org/abs/2606.13602",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Multi-Agent Reinforcement Learning from Delayed Marketplace Feedback for Objective-Weight Adaptation in Three-Sided Dispatch",
+   "url": "https://arxiv.org/abs/2606.13604",
+   "selected": false
+  },
+  {
+   "source": "arxiv-cs-ai",
+   "layer": "agent",
+   "title": "Reasoning as Pattern Matching: Shared Mechanisms in Human and LLM Everyday Reasoning",
+   "url": "https://arxiv.org/abs/2606.13607",
+   "selected": false
+  },
+  {
+   "source": "techcrunch-ai",
+   "layer": "business",
+   "title": "Theker just raised $85M to build the factory robot that doesn’t specialize in anything",
+   "url": "https://techcrunch.com/2026/06/11/theker-just-raised-85m-to-build-the-factory-robot-that-doesnt-specialize-in-anything/",
+   "selected": false
+  },
+  {
+   "source": "claude-code-releases",
+   "layer": "devtool",
+   "title": "v2.1.174",
+   "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.174",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "product",
+   "title": "Claude Fable is relentlessly proactive",
+   "url": "https://simonwillison.net/2026/Jun/11/fable-is-relentlessly-proactive/",
+   "selected": false
+  },
+  {
+   "source": "techcrunch-ai",
+   "layer": "business",
+   "title": "Jeff Bezos’s Prometheus raises $12B to build an ‘artificial general engineer’ for the physical world",
+   "url": "https://techcrunch.com/2026/06/11/jeff-bezoss-prometheus-raises-12b-to-build-an-artificial-general-engineer-for-the-physical-world/",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "product",
+   "title": "Removing 'um' from a recording is harder than it sounds",
+   "url": "https://doug.sh/posts/erm-a-local-cli-that-strips-ums-uhs-and-erms-from-speech/",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "product",
+   "title": "Nobody ever gets credit for fixing problems that never happened (2001) [pdf]",
+   "url": "https://web.mit.edu/nelsonr/www/Repenning=Sterman_CMR_su01_.pdf",
+   "selected": false
+  },
+  {
+   "source": "gh-ollama",
+   "layer": "serving",
+   "title": "v0.30.8",
+   "url": "https://github.com/ollama/ollama/releases/tag/v0.30.8",
+   "selected": false
+  },
+  {
+   "source": "gh-ollama",
+   "layer": "serving",
+   "title": "v0.30.8-rc0",
+   "url": "https://github.com/ollama/ollama/releases/tag/v0.30.8-rc0",
+   "selected": false
+  },
+  {
+   "source": "openai-news",
+   "layer": "model",
+   "title": "How Preply combines AI and human tutors to personalize learning",
+   "url": "https://openai.com/index/preply",
+   "selected": false
+  },
+  {
+   "source": "simonwillison",
+   "layer": "devtool",
+   "title": "Claude Fable is relentlessly proactive",
+   "url": "https://simonwillison.net/2026/Jun/11/fable-is-relentlessly-proactive/#atom-everything",
+   "selected": false
+  },
+  {
+   "source": "gh-vllm",
+   "layer": "serving",
+   "title": "v0.23.0: [Docker] Fix CUTLASS DSL cu13 install order in Dockerfile (#45204)",
+   "url": "https://github.com/vllm-project/vllm/releases/tag/v0.23.0",
+   "selected": false
+  },
+  {
+   "source": "gh-vllm",
+   "layer": "serving",
+   "title": "v0.23.0rc2: [Docker] Fix CUTLASS DSL cu13 install order in Dockerfile (#45204)",
+   "url": "https://github.com/vllm-project/vllm/releases/tag/v0.23.0rc2",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "product",
+   "title": "If you are asking for human attention, demonstrate human effort",
+   "url": "https://tombedor.dev/human-attention-and-human-effort/",
+   "selected": false
+  },
+  {
+   "source": "gh-trl",
+   "layer": "post-training",
+   "title": "v1.6.0",
+   "url": "https://github.com/huggingface/trl/releases/tag/v1.6.0",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "product",
+   "title": "Show HN: FablePool – pool money behind a prompt, and Fable builds it in public",
+   "url": "https://fablepool.com",
+   "selected": false
+  },
+  {
+   "source": "techcrunch-ai",
+   "layer": "business",
+   "title": "SpaceX officially prices shares at $135 in the largest IPO ever",
+   "url": "https://techcrunch.com/2026/06/11/spacex-officially-prices-shares-at-135-in-the-largest-ipo-ever/",
+   "selected": false
+  },
+  {
+   "source": "techcrunch-ai",
+   "layer": "business",
+   "title": "SpaceX SPV investors won’t know their true holdings until post-IPO lock-ups lift",
+   "url": "https://techcrunch.com/2026/06/11/spacex-spv-investors-wont-know-their-true-holdings-until-post-ipo-lock-ups-lift/",
+   "selected": false
+  },
+  {
+   "source": "nvidia-dev-blog",
+   "layer": "infra",
+   "title": "One-Click Multi-Tenant Security with NVIDIA Quantum InfiniBand",
+   "url": "https://developer.nvidia.com/blog/one-click-multi-tenant-security-with-nvidia-quantum-infiniband/",
+   "selected": false
+  },
+  {
+   "source": "mcp-registry",
+   "layer": "agent",
+   "title": "MCP registry: ai.duvera/gateway — Governed AI actions with signed, verifiable receipts: free keyless reads, human-approved writes.",
+   "url": "https://registry.modelcontextprotocol.io/",
+   "selected": false
+  },
+  {
+   "source": "techcrunch-ai",
+   "layer": "business",
+   "title": "Deezer’s new tool can identify AI music from Spotify, Apple Music, and others",
+   "url": "https://techcrunch.com/2026/06/11/deezers-new-tool-can-identify-ai-music-from-spotify-apple-music-and-others/",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "product",
+   "title": "Software is made between commits",
+   "url": "https://zed.dev/blog/introducing-deltadb",
+   "selected": true
+  },
+  {
+   "source": "mcp-registry",
+   "layer": "agent",
+   "title": "MCP registry: ai.ankimcp/anki-mcp-server-addon — Anki addon that exposes your flashcard collection to AI assistants via a local MCP server.",
+   "url": "https://github.com/ankimcp/anki-mcp-server-addon",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "product",
+   "title": "Claude Fable 5: mid-tier results on coding tasks",
+   "url": "https://www.endorlabs.com/learn/claude-fable-5-mythos-grade-hype",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "product",
+   "title": "Petition to Withdraw Canada's Bill C-22",
+   "url": "https://www.ourcommons.ca/petitions/en/Petition/Sign/e-7416",
+   "selected": false
+  },
+  {
+   "source": "techcrunch-ai",
+   "layer": "business",
+   "title": "Pool’s new app turns your screenshots into something useful",
+   "url": "https://techcrunch.com/2026/06/11/pools-new-app-turns-your-screenshots-into-a-searchable-memory-bank/",
+   "selected": false
+  },
+  {
+   "source": "simonwillison",
+   "layer": "devtool",
+   "title": "datasette 1.0a33",
+   "url": "https://simonwillison.net/2026/Jun/11/datasette/#atom-everything",
+   "selected": false
+  },
+  {
+   "source": "semianalysis",
+   "layer": "infra",
+   "title": "Intel Should Raise Capital",
+   "url": "https://newsletter.semianalysis.com/p/intel-should-raise-capital",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "product",
+   "title": "MiMo Code is now released and open-source",
+   "url": "https://mimo.xiaomi.com/mimocode",
+   "selected": false
+  },
+  {
+   "source": "techcrunch-ai",
+   "layer": "business",
+   "title": "DoorDash’s new AI chatbot lets you order with prompts and photos",
+   "url": "https://techcrunch.com/2026/06/11/doordashs-new-ai-chatbot-lets-you-order-with-prompts-and-photos/",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "product",
+   "title": "Show HN: Homebrew 6.0.0",
+   "url": "https://brew.sh/2026/06/11/homebrew-6.0.0/",
+   "selected": false
+  },
+  {
+   "source": "nvidia-blog",
+   "layer": "infra",
+   "title": "Save Big and Play Bigger: GeForce NOW Summer Sale Brings Major Membership Savings",
+   "url": "https://blogs.nvidia.com/blog/geforce-now-thursday-summer-sale-2026/",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "product",
+   "title": "Lines of code got a better publicist",
+   "url": "https://curlewis.co.nz/posts/lines-of-code-got-a-better-publicist/",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "product",
+   "title": "Anthropic apologizes for invisible Claude Fable guardrails",
+   "url": "https://www.theverge.com/ai-artificial-intelligence/948280/anthropic-claude-fable-invisible-distillation-guardrail",
+   "selected": false
+  },
+  {
+   "source": "mcp-registry",
+   "layer": "agent",
+   "title": "MCP registry: ai.aient/mcp — MCP-native AI SRE: ask what's broken in production, get a reviewed GitHub fix PR.",
+   "url": "https://github.com/haf/glimt",
+   "selected": false
+  },
+  {
+   "source": "alignment-forum",
+   "layer": "safety",
+   "title": "Models May Behave Worse When Eval Aware",
+   "url": "https://www.alignmentforum.org/posts/aTcsN5ZZDnMFJvRiG/models-may-behave-worse-when-eval-aware",
+   "selected": true
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "product",
+   "title": "Making a vintage LLM from scratch",
+   "url": "https://crlf.link/log/entries/260525-1/",
+   "selected": false
+  },
+  {
+   "source": "gh-sglang",
+   "layer": "serving",
+   "title": "v0.5.13",
+   "url": "https://github.com/sgl-project/sglang/releases/tag/v0.5.13",
+   "selected": false
+  },
+  {
+   "source": "mcp-registry",
+   "layer": "agent",
+   "title": "MCP registry: ai.intuitek.the-stall/the-stall — 211 pay-per-call AI tools + risk retainer plans ($8/$25): stocks, crypto, GEX, news. USDC.",
+   "url": "https://registry.modelcontextprotocol.io/",
+   "selected": false
+  },
+  {
+   "source": "hf-trending-models",
+   "layer": "model",
+   "title": "moonshotai/Kimi-K2.7-Code",
+   "url": "https://huggingface.co/moonshotai/Kimi-K2.7-Code",
+   "selected": true
+  },
+  {
+   "source": "mcp-registry",
+   "layer": "agent",
+   "title": "MCP registry: ai.intuitek.the-stall/the-stall — 209 pay-per-call AI tools: stocks, crypto/DeFi, GEX, Solana memes, weather, news. USDC.",
+   "url": "https://registry.modelcontextprotocol.io/",
+   "selected": false
+  },
+  {
+   "source": "mcp-registry",
+   "layer": "agent",
+   "title": "MCP registry: ai.getthroughline/throughline — A persistent AI self you own — memory, persona, judgment — portable across all your AI hosts.",
+   "url": "https://registry.modelcontextprotocol.io/",
+   "selected": false
+  },
+  {
+   "source": "simonwillison",
+   "layer": "devtool",
+   "title": "asyncinject 0.7",
+   "url": "https://simonwillison.net/2026/Jun/11/asyncinject/#atom-everything",
+   "selected": false
+  },
+  {
+   "source": "claude-code-releases",
+   "layer": "devtool",
+   "title": "v2.1.173",
+   "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.173",
+   "selected": false
+  },
+  {
+   "source": "techcrunch-ai",
+   "layer": "business",
+   "title": "Opendoor’s India exit is fueling a bigger conversation about AI and outsourcing",
+   "url": "https://techcrunch.com/2026/06/10/opendoors-india-exit-is-fueling-a-bigger-conversation-about-ai-and-outsourcing/",
+   "selected": false
+  },
+  {
+   "source": "techcrunch-ai",
+   "layer": "business",
+   "title": "Anthropic’s Dario Amodei has just one direct report",
+   "url": "https://techcrunch.com/2026/06/10/anthropics-dario-amodei-has-just-one-direct-report/",
+   "selected": false
+  },
+  {
+   "source": "simonwillison",
+   "layer": "devtool",
+   "title": "Anthropic Walks Back Policy That Could Have ‘Sabotaged’ AI Researchers Using Claude",
+   "url": "https://simonwillison.net/2026/Jun/11/anthropic-walks-back-policy/#atom-everything",
+   "selected": false
+  },
+  {
+   "source": "latent-space",
+   "layer": "agent",
+   "title": "[AINews] Open Models, Model Labs vs Agent Labs, and What's Untrainable — Sarah Guo",
+   "url": "https://www.latent.space/p/ainews-open-models-model-labs-vs",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "devtool",
+   "title": "apple/container — A tool for creating and running Linux containers using lightweight virtual machines on a Mac. It is written in Swift, and optimized for Apple silicon.",
+   "url": "https://github.com/apple/container",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "devtool",
+   "title": "chopratejas/headroom — Compress tool outputs, logs, files, and RAG chunks before they reach the LLM. 60-95% fewer tokens, same answers. Library, proxy, MCP server.",
+   "url": "https://github.com/chopratejas/headroom",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "devtool",
+   "title": "kenn-io/agentsview — Local-first session intelligence and analytics for coding agents, supporting Claude Code, Codex, and more than 20 other agents. Also: 100x faster replacement for ccusage!",
+   "url": "https://github.com/kenn-io/agentsview",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "devtool",
+   "title": "Leonxlnx/taste-skill — Taste-Skill (High-Agency Frontend) - gives your AI good taste. stops the AI from generating boring, generic, \"slop\"",
+   "url": "https://github.com/Leonxlnx/taste-skill",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "devtool",
+   "title": "colbymchenry/codegraph — Pre-indexed code knowledge graph for Claude Code, Codex, Gemini, Cursor, OpenCode, AntiGravity, Kiro, and Hermes Agent — fewer tokens, fewer tool calls, 100% local",
+   "url": "https://github.com/colbymchenry/codegraph",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "devtool",
+   "title": "Lum1104/Understand-Anything — Graphs that teach > graphs that impress. Turn any code into an interactive knowledge graph you can explore, search, and ask questions about. Works with Claude Code, Codex, Cursor, Copilot, Gemini CLI, and more.",
+   "url": "https://github.com/Lum1104/Understand-Anything",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "devtool",
+   "title": "maziyarpanahi/openmed — open-source healthcare ai",
+   "url": "https://github.com/maziyarpanahi/openmed",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "devtool",
+   "title": "hugohe3/ppt-master — AI generates a real, editable PowerPoint from any document — native shapes & animations, speaker notes voiced as audio narration, and the option to follow your own .pptx template, not slide images · by Hugo He",
+   "url": "https://github.com/hugohe3/ppt-master",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "devtool",
+   "title": "mvanhorn/last30days-skill — AI agent skill that researches any topic across Reddit, X, YouTube, HN, Polymarket, and the web - then synthesizes a grounded summary",
+   "url": "https://github.com/mvanhorn/last30days-skill",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "devtool",
+   "title": "rtk-ai/rtk — CLI proxy that reduces LLM token consumption by 60-90% on common dev commands. Single Rust binary, zero dependencies",
+   "url": "https://github.com/rtk-ai/rtk",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "devtool",
+   "title": "refactoringhq/tolaria — Desktop app to manage markdown knowledge bases",
+   "url": "https://github.com/refactoringhq/tolaria",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "devtool",
+   "title": "rohitg00/ai-engineering-from-scratch — Learn it. Build it. Ship it for others.",
+   "url": "https://github.com/rohitg00/ai-engineering-from-scratch",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "devtool",
+   "title": "Wei-Shaw/sub2api — Sub2API-CRS2 一站式开源中转服务，让 Claude、Openai 、Gemini、Antigravity订阅统一接入，支持拼车共享，更高效分摊成本，原生工具无缝使用。",
+   "url": "https://github.com/Wei-Shaw/sub2api",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "devtool",
+   "title": "alchaincyf/zhangxuefeng-skill — 张雪峰.skill — 张雪峰的认知操作系统。高考志愿/考研/职业规划的实战思维框架。由女娲.skill生成。",
+   "url": "https://github.com/alchaincyf/zhangxuefeng-skill",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "devtool",
+   "title": "Agents365-ai/drawio-skill — Generate draw.io diagrams from natural language with 6 presets and a 2-round self-check loop. Exports to PNG/SVG/PDF/JPG.",
+   "url": "https://github.com/Agents365-ai/drawio-skill",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "devtool",
+   "title": "steipete/agent-scripts — Scripts for agents, shared between my repositories.",
+   "url": "https://github.com/steipete/agent-scripts",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "devtool",
+   "title": "luongnv89/claude-howto — A visual, example-driven guide to Claude Code — from basic concepts to advanced agents, with copy-paste templates that bring immediate value.",
+   "url": "https://github.com/luongnv89/claude-howto",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "devtool",
+   "title": "masterking32/MasterDnsVPN — Advanced DNS tunneling VPN for censorship bypass, optimized beyond DNSTT and SlipStream with low-overhead ARQ, resolver load balancing, high packet-loss stability and speed.",
+   "url": "https://github.com/masterking32/MasterDnsVPN",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "devtool",
+   "title": "mindfold-ai/Trellis — The best agent harness.",
+   "url": "https://github.com/mindfold-ai/Trellis",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "devtool",
+   "title": "santifer/career-ops — AI-powered job search system built on Claude Code. 14 skill modes, Go dashboard, PDF generation, batch processing.",
+   "url": "https://github.com/santifer/career-ops",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "devtool",
+   "title": "Imbad0202/academic-research-skills — Academic Research Skills for Claude Code: research → write → review → revise → finalize",
+   "url": "https://github.com/Imbad0202/academic-research-skills",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "devtool",
+   "title": "datawhalechina/hello-agents — 📚 《从零开始构建智能体》——从零开始的智能体原理与实践教程",
+   "url": "https://github.com/datawhalechina/hello-agents",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "devtool",
+   "title": "tashfeenahmed/freellmapi — OpenAI-compatible proxy that aggregates free-tier keys from ~14 AI providers with automatic failover. For personal experimentation only.",
+   "url": "https://github.com/tashfeenahmed/freellmapi",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "devtool",
+   "title": "Yuan1z0825/nature-skills — 符合nature论文学术表达和科研绘图的Skill",
+   "url": "https://github.com/Yuan1z0825/nature-skills",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "devtool",
+   "title": "op7418/guizang-ppt-skill — AI-agent Skill for generating polished HTML slide decks: editorial magazine and Swiss layouts, image prompts, social covers, and a WebGL/low-power presentation runtime.",
+   "url": "https://github.com/op7418/guizang-ppt-skill",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "devtool",
+   "title": "tinyhumansai/openhuman — Your Personal AI super intelligence. Private, Simple and extremely powerful.",
+   "url": "https://github.com/tinyhumansai/openhuman",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "devtool",
+   "title": "yukiyokotani/office-open-xml-viewer —",
+   "url": "https://github.com/yukiyokotani/office-open-xml-viewer",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "devtool",
+   "title": "anthropics/financial-services —",
+   "url": "https://github.com/anthropics/financial-services",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "devtool",
+   "title": "Panniantong/Agent-Reach — Give your AI agent eyes to see the entire internet. Read & search Twitter, Reddit, YouTube, GitHub, Bilibili, XiaoHongShu — one CLI, zero API fees.",
+   "url": "https://github.com/Panniantong/Agent-Reach",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "devtool",
+   "title": "jnMetaCode/agency-agents-zh — 🎭 211 个即插即用的 AI 专家角色 — 支持 Hermes Agent/Claude Code/Cursor/Copilot 等 16 种工具，覆盖工程/设计/营销/金融等 18 个部门。含 46 个中国市场原创智能体（小红书/抖音/微信/飞书/钉钉等）",
+   "url": "https://github.com/jnMetaCode/agency-agents-zh",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "Risk Under Pressure: Compute-Aware Evaluation of Adversarial Robustness in Language Models",
+   "url": "https://huggingface.co/papers/2606.11409",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "ToolSense: A Diagnostic Framework for Auditing Parametric Tool Knowledge in LLMs",
+   "url": "https://huggingface.co/papers/2606.12451",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "A Stationary (and Therefore Compatible) Representation is All You Need",
+   "url": "https://huggingface.co/papers/2606.12488",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "ArogyaSutra: A Multi-Agent Framework for Multimodal Medical Reasoning in Indic Languages",
+   "url": "https://huggingface.co/papers/2606.13572",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "Where, What, Why, and Importance: Structured Defect Grounding for Text-to-Image Feedback",
+   "url": "https://huggingface.co/papers/2606.06113",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "Revisiting Articulated Parts Perception in Robot Manipulation",
+   "url": "https://huggingface.co/papers/2606.08103",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "From 2D Grids to 1D Tokens: Reforming Shared Representations for Multimodal Image Fusion",
+   "url": "https://huggingface.co/papers/2606.12303",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "HYDRA-X: Native Unified Multimodal Models with Holistic Visual Tokenizers",
+   "url": "https://huggingface.co/papers/2606.13289",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "VIA-SD: Verification via Intra-Model Routing for Speculative Decoding",
+   "url": "https://huggingface.co/papers/2606.12243",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "TreeSeeker: Tree-Structured Trial, Error, and Return in Deep Search",
+   "url": "https://huggingface.co/papers/2606.11662",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "Flash-GMM: A Memory-Efficient Kernel for Scalable Soft Clustering",
+   "url": "https://huggingface.co/papers/2606.10896",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "Leveraging Morphology for Historical Script Metrological Analysis",
+   "url": "https://huggingface.co/papers/2606.09446",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "PianoKontext: Expressive Performance Rendering from Deadpan Context",
+   "url": "https://huggingface.co/papers/2606.12282",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "IDEAL: In-DEpth ALignment Makes A Discrete Representation AutoEncoder",
+   "url": "https://huggingface.co/papers/2606.11096",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "High-Fidelity Two-Step Image Generation via Teacher-Aligned End-to-End Distillation",
+   "url": "https://huggingface.co/papers/2606.12575",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "MiniMax Sparse Attention",
+   "url": "https://huggingface.co/papers/2606.13392",
+   "selected": true
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "Visual Para-Thinker++: A Single-Policy Multi-Agent Framework for Visual Reasoning",
+   "url": "https://huggingface.co/papers/2606.09290",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "SG-OPD: Sign-Gated On-Policy Distillation via Sign-Consistency Gating and Phased Teacher Sampling",
+   "url": "https://huggingface.co/papers/2606.09304",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "Robust-U1: Can MLLMs Self-Recover Corrupted Visual Content for Robust Understanding?",
+   "url": "https://huggingface.co/papers/2606.08063",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "EvoBrowseComp: Benchmarking Search Agents on Evolving Knowledge",
+   "url": "https://huggingface.co/papers/2606.13120",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "MaskAlign: Token-Subset Representation Alignment for Efficient Diffusion Training",
+   "url": "https://huggingface.co/papers/2606.08788",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "EvoArena: Tracking Memory Evolution for Robust LLM Agents in Dynamic Environments",
+   "url": "https://huggingface.co/papers/2606.13681",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "MuJoCo-Drones-Gym: A GPU-Accelerated Multi-Drone Simulator for Control and Reinforcement Learning",
+   "url": "https://huggingface.co/papers/2606.08039",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "Demystifying Hidden-State Recurrence: Switchable Latent Reasoning with On-Policy Reinforcement Learning",
+   "url": "https://huggingface.co/papers/2606.13106",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "Evoflux: Inference-Time Evolution of Executable Tool Workflows for Compact Agents",
+   "url": "https://huggingface.co/papers/2606.12674",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "WEAVER, Better, Faster, Longer: An Effective World Model for Robotic Manipulation",
+   "url": "https://huggingface.co/papers/2606.13672",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "WeaveBench: A Long-Horizon, Real-World Benchmark for Computer-Use Agents with Hybrid Interfaces",
+   "url": "https://huggingface.co/papers/2606.09426",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "EurekAgent: Agent Environment Engineering is All You Need For Autonomous Scientific Discovery",
+   "url": "https://huggingface.co/papers/2606.13662",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "InterleaveThinker: Reinforcing Agentic Interleaved Generation",
+   "url": "https://huggingface.co/papers/2606.13679",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "MaxProof: Scaling Mathematical Proof with Generative-Verifier RL and Population-Level Test-Time Scaling",
+   "url": "https://huggingface.co/papers/2606.13473",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "LabVLA: Grounding Vision-Language-Action Models in Scientific Laboratories",
+   "url": "https://huggingface.co/papers/2606.13578",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "VideoMDM: Towards 3D Human Motion Generation From 2D Supervision",
+   "url": "https://huggingface.co/papers/2606.13364",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "FORT-Searcher: Synthesizing Shortcut-Resistant Search Tasks for Training Deep Search Agents",
+   "url": "https://huggingface.co/papers/2606.12087",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "N-GRPO: Embedding-Level Neighbor Mixing for Enhanced Policy Optimization",
+   "url": "https://huggingface.co/papers/2606.10768",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "Surflo: Consistent 3D Surface Flow Model with Global State",
+   "url": "https://huggingface.co/papers/2606.13644",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "SpatialClaw: Rethinking Action Interface for Agentic Spatial Reasoning",
+   "url": "https://huggingface.co/papers/2606.13673",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "MoVerse: Real-Time Video World Modeling with Panoramic Gaussian Scaffold",
+   "url": "https://huggingface.co/papers/2606.13376",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "HarnessBridge: Learnable Bidirectional Controller for LLM Agent Harness",
+   "url": "https://huggingface.co/papers/2606.12882",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "RepWAM: World Action Modeling with Representation Visual-Action Tokenizers",
+   "url": "https://huggingface.co/papers/2606.13674",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "DyCo-RL: Dynamic Cross-Modal Coordination for Visual Reasoning",
+   "url": "https://huggingface.co/papers/2606.08035",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "Can Generalist Agents Automate Data Curation?",
+   "url": "https://huggingface.co/papers/2606.04261",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "Building Social World Models with Large Language Models",
+   "url": "https://huggingface.co/papers/2606.11482",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "Which Models Are Our Models Built On? Auditing Invisible Dependencies in Modern LLMs",
+   "url": "https://huggingface.co/papers/2606.12385",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "ReVision: Scaling Computer-Use Agents via Temporal Visual Redundancy Reduction",
+   "url": "https://huggingface.co/papers/2605.11212",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "SparDA: Sparse Decoupled Attention for Efficient Long-Context LLM Inference",
+   "url": "https://huggingface.co/papers/2606.04511",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "APEX: A Network-Native Time-Series Foundation Model for Forecasting and Anomaly Detection for Wireless Edge Operations",
+   "url": "https://huggingface.co/papers/2606.11553",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "Towards Diverse Scientific Hypothesis Search with Large Language Models",
+   "url": "https://huggingface.co/papers/2606.10587",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "DRIFT: A Residual Flow Adapter for Decoding Continuous Outputs in Vision-Language Models",
+   "url": "https://huggingface.co/papers/2606.05758",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "Reroute, Don't Remove: Recoverable Visual Token Routing for Vision-Language Models",
+   "url": "https://huggingface.co/papers/2606.12412",
+   "selected": false
+  },
+  {
+   "source": "hf-daily-papers",
+   "layer": "model",
+   "title": "Adaptive Multi-Resolution Procedural Knowledge Compression for Large Language Models",
+   "url": "https://huggingface.co/papers/2606.12203",
+   "selected": false
+  }
+ ]
+}

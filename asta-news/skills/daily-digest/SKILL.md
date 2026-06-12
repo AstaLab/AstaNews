@@ -49,7 +49,7 @@ uv run ${CLAUDE_PLUGIN_ROOT}/scripts/dedup.py --filter <上一步打印的 candi
 
 每个 subagent 限处理 ≤40 条；候选过多时先按源优先级（P0 优先）与 extra 热度信号（upvotes/points/stars）截断。
 
-## 4. Editor 裁决
+## 4. Editor 裁决 → 信息很全的结构化记录
 
 汇总各组推荐，按 `references/curation.md` 的 editor 准则做最终选择：
 
@@ -57,22 +57,30 @@ uv run ${CLAUDE_PLUGIN_ROOT}/scripts/dedup.py --filter <上一步打印的 candi
 2. 同一事件多条 → 合并为一条，链接用官方一手源，社区讨论（HN/HF）作附注。
 3. 按 `scoring.weights` 加权分排序，选 `edition.default_items` 条（质量不足可更少；硬上限 `max_items`）。
 4. 校验约束：覆盖 ≥ `min_layers` 层、单层 ≤ `max_per_layer`、单源 ≤ `max_per_source`。不满足就用次优候选替换补足；补不足层数时减条数也要保住多样性。
-5. 落选但接近的 3-5 条放进"雷达"简报。
+5. 落选但接近的 3-5 条放进"雷达"。
 
-## 5. 输出与归档
+对每个入选条目，整理出一条**信息很全**的记录（这是下一步改写的输入，facts 越全越不会写错）：
+`{rank, layer, source, title（忠实转述）, facts:[尽量全的量化点/事实], why_matters, links:{primary, discussion}, scores}`。
 
-按 `references/output-format.md` 模板写 digest：
+## 5. Readiness 改写（独立 subagent）
+
+提取与改写分开做——派一个 subagent，喂它**上一步的完整记录** + `references/readiness.md`，让它产出面向微信群跨栈受众的稿子：每条的 `readable`（微信版正文，3-5 句）、整期的 `headline` 与 `overview`。要点全在 readiness.md：先桥接"关你什么事"、保留一个技术锚点并解释、诚实标注保留（自报基准/未发 notes）、不丢 facts 里任何数字。改写不得改动事实——它只重写 facts 的表达，不新增、不脑补。
+
+## 6. 产出 digest.json + 归档 + 发布站点
+
+组装结构化产物 `digest.json`（schema 见 `references/output-format.md`），含：精选（带 readable + facts + links）、雷达、数据缺口、**以及全量候选 all_candidates**（fresh.jsonl 全部条目降维成 `{source, layer, title, url, selected}`——网页要能展示当天全部信息，不只精选）。写到当天 run 目录，然后：
 
 ```bash
-# 写归档（也是已推送台账）
+# 1. 写微信可读归档（也是已推送台账），按 output-format.md 模板
 $DATA/archive/YYYY-MM-DD.md
-# 登记去重库：把入选/雷达条目按【fresh.jsonl 里的原行】各写成一个 jsonl 文件
-# （原样复用即可，dedup 需要其中的 id 和 url 字段；手动补的候选行同理）
+# 2. 发布到静态站点（拷进 site/data/<date>.json 并重建 index.json）
+uv run ${CLAUDE_PLUGIN_ROOT}/scripts/publish_site.py --digest $DATA/runs/<today>/digest.json
+# 3. 登记去重库（入选/雷达条目，原样复用 fresh.jsonl 里的行，dedup 要 id+url 字段）
 uv run ${CLAUDE_PLUGIN_ROOT}/scripts/dedup.py --record <选中条目.jsonl> --status published
 uv run ${CLAUDE_PLUGIN_ROOT}/scripts/dedup.py --record <雷达条目.jsonl> --status considered
 ```
 
-最后在会话里**完整输出 digest 全文**（这是交付物），并附一行运行摘要（N 源成功/M 失败、候选数、用时）。抓取失败的源如实列在 digest 的"数据缺口"小节——缺什么要说，这是可信度的一部分。
+最后在会话里**完整输出 digest 全文**（微信版，这是交付物），并附一行运行摘要（N 源成功/M 失败、候选数）。抓取失败的源如实列在"数据缺口"——缺什么要说，这是可信度的一部分。
 
 ## 失败处置
 

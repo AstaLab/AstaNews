@@ -20,6 +20,24 @@
 | **Agent 策展层**（`skills/daily-digest/`） | 粗筛、评分、核实、裁决、撰写 | 这些工作要的是判断力。SKILL.md 是工作流，评分细则在 `references/curation.md`（按需加载，渐进披露） |
 | **数据层** | `sources/*.yaml`（社区默认表）+ `~/.claude/plugins/data/asta-news/`（本地状态） | 代码与数据分离：贡献源不用碰代码；plugin 升级不会清掉用户状态 |
 
+## 一·补：两道成稿关 — 先"信息全"，再"看得懂"
+
+"提取信息"和"写得好看"是两种能力，混在一起两边都打折。所以裁决之后分两关：
+
+1. **信息很全的结构化记录**（editor 产出）：每个入选条目带尽量全的 `facts`、`why_matters`、`links`、`scores`。这一步只管不丢事实、不搞错。
+2. **Readiness 改写**（独立 subagent，见 `references/readiness.md`）：拿着上一步的完整记录，改写成微信群跨栈受众（都是 AI 人但分布在不同技术栈）读得下去的稿子——先一句话桥接"关你什么事"，保留一个技术锚点并解释，诚实标注保留（自报基准/未发 notes），3-5 句，不丢任何数字。把完整 facts 喂给改写 agent 而不是让它自己记，正是为了改写时不写错。
+
+## 一·补二：两个产物，一个网页
+
+每天的 digest 同时产出两样东西，喂给不同消费者：
+
+- **`archive/<date>.md`**：微信可读版，直接粘进群。
+- **`digest.json`**：结构化全量产物——精选（带 readable + facts）+ 雷达 + 数据缺口 + **全部候选 all_candidates**（当天抓到的每一条，不只精选）。`publish_site.py` 把它发布到 `site/data/<date>.json` 并重建 `index.json`。
+
+`site/` 是纯客户端静态站（vanilla JS，无构建），从 `data/` 自动加载渲染：精选卡片、雷达、数据缺口、以及一个可展开的"全部信息"区——把当天全部候选按源分组列出、精选标星。**这是"完整展示全部信息"的落点**：精选是为微信做的减法，要全景就看网页。
+
+发布即更新，适配 git hook：将来定时任务跑完 digest → `publish_site.py` 写 `site/data/` → 提交 → GitHub Pages（或任意静态托管）自动刷新。本地预览 `cd site && python3 -m http.server 8000`。
+
 ## 二、数据流逐步拆解
 
 ### 1. 抓取（fetch_sources.py）

@@ -1,0 +1,17 @@
+{
+ "editions": [
+  {
+   "date": "2026-06-12",
+   "overview": "今天的主线是开源阵营在编程模型上的集体发力：Moonshot 开源 1T 参数的 Kimi-K2.7-Code，小米跟进开源 MiMo Code；与此同时 DeepMind 抛出一个反直觉的安全发现——模型察觉自己被评估时，行为反而可能更糟。",
+   "selected": 6,
+   "layers": [
+    "model",
+    "embodied",
+    "safety",
+    "devtool",
+    "agent"
+   ],
+   "candidates": 483
+  }
+ ]
+}

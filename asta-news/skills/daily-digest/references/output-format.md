@@ -1,6 +1,37 @@
 # Digest 输出模板
 
-中文为主，专有名词/术语保留英文。每条回答"为什么值得花 30 秒"，给量化事实不给形容词。
+两个产物用同一份数据：**digest.json**（喂静态站点，信息全）和 **archive/<date>.md**（微信可读，给人看）。中文为主，专有名词/术语保留英文。
+
+## digest.json schema（站点与 publish_site.py 依赖）
+
+```json
+{
+  "date": "2026-06-12",
+  "weekday": "星期五",
+  "headline": "标题（≤20 字，抓主线）",
+  "overview": "一句话当日总览：今天的主线是什么",
+  "stats": {"candidates": 483, "sources_ok": 25, "sources_failed": 2,
+            "layers_covered": ["model", "embodied", "safety", "devtool", "agent"]},
+  "selected": [
+    {"rank": 1, "layer": "model", "source": "hf-trending-models",
+     "title": "忠实转述的中文标题",
+     "readable": "Readiness 改写的微信版正文，3-5 句，可含换行",
+     "facts": ["1T 总参/32B 激活", "KCB v2 自报 62.0", "..."],
+     "links": {"primary": "一手源 url", "discussion": "HN/HF 讨论 url（可选）"},
+     "scores": {"novelty": 4, "leading_edge": 3, "impact": 4, "cross_stack": 3}}
+  ],
+  "radar": [{"layer": "model", "title": "一句话", "note": "为什么留雷达", "link": "url"}],
+  "gaps": ["RSSHub 未部署：…", "X List 未配置：…"],
+  "all_candidates": [{"source": "arxiv-cs-lg", "layer": "post-training",
+                      "title": "...", "url": "...", "selected": false}]
+}
+```
+
+`all_candidates` 是 fresh.jsonl 全部条目降维（layer 取第一个即可）——网页"全部信息"区据此展示当天所有候选，精选标星。这是"完整展示全部信息"的落点。
+
+## archive/<date>.md（微信可读版）
+
+每条回答"为什么值得花 30 秒"，给量化事实不给形容词。正文用各条的 `readable`。
 
 ## Markdown 模板（archive 与会话输出共用）
 
