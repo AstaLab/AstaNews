@@ -6,6 +6,7 @@ const ITEMS = [
   { label: "今日日报", path: "/" },
   { label: "往期", path: "/archive" },
   { label: "搜索", path: "/search" },
+  { label: "控制台", path: "/console" },
   { label: "关于", path: "/about" },
 ];
 

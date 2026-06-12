@@ -41,6 +41,8 @@ export const PERSPECTIVES = [
 
 export const BASE = process.env.NEXT_PUBLIC_BASE_PATH || "";
 export const asset = (p) => `${BASE}${p}`;
+// 本地/全功能模式：services 后端地址（静态 Pages 为空 → 控制台只读+引导）
+export const API = process.env.NEXT_PUBLIC_API || "";
 
 // URL → 稳定短 slug（Node 构建期与浏览器端结果一致，用于 item 详情页路由）
 export function slug(url) {
