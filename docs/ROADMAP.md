@@ -134,7 +134,7 @@ group  : 目标 5（上限 8），最严，微信群发
 - 🔵 **P2-SEARCH** 关键词搜索 + 相关新闻(预计算近邻)已稳上线；语义搜索框(浏览器 transformers.js 同款模型嵌入 query×vectors.bin)已实现为渐进增强(graceful fallback 到关键词)，真机大概率可用，headless sandbox 加载不了 CDN 模块故未能本地验证——待真机确认/改自托管模型
 - ✅ **P2-IMG** 精选 6/6 配 AI 信息图(arXiv 架构图/行为率图)+ daily og:image 兜底(11 张上线)+ enrich_images.py + images.md how-to + 卡片渲染；待续:提升 daily/arXiv 覆盖、防盗链兜底
 - ✅ **P2-SHARP** 犀利度上线：中性/锐评 切换(网站控件)，今日 6 精选含 sharp 锐评变体，readiness.md 写明产出规范；深读档待加
-- ⬜ **P3-STUDY** 研究橘鸦公众号写法/配图、Tim 的 day-day-arxiv 归档模式，沉淀到设计与 skill
+- ✅ **P3-STUDY** 橘鸦研究完成(docs/study-juya.md)：发现我们 gazette 美学已天然对齐橘鸦；借鉴'今日概览编号列表'已应用到微信版 md；公众号发布路径(md2juya/md2wechat→微信API)已规划进 P3-WECHAT
 - ✅ **P3-SELFCONTAIN** doctor 全绿(110 源/RSSHub/代理自探测)；setup skill 更新：X 用 grab_x_cookie.sh 自动取 cookie + per-user 路由开箱即用、embed 自包含(hf-mirror)、README 指向 web/ Next 流程
 - 🔵 **P3-CONSOLE** services/ FastAPI 后端已建并验证：列期/取期/**服务端语义检索(跨语言)**/源概览/读写配置/触发抓取 + require_auth 鉴权钩子(预留账号)；待加排程端点 + web 控制台 UI(P3-WEBCTRL)
 - 🔵 **P3-WEBCTRL** 网站 /console 页上线：静态站显引导，连后端则看状态/源、服务端语义检索、触发抓取、**编辑并保存配置(tiers/perspectives/sharpness/…)**；待加排程 UI

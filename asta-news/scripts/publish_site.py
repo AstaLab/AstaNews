@@ -33,7 +33,12 @@ LAYER_EMOJI = {
 def render_md(d: dict) -> str:
     """微信可读版 markdown（人看 / 直接粘群）。json 是唯一事实源，md 由它生成不会漂移。"""
     L = [f"# 🛰️ AstaNews — {d['date']}（{d.get('weekday','')}）", "", f"> {d.get('overview','')}", ""]
-    for it in d.get("selected", []):
+    sel = d.get("selected", [])
+    if sel:  # 今日概览（借鉴橘鸦：开头先用编号列表把当天精选列出来，便于扫读）
+        L.append("**今日概览**")
+        L += [f"{i+1}. {LAYER_EMOJI.get(it.get('layer'),'')} {it.get('title','')}" for i, it in enumerate(sel)]
+        L += ["", "---", ""]
+    for it in sel:
         L += [f"## {it.get('rank','')}. {LAYER_EMOJI.get(it['layer'],'')} [{it['layer']}] {it['title']}", "",
               it.get("readable", ""), ""]
         links = it.get("links", {})
