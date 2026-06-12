@@ -15,11 +15,44 @@ digest.json 是 daily-digest skill 的结构化产物（精选 + 雷达 + 数据
 """
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 
 PLUGIN_ROOT = Path(__file__).resolve().parent.parent
-DEFAULT_SITE = PLUGIN_ROOT.parent / "site"
+# 产物落点优先级：--site-dir > $ASTA_OUTPUT_DIR > 仓库 site/（plugin 旁）
+DEFAULT_SITE = Path(os.environ.get("ASTA_OUTPUT_DIR") or (PLUGIN_ROOT.parent / "site"))
+
+LAYER_EMOJI = {
+    "model": "🧠", "post-training": "🎛️", "eval": "📊", "data": "🗂️", "infra": "🏗️",
+    "serving": "⚡", "maas": "☁️", "agent": "🤖", "embodied": "🦾", "safety": "🛡️",
+    "product": "📦", "business": "💰", "devtool": "🔧",
+}
+
+
+def render_md(d: dict) -> str:
+    """微信可读版 markdown（人看 / 直接粘群）。json 是唯一事实源，md 由它生成不会漂移。"""
+    L = [f"# 🛰️ AstaNews — {d['date']}（{d.get('weekday','')}）", "", f"> {d.get('overview','')}", ""]
+    for it in d.get("selected", []):
+        L += [f"## {it.get('rank','')}. {LAYER_EMOJI.get(it['layer'],'')} [{it['layer']}] {it['title']}", "",
+              it.get("readable", ""), ""]
+        links = it.get("links", {})
+        lk = [f"[一手源]({links['primary']})"] if links.get("primary") else []
+        if links.get("discussion"):
+            lk.append(f"[讨论]({links['discussion']})")
+        if lk:
+            L += ["🔗 " + " · ".join(lk), ""]
+    if d.get("radar"):
+        L += ["---", "", "### 📡 雷达", ""]
+        for r in d["radar"]:
+            tail = f" [↗]({r['link']})" if r.get("link") else ""
+            L.append(f"- [{r['layer']}] {r['title']}{(' — ' + r['note']) if r.get('note') else ''}{tail}")
+    if d.get("gaps"):
+        L += ["", "### ⚠️ 数据缺口", ""] + [f"- {g}" for g in d["gaps"]]
+    st = d.get("stats", {})
+    L.append(f"\n*{len(d.get('selected',[]))} 条 · 覆盖 {' / '.join(st.get('layers_covered',[]))} · "
+             f"候选 {st.get('candidates','—')} 条 · AstaNews*")
+    return "\n".join(L)
 
 
 def rebuild_index(data_dir: Path) -> int:
@@ -84,11 +117,16 @@ def main() -> int:
     date = digest["date"]
     out = data_dir / f"{date}.json"
     out.write_text(json.dumps(digest, ensure_ascii=False, indent=1))
-    print(f"发布 {date}：精选 {len(digest.get('selected', []))} 条 -> {out}", file=sys.stderr)
+    # 微信可读 md 落到仓库 editions/（site 的同级），供归档/直接粘群
+    editions = Path(args.site_dir).parent / "editions"
+    editions.mkdir(parents=True, exist_ok=True)
+    md_path = editions / f"{date}.md"
+    md_path.write_text(render_md(digest))
+    print(f"发布 {date}：精选 {len(digest.get('selected', []))} 条\n"
+          f"  网页数据 -> {out}\n  微信归档 -> {md_path}", file=sys.stderr)
     rebuild_index(data_dir)
     print(f"\n站点目录 {args.site_dir} 已更新。本地预览：\n"
-          f"  cd {args.site_dir} && python3 -m http.server 8000  # 然后访问 http://localhost:8000",
-          file=sys.stderr)
+          f"  cd {args.site_dir} && python3 -m http.server 8000", file=sys.stderr)
     return 0
 
 

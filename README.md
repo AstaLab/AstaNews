@@ -48,7 +48,14 @@ claude --plugin-dir ./asta-news
 cd site && python3 -m http.server 8000   # 本地预览 http://localhost:8000
 ```
 
-发布即更新，适配 git hook：定时跑完 digest → `publish_site.py` 写 `site/data/` → 提交 → GitHub Pages 自动刷新。
+## 自动部署（GitHub Actions + Pages）
+
+仓库就是部署单元：`.github/workflows/daily-digest.yml` 每天 UTC 01:00（北京 09:00）跑 digest，把产物 commit 进 `site/data/` 与 `editions/`，GitHub Pages 自动刷新。启用只需两步：
+
+1. 仓库 **Settings → Secrets → Actions** 加 `ANTHROPIC_API_KEY`。
+2. 仓库 **Settings → Pages → Source 选 GitHub Actions**。
+
+GitHub runner 在墙外，被墙的源直连即可（无需代理），数据覆盖反而比本机全；去重用"仓库即状态"（读历史 `site/data/*.json`），无本地依赖。原理见 [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)。
 
 ## 仓库结构
 

@@ -1,0 +1,79 @@
+name: daily-digest
+
+# 每天 UTC 01:00（北京 09:00）跑 digest，产物 commit 进仓库，Pages 自动部署。
+# 也可在 Actions 页手动触发（workflow_dispatch）。
+on:
+  schedule:
+    - cron: "0 1 * * *"
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "覆盖日期 YYYY-MM-DD（留空=今天）"
+        required: false
+
+concurrency:
+  group: daily-digest
+  cancel-in-progress: false
+
+permissions:
+  contents: write   # commit 产物
+  pages: write      # 部署 Pages
+  id-token: write
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0          # 需要历史 editions 做去重（仓库即状态）
+
+      - uses: astral-sh/setup-uv@v5      # uv 跑所有脚本（PEP 723 零安装）
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+
+      - name: Install Claude Code
+        run: npm i -g @anthropic-ai/claude-code
+
+      - name: Run daily digest
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          # GitHub runner 在墙外，needs_proxy 的源直连即可，无需 ASTA_PROXY。
+          # 产物直接落仓库 site/：
+          ASTA_NEWS_HOME: ${{ github.workspace }}/.asta-runtime   # 中间产物/临时态
+          ASTA_OUTPUT_DIR: ${{ github.workspace }}/site           # 最终产物（提交用）
+          GITHUB_ACCESS_TOKEN: ${{ github.token }}                # api.github.com 提额
+          ASTA_RUN_DATE: ${{ github.event.inputs.date }}
+        run: |
+          claude -p "/asta-news:daily-digest" \
+            --permission-mode bypassPermissions \
+            --plugin-dir ./asta-news \
+            --allowedTools "Bash,Read,Write,Edit,WebFetch,Agent,Skill" \
+            2>&1 | tee digest-run.log
+
+      - name: Commit artifacts
+        run: |
+          git config user.name  "asta-news-bot"
+          git config user.email "actions@github.com"
+          git add site/data editions
+          if git diff --cached --quiet; then
+            echo "今日无新增产物（可能周末空 diff 或已发布），跳过提交"
+          else
+            git commit -m "digest: $(date -u +%Y-%m-%d) [skip ci]"
+            git push
+          fi
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with: { path: ./site }
+
+  deploy:
+    needs: digest
+    runs-on: ubuntu-latest
+    permissions: { pages: write, id-token: write }
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4

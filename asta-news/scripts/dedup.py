@@ -113,12 +113,52 @@ def is_dup(item: dict, conn, titles: list[str], window_days: int, threshold: flo
     return False
 
 
+def seen_from_editions(editions_dir: Path) -> tuple[set, list[str]]:
+    """从已发布的 digest.json 历史重建已见集合——仓库即状态，GitHub Actions 无需本地 db。
+    读每期的 all_candidates(url) + selected(links.primary)。返回 (url_norm 集合, 标题列表)。"""
+    urls, titles = set(), []
+    for f in sorted(editions_dir.glob("20*.json")):
+        if f.name == "index.json":
+            continue
+        try:
+            d = json.loads(f.read_text())
+        except (json.JSONDecodeError, OSError):
+            continue
+        for c in d.get("all_candidates", []):
+            if c.get("url"):
+                urls.add(normalize_url(c["url"]))
+            if c.get("title"):
+                titles.append(c["title"])
+        for s in d.get("selected", []):
+            u = (s.get("links") or {}).get("primary")
+            if u:
+                urls.add(normalize_url(u))
+    return urls, titles
+
+
 def cmd_filter(args, rules) -> int:
     items = [json.loads(l) for l in Path(args.filter).read_text().splitlines() if l.strip()]
+    th = rules["dedup"]["title_similarity"]
+    # 仓库即状态模式：不碰 sqlite，从已发布 editions 重建已见集合
+    if args.seen_from:
+        seen_urls, titles = seen_from_editions(Path(args.seen_from))
+        fresh = []
+        for i in items:
+            t = (i.get("title") or "").lower()
+            dup = normalize_url(i.get("url", "")) in seen_urls
+            if not dup and len(t) >= 20:
+                toks = _num_tokens(t)
+                dup = any(toks == _num_tokens(k) and
+                          difflib.SequenceMatcher(None, t, k.lower()).ratio() >= th for k in titles)
+            if not dup:
+                fresh.append(i)
+        out = Path(args.out) if args.out else Path(args.filter).with_name("fresh.jsonl")
+        out.write_text("\n".join(json.dumps(i, ensure_ascii=False) for i in fresh) + ("\n" if fresh else ""))
+        print(f"{len(items)} 候选 -> {len(fresh)} 新条目（仓库状态：{len(seen_urls)} 已见 URL）-> {out}", file=sys.stderr)
+        return 0
     try:
         conn = open_db()
         wd = rules["dedup"]["seen_window_days"]
-        th = rules["dedup"]["title_similarity"]
         titles = recent_titles(conn, wd)
     except Exception as exc:
         print(f"[警告] 去重库异常，放行全部候选: {exc}", file=sys.stderr)
@@ -209,6 +249,7 @@ def main() -> int:
     g.add_argument("--stats", action="store_true")
     g.add_argument("--self-test", action="store_true")
     ap.add_argument("--status", default="published", choices=["published", "considered"])
+    ap.add_argument("--seen-from", help="从该目录的历史 digest.json 重建已见集合（仓库即状态，配合 --filter；用于 GitHub Actions，不依赖本地 seen.db）")
     ap.add_argument("--out")
     args = ap.parse_args()
     if args.self_test:

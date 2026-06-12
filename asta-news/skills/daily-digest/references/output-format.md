@@ -23,11 +23,11 @@
   "radar": [{"layer": "model", "title": "一句话", "note": "为什么留雷达", "link": "url"}],
   "gaps": ["RSSHub 未部署：…", "X List 未配置：…"],
   "all_candidates": [{"source": "arxiv-cs-lg", "layer": "post-training",
-                      "title": "...", "url": "...", "selected": false}]
+                      "title": "...", "url": "...", "summary": "原摘要截断~240字", "selected": false}]
 }
 ```
 
-`all_candidates` 是 fresh.jsonl 全部条目降维（layer 取第一个即可）——网页"全部信息"区据此展示当天所有候选，精选标星。这是"完整展示全部信息"的落点。
+`all_candidates` 是 fresh.jsonl 全部条目降维（layer 取第一个，summary 取原摘要截断 ~240 字）——网页"全部信息"区据此展示当天所有候选（标题 + 原文链接 + 摘要），精选标星。这是"完整展示全部信息"的落点。
 
 ## archive/<date>.md（微信可读版）
 

@@ -50,9 +50,12 @@ function allCandidates(d) {
   const groups = Object.keys(bySource).sort().map((src) => {
     const items = bySource[src].map((c) => {
       const sel = c.selected || selUrls.has(c.url);
+      const summary = c.summary ? `<div class="cand-summary">${esc(c.summary)}</div>` : "";
       return `<li class="${sel ? "is-selected" : ""}">
-        <span class="mini-badge">${esc(layerLabel(c.layer ? (Array.isArray(c.layer) ? c.layer[0] : c.layer) : ""))}</span>
-        <a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.title)}</a></li>`;
+        <div class="cand-head">
+          <span class="mini-badge">${esc(layerLabel(c.layer ? (Array.isArray(c.layer) ? c.layer[0] : c.layer) : ""))}</span>
+          <a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.title)}</a>
+        </div>${summary}</li>`;
     }).join("");
     return `<div class="src-group"><h4>${esc(src)} · ${bySource[src].length}</h4><ul>${items}</ul></div>`;
   }).join("");

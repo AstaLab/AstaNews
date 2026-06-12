@@ -36,7 +36,26 @@
 
 `site/` 是纯客户端静态站（vanilla JS，无构建），从 `data/` 自动加载渲染：精选卡片、雷达、数据缺口、以及一个可展开的"全部信息"区——把当天全部候选按源分组列出、精选标星。**这是"完整展示全部信息"的落点**：精选是为微信做的减法，要全景就看网页。
 
-发布即更新，适配 git hook：将来定时任务跑完 digest → `publish_site.py` 写 `site/data/` → 提交 → GitHub Pages（或任意静态托管）自动刷新。本地预览 `cd site && python3 -m http.server 8000`。
+发布即更新。本地预览 `cd site && python3 -m http.server 8000`。
+
+## 一·补三：部署模型 — 仓库就是部署单元
+
+不要把产物当本地状态——它们进 git，由 GitHub 跑、GitHub 渲染。闭环（`.github/workflows/daily-digest.yml`）：
+
+```
+cron(每天 UTC 01:00) → checkout 仓库（带历史 editions）→ uv + claude-code
+  → claude -p "/asta-news:daily-digest"（产物写进仓库 site/data + editions）
+  → git commit & push → upload-pages-artifact(./site) → deploy-pages → 网页自动更新
+```
+
+几个关键点：
+
+- **GitHub runner 在墙外**：`needs_proxy` 的源（HF/Google/Reddit/Mistral…）在 runner 上**直连**即可，不设 `ASTA_PROXY`——所以 Actions 模式的数据覆盖反而比本机更全。只有 RSSHub 类源（X/量子位）在 runner 上没有实例会进数据缺口（Anthropic 等可由策展 agent 直接 WebFetch 官网兜底）。
+- **仓库即去重状态**：`dedup.py --seen-from site/data` 从历史 digest.json 重建已见 URL 集合，不依赖任何本地 db。每天 commit 的 `digest.json` 就是第二天的状态源——无状态、可重放、可 diff。
+- **产物落点**：`ASTA_OUTPUT_DIR` 指向仓库 `site/`，`publish_site.py` 一步写 `site/data/<date>.json`（网页数据，唯一事实源）+ `site/data/index.json`（归档索引）+ `editions/<date>.md`（微信版，json 生成不漂移）。中间产物（candidates/fresh）留在 `ASTA_NEWS_HOME` 临时目录，不进 git。
+- **唯一密钥**：仓库 secret `ANTHROPIC_API_KEY`。其余（`GITHUB_ACCESS_TOKEN`）用 Actions 自带的 `github.token`。
+
+本地交互模式（用户在装好的 plugin 里手跑）仍可用——产物落本地 data dir、去重用 seen.db。两种模式同一套脚本，靠 `$OUT/data` 是否存在历史来区分。
 
 ## 二、数据流逐步拆解
 
