@@ -76,8 +76,12 @@ def to_iso(value) -> str | None:
         for fmt in (None, "%Y-%m-%dT%H:%M:%S.%fZ", "%Y-%m-%dT%H:%M:%SZ", "%Y-%m-%d"):
             try:
                 if fmt is None:
-                    return datetime.fromisoformat(value.replace("Z", "+00:00")).isoformat()
-                return datetime.strptime(value, fmt).replace(tzinfo=timezone.utc).isoformat()
+                    dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
+                else:
+                    dt = datetime.strptime(value, fmt)
+                if dt.tzinfo is None:  # 纯日期/无时区一律按 UTC，保证下游可与 aware 时间比较
+                    dt = dt.replace(tzinfo=timezone.utc)
+                return dt.isoformat()
             except ValueError:
                 continue
     return None
@@ -95,21 +99,44 @@ def within(published: str | None, cutoff: datetime) -> bool:
         return True
 
 
+# 只认 ASTA_PROXY：环境可能注入不可靠的 HTTP(S)_PROXY（如 IDE 内部代理），必须忽略
+SESSION = requests.Session()
+SESSION.trust_env = False
+
+
 def fetch(url: str, source: dict, as_json: bool = False):
-    proxies = None
+    proxy = os.environ.get("ASTA_PROXY")
+    proxied = {"http": proxy, "https": proxy} if proxy else None
     if source.get("needs_proxy"):
-        proxy = os.environ.get("ASTA_PROXY")
         if not proxy:
             raise RuntimeError("needs_proxy 但未设置 ASTA_PROXY")
-        proxies = {"http": proxy, "https": proxy}
-    r = requests.get(url, timeout=TIMEOUT, proxies=proxies,
-                     headers={"User-Agent": UA, "Accept": "*/*"})
-    r.raise_for_status()
-    return r.json() if as_json else r.text
+        attempts = [proxied, proxied]
+    else:
+        # 直连优先；失败且有代理时走代理兜底（GFW 环境下 github.com 等直连时好时坏）
+        attempts = [None, proxied, None] if proxied else [None, None]
+    headers = {"User-Agent": UA, "Accept": "*/*"}
+    # 声明式鉴权头：headers_env: {Header-Name: ENV_VAR}
+    for hname, env in (source.get("headers_env") or {}).items():
+        if os.environ.get(env):
+            headers[hname] = os.environ[env]
+    if "api.github.com" in url and os.environ.get("GITHUB_ACCESS_TOKEN"):
+        headers["Authorization"] = f"Bearer {os.environ['GITHUB_ACCESS_TOKEN']}"
+    last_exc: Exception = RuntimeError("unreachable")
+    for i, proxies in enumerate(attempts):
+        try:
+            r = SESSION.get(url, timeout=TIMEOUT, proxies=proxies, headers=headers)
+            r.raise_for_status()
+            return r.json() if as_json else r.text
+        except Exception as exc:
+            last_exc = exc
+            if i < len(attempts) - 1:
+                time.sleep(1)
+    raise last_exc
 
 
 def mk(source: dict, title: str, url: str, published=None, summary: str = "", extra: dict | None = None) -> dict:
-    key = hashlib.sha1((url or title).encode()).hexdigest()[:12]
+    # url+title 联合哈希：diff 型源（榜单/registry）的多个条目共享同一 URL，只哈希 URL 会互相碰撞
+    key = hashlib.sha1(f"{url}|{title}".encode()).hexdigest()[:12]
     return {
         "id": f"{source['id']}:{key}",
         "source": source["id"],
@@ -126,18 +153,17 @@ def mk(source: dict, title: str, url: str, published=None, summary: str = "", ex
 
 def parse_feed(source: dict, text: str) -> list[dict]:
     fp = feedparser.parse(io.BytesIO(text.encode("utf-8", "ignore")))
-    out = []
     exclude = source.get("exclude_pattern")
-    for e in fp.entries[:60]:
+    kept = []
+    for e in fp.entries:  # 先过滤再截断：arXiv 大日子 new>60 条时不能让 replace/cross 占掉名额
         if e.get("arxiv_announce_type") not in (None, "new"):
             continue  # arXiv replace/cross 不算新条目
-        title = e.get("title", "")
-        if exclude and re.search(exclude, title, re.I):
+        if exclude and re.search(exclude, e.get("title", "")):
             continue
-        published = e.get("published_parsed") or e.get("updated_parsed")
-        out.append(mk(source, title, e.get("link", ""), published,
-                      e.get("summary", ""), ))
-    return out
+        kept.append(e)
+    return [mk(source, e.get("title", ""), e.get("link", ""),
+               e.get("published_parsed") or e.get("updated_parsed"), e.get("summary", ""))
+            for e in kept[:80]]
 
 
 # ---------- json parsers（全部防御式：结构不符 -> 空列表而非崩溃）----------
@@ -153,11 +179,12 @@ def p_hf_daily_papers(source, data):
 
 
 def p_hf_hub_list(source, data):
-    kind = "datasets" if "/datasets" in source["url"] else "models"
+    # 模型页在 hf.co/{id}，只有数据集带 /datasets/ 前缀（/models/{id} 是 404）
+    prefix = "datasets/" if "/datasets" in source["url"] else ""
     out = []
     for it in data if isinstance(data, list) else []:
         rid = it.get("id", "")
-        out.append(mk(source, rid, f"https://huggingface.co/{kind}/{rid}",
+        out.append(mk(source, rid, f"https://huggingface.co/{prefix}{rid}",
                       it.get("createdAt") or it.get("lastModified"), "",
                       {"likes": it.get("likes"), "downloads": it.get("downloads")}))
     return out
@@ -213,37 +240,46 @@ def p_kaggle_datasets(source, data):
     return out
 
 
-def _walk_dated_entries(node, path=""):
-    """递归找带 date 字段的 dict（swebench 等结构未知的榜单 JSON 用）"""
-    found = []
-    if isinstance(node, dict):
-        if node.get("date") and (node.get("name") or node.get("model")):
-            found.append((node, path))
-        for k, v in node.items():
-            found.extend(_walk_dated_entries(v, f"{path}/{k}"))
-    elif isinstance(node, list):
-        for v in node:
-            found.extend(_walk_dated_entries(v, path))
-    return found
-
-
 def p_swebench(source, data):
-    out = []
-    for entry, path in _walk_dated_entries(data)[:200]:
-        name = entry.get("name") or entry.get("model", "")
-        score = entry.get("resolved") or entry.get("score")
-        out.append(mk(source, f"SWE-bench new entry: {name} ({score})",
-                      "https://www.swebench.com/", entry.get("date"), "",
-                      {"board": path, "cost": entry.get("cost")}))
-    return out
+    """diff 型：榜单条目的 date 字段严重滞后于实际合并时间，不能按时间窗筛，
+    只报'相对上次快照新出现的条目'。"""
+    entries = {}
+    boards = data.get("leaderboards", []) if isinstance(data, dict) else []
+    for lb in boards:
+        for e in lb.get("results", []) or []:
+            name = e.get("name") or e.get("model")
+            if not name:
+                continue
+            score = e.get("resolved") or e.get("score")
+            entries[f"{lb.get('name','?')}:{name}"] = str(score)
+    new_keys = _diff_state(source, entries)
+    now = datetime.now(timezone.utc).isoformat()
+    return [mk(source, f"SWE-bench [{k.split(':',1)[0]}] new entry: {k.split(':',1)[1]} ({entries[k]}%)",
+               "https://www.swebench.com/", now) for k in new_keys[:20]]
+
+
+# probe/doctor 等只读场景置 True：算 diff 但不推进快照，避免验证工具偷偷消费当天的增量
+DIFF_DRY_RUN = False
 
 
 def _diff_state(source, current: dict[str, str]) -> list[str]:
     """与上次快照对比，返回新增 key；快照存 data_dir/runs/state/<id>.json"""
+    if not current:
+        # 上游 200 但空体（故障/改版）：宁可报错也不能用空快照顶掉好快照，
+        # 否则恢复后全量条目都会被当成"新增"刷屏
+        raise RuntimeError("payload 为空，拒绝更新 diff 快照")
     state_file = data_dir() / "runs" / "state" / f"{source['id']}.json"
     state_file.parent.mkdir(parents=True, exist_ok=True)
-    prev = json.loads(state_file.read_text()) if state_file.exists() else None
-    state_file.write_text(json.dumps(current, ensure_ascii=False, indent=0))
+    prev = None
+    if state_file.exists():
+        try:
+            prev = json.loads(state_file.read_text())
+        except (json.JSONDecodeError, OSError):
+            prev = None  # 快照损坏按首跑处理（自愈），下面会原子重写
+    if not DIFF_DRY_RUN:
+        tmp = state_file.with_suffix(".tmp")
+        tmp.write_text(json.dumps(current, ensure_ascii=False, indent=0))
+        os.replace(tmp, state_file)
     if prev is None:
         return []  # 首跑只建快照不报，避免把全量当新闻
     return [k for k in current if k not in prev]
@@ -258,15 +294,30 @@ def p_openrouter_models(source, data):
 
 
 def p_mcp_registry(source, data):
-    servers = {}
-    for s in data.get("servers", []):
+    """配合 URL 里的 ?updated_since={window_start_iso}：registry 返回的就是窗口内
+    新/更新的 server（按名字排序的全量 diff 法会被字母窗口截断，不可用）。"""
+    out = []
+    for s in data.get("servers", [])[:15]:
         body = s.get("server", s)
         name = body.get("name", "")
-        servers[f"{name}@{body.get('version','')}"] = body.get("description", "")[:200]
-    new_keys = _diff_state(source, servers)
-    return [mk(source, f"MCP registry: {k} — {servers[k]}",
-               "https://registry.modelcontextprotocol.io/", datetime.now(timezone.utc).isoformat())
-            for k in new_keys[:15]]
+        repo = (body.get("repository") or {}).get("url") or "https://registry.modelcontextprotocol.io/"
+        meta = (s.get("_meta") or {}).get("io.modelcontextprotocol.registry/official", {})
+        out.append(mk(source, f"MCP registry: {name} — {body.get('description','')[:160]}",
+                      repo, meta.get("updatedAt"), "",
+                      {"version": body.get("version")}))
+    return out
+
+
+def p_github_releases_api(source, data):
+    """REST releases API：能拿 prerelease 标志，适合 atom 窗口被 alpha/rc 刷满的仓库"""
+    out = []
+    for r in data if isinstance(data, list) else []:
+        if r.get("prerelease") or r.get("draft"):
+            continue
+        out.append(mk(source, f"{r.get('name') or r.get('tag_name','')}",
+                      r.get("html_url", ""), r.get("published_at"),
+                      (r.get("body") or "")[:600]))
+    return out
 
 
 def p_evalplus(source, data):
@@ -296,8 +347,11 @@ PARSERS = {
     "github_org_repos": p_github_org_repos, "reddit_top": p_reddit_top,
     "kaggle_datasets": p_kaggle_datasets, "swebench": p_swebench,
     "openrouter_models": p_openrouter_models, "mcp_registry": p_mcp_registry,
-    "evalplus": p_evalplus, "generic": p_generic,
+    "evalplus": p_evalplus, "aider_yaml": None,  # 文本型，fetch_source 特判
+    "github_releases_api": p_github_releases_api, "generic": p_generic,
 }
+# diff 型 parser：与本地快照对比报增量，首跑 0 条属正常（probe/doctor 据此判断）
+DIFF_PARSERS = {"openrouter_models", "evalplus", "aider_yaml", "swebench"}
 
 
 def fetch_source(source: dict, cutoff: datetime) -> tuple[str, list[dict], str]:
@@ -306,7 +360,8 @@ def fetch_source(source: dict, cutoff: datetime) -> tuple[str, list[dict], str]:
     missing = [e for e in source.get("requires_env", []) if not os.environ.get(e)]
     if missing:
         return ("skipped", [], f"缺 env: {','.join(missing)}")
-    url = expand_env(source["url"])
+    url = expand_env(source["url"]).replace("{window_start_iso}",
+                                            cutoff.strftime("%Y-%m-%dT%H:%M:%SZ"))
     if stype == "html":
         return ("agent_read", [], url)
     if stype == "rsshub":
@@ -330,7 +385,10 @@ def fetch_source(source: dict, cutoff: datetime) -> tuple[str, list[dict], str]:
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="可用 parser（type=json 源的必填字段）: " + ", ".join(sorted(PARSERS))
+               + f"\n其中 diff 型（与本地快照比增量，首跑 0 条属正常）: {', '.join(sorted(DIFF_PARSERS))}, mcp_registry 走 URL 的 updated_since 参数")
     ap.add_argument("--sources-dir", default=str(PLUGIN_ROOT / "sources"))
     ap.add_argument("--only", help="逗号分隔 source id")
     ap.add_argument("--layers", help="逗号分隔 layer 过滤")
@@ -381,12 +439,14 @@ def main() -> int:
                                 "url": expand_env(s["url"]), "name": s["name"]}
             all_items.extend(items)
 
-    seen_urls = set()
+    # (url, title) 联合判重：diff 型源多个条目共享 URL，不能只按 URL 收敛
+    seen_keys = set()
     deduped = []
     for it in sorted(all_items, key=lambda x: x["published"] or "", reverse=True):
-        if it["url"] in seen_urls:
+        key = (it["url"], it["title"])
+        if key in seen_keys:
             continue
-        seen_urls.add(it["url"])
+        seen_keys.add(key)
         deduped.append(it)
 
     with out_path.open("w") as f:

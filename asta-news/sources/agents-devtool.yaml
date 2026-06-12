@@ -22,13 +22,13 @@ sources:
   - id: gh-codex
     name: OpenAI Codex Releases
     layers: [devtool, agent]
-    type: github-releases
-    url: https://github.com/openai/codex/releases.atom
+    type: json
+    parser: github_releases_api
+    url: "https://api.github.com/repos/openai/codex/releases?per_page=30"
     priority: P1
     freq: weekly
     verified: 2026-06-12
-    exclude_pattern: "(?i)(alpha|beta|rc\\d*)"
-    notes: "alpha 日发，只报正式版；developers.openai.com/codex/changelog 有 bot 墙 403"
+    notes: "atom 10 条窗口被日发的 alpha 刷满，改用 REST API（带 prerelease 标志，parser 只留正式版）；developers.openai.com/codex/changelog 有 bot 墙 403"
 
   - id: gh-gemini-cli
     name: Gemini CLI Releases
@@ -46,11 +46,11 @@ sources:
     layers: [agent]
     type: json
     parser: mcp_registry
-    url: "https://registry.modelcontextprotocol.io/v0/servers?limit=50"
+    url: "https://registry.modelcontextprotocol.io/v0/servers?updated_since={window_start_iso}&limit=100"
     priority: P1
     freq: daily
     verified: 2026-06-12
-    notes: "无需鉴权；日 diff 出新/更新的 server = MCP 生态脉搏"
+    notes: "无需鉴权；{window_start_iso} 由抓取器按时间窗注入。不要用裸 ?limit=N 做快照 diff——registry 按名字排序，窗口只覆盖 a 开头的 server"
 
   - id: gh-mcp-spec
     name: MCP Spec Releases

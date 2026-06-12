@@ -28,7 +28,9 @@ from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 import yaml
 
 PLUGIN_ROOT = Path(__file__).resolve().parent.parent
-KEEP_PARAMS = {"id", "v"}  # news.ycombinator.com/item?id= 、youtube watch?v= 等承载身份的参数
+# 只剔除已知跟踪参数（黑名单制）。白名单制会误杀身份在 query 里的链接：
+# 微信公众号 mp.weixin.qq.com/s?__biz=…、WordPress ?p=N 等
+TRACKING_PARAMS = {"fbclid", "gclid", "igshid", "ref", "ref_src", "source", "mkt_tok", "spm", "utm"}
 
 
 def data_dir() -> Path:
@@ -38,15 +40,20 @@ def data_dir() -> Path:
     return Path.home() / ".claude" / "plugins" / "data" / "asta-news"
 
 
+def _deep_merge(base: dict, override: dict) -> dict:
+    for k, v in override.items():
+        if isinstance(v, dict) and isinstance(base.get(k), dict):
+            _deep_merge(base[k], v)
+        else:
+            base[k] = v
+    return base
+
+
 def load_rules() -> dict:
     rules = yaml.safe_load((PLUGIN_ROOT / "rules.yaml").read_text())
     local = data_dir() / "rules.local.yaml"
     if local.exists():
-        for k, v in (yaml.safe_load(local.read_text()) or {}).items():
-            if isinstance(v, dict) and isinstance(rules.get(k), dict):
-                rules[k].update(v)
-            else:
-                rules[k] = v
+        _deep_merge(rules, yaml.safe_load(local.read_text()) or {})
     return rules
 
 
@@ -56,10 +63,17 @@ def normalize_url(url: str) -> str:
     parts = urlsplit(url.strip())
     host = parts.netloc.lower().removeprefix("www.")
     path = re.sub(r"/+$", "", parts.path)
-    path = re.sub(r"(/abs/\d{4}\.\d{4,5})v\d+$", r"\1", path)  # arXiv 版本号
-    params = [(k, v) for k, v in parse_qsl(parts.query)
-              if k in KEEP_PARAMS and not k.startswith("utm_")]
+    # arXiv：去版本号，并把 pdf 链接归一到 abs（HN/feed 常给 pdf 链）
+    path = re.sub(r"/pdf/(\d{4}\.\d{4,5})(v\d+)?(\.pdf)?$", r"/abs/\1", path)
+    path = re.sub(r"(/abs/\d{4}\.\d{4,5})v\d+$", r"\1", path)
+    params = sorted((k, v) for k, v in parse_qsl(parts.query)
+                    if k not in TRACKING_PARAMS and not k.startswith("utm_"))
     return urlunsplit(("https", host, path, urlencode(params), ""))
+
+
+def _num_tokens(title: str) -> list[str]:
+    """标题里的数字/版本 token。v0.23 与 v0.22 是不同的发布，模糊匹配不得合并。"""
+    return sorted(re.findall(r"\d[\w.]*", title.lower()))
 
 
 def open_db() -> sqlite3.Connection:
@@ -84,12 +98,16 @@ def is_dup(item: dict, conn, titles: list[str], window_days: int, threshold: flo
     cutoff = (datetime.now(timezone.utc) - timedelta(days=window_days)).isoformat()
     row = conn.execute(
         "SELECT 1 FROM seen WHERE url_norm=? AND first_seen>=? LIMIT 1",
-        (normalize_url(item["url"]), cutoff)).fetchone()
+        (normalize_url(item.get("url", "")), cutoff)).fetchone()
     if row:
         return True
     t = (item.get("title") or "").lower()
     if len(t) >= 20:  # 太短的标题模糊匹配误伤率高
+        toks = _num_tokens(t)
         for known in titles:
+            # 数字/版本 token 不同 = 不同事件（"vLLM v0.23" vs "v0.22" 相似度 0.96 但不是重复）
+            if toks != _num_tokens(known):
+                continue
             if difflib.SequenceMatcher(None, t, known.lower()).ratio() >= threshold:
                 return True
     return False
@@ -102,10 +120,20 @@ def cmd_filter(args, rules) -> int:
         wd = rules["dedup"]["seen_window_days"]
         th = rules["dedup"]["title_similarity"]
         titles = recent_titles(conn, wd)
-        fresh = [i for i in items if not is_dup(i, conn, titles, wd, th)]
     except Exception as exc:
         print(f"[警告] 去重库异常，放行全部候选: {exc}", file=sys.stderr)
-        fresh = items
+        conn = None
+    fresh = []
+    for i in items:
+        if conn is None:
+            fresh.append(i)
+            continue
+        try:
+            if not is_dup(i, conn, titles, wd, th):
+                fresh.append(i)
+        except Exception as exc:  # 单条数据异常只放行该条，不拖垮整批去重
+            print(f"[警告] 候选异常已放行: {i.get('id','?')}: {exc}", file=sys.stderr)
+            fresh.append(i)
     out = Path(args.out) if args.out else Path(args.filter).with_name("fresh.jsonl")
     with out.open("w") as f:
         for i in fresh:
@@ -155,7 +183,21 @@ def cmd_self_test() -> int:
     assert is_dup(c, conn, titles, 14, 0.78), "模糊标题判重失败"
     assert not is_dup({"id": "t:4", "url": "https://new.com/y", "title": "Completely different news about robotics hardware"},
                       conn, titles, 14, 0.78), "误判新条目"
-    print("self-test: 3/3 PASS")
+    # 微信公众号：身份在 query 参数里，不同文章不得合并
+    w1 = normalize_url("https://mp.weixin.qq.com/s?__biz=MzA1&mid=111&idx=1&sn=aaa")
+    w2 = normalize_url("https://mp.weixin.qq.com/s?__biz=MzB2&mid=999&idx=1&sn=bbb")
+    assert w1 != w2, "微信链接 query 身份参数被丢弃"
+    # 版本号不同 = 不同事件，哪怕标题相似度 0.96
+    with conn:
+        conn.execute("INSERT INTO seen VALUES(?,?,?,?,?,?)",
+                     ("t:5", normalize_url("https://github.com/vllm/r/v0.22"),
+                      "vLLM v0.22.0 release notes", "t", "published", now))
+    titles = recent_titles(conn, 14)
+    assert not is_dup({"id": "t:6", "url": "https://github.com/vllm/r/v0.23", "title": "vLLM v0.23.0 release notes"},
+                      conn, titles, 14, 0.78), "不同版本号的发布被误合并"
+    # arXiv pdf 与 abs 是同一篇
+    assert normalize_url("https://arxiv.org/pdf/2606.12345v2.pdf") == normalize_url("https://arxiv.org/abs/2606.12345"), "arXiv pdf/abs 未归一"
+    print("self-test: 6/6 PASS")
     return 0
 
 

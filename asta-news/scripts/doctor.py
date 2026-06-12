@@ -25,6 +25,8 @@ import requests
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import fetch_sources as F  # noqa: E402
 
+F.DIFF_DRY_RUN = True  # 体检是只读操作：不许推进 diff 快照
+
 ASSETS = F.PLUGIN_ROOT / "skills" / "setup" / "assets"
 RESULTS: list[tuple[str, str, str]] = []  # (level, name, detail)
 
@@ -105,7 +107,8 @@ def main() -> int:
     # 4. 代理
     proxy = os.environ.get("ASTA_PROXY")
     if proxy:
-        check("ASTA_PROXY", proxy_works(proxy), f"{proxy}" + ("" if proxy_works(proxy) else " 无法访问 huggingface.co"))
+        works = proxy_works(proxy)
+        check("ASTA_PROXY", works, f"{proxy}" + ("" if works else " 无法访问 huggingface.co"))
     else:
         found = next((c for c in detect_proxy_candidates() if proxy_works(c)), None)
         check("ASTA_PROXY", found is not None,
@@ -121,9 +124,10 @@ def main() -> int:
         check("注册表", False, str(exc))
         sources, enabled = [], []
 
-    # 6. P0 源抽样（直连可达的优先，避免被代理问题污染抽样）
+    # 6. P0 源抽样（排除 html/rsshub/needs_proxy/diff 型——diff 型健康时也常 0 条，无法用条目数判断）
     pool = [s for s in enabled if s.get("priority") == "P0"
-            and s["type"] != "html" and not s.get("needs_proxy") and s["type"] != "rsshub"]
+            and s["type"] != "html" and not s.get("needs_proxy") and s["type"] != "rsshub"
+            and s.get("parser") not in F.DIFF_PARSERS and s.get("parser") != "mcp_registry"]
     for s in random.sample(pool, min(args.probe_n, len(pool))):
         status, items, detail = F.fetch_source(s, datetime.now(timezone.utc) - timedelta(days=30))
         check(f"P0 抽样 {s['id']}", status == "ok" and len(items) > 0, detail)

@@ -7,9 +7,9 @@ sources:
     parser: swebench
     url: https://raw.githubusercontent.com/swe-bench/swe-bench.github.io/master/data/leaderboards.json
     priority: P0
-    freq: weekly
+    freq: monthly
     verified: 2026-06-12
-    notes: "raw 在 master 分支（main 404、swebench.com 路径 404）；条目含成本与日期，只报窗口内新条目"
+    notes: "raw 在 master 分支（main 404、swebench.com 路径 404）。diff 型：条目 date 严重滞后实际合并，按快照增量报而非时间窗。上游自 2026-02-27 起休眠，醒来后自动恢复报新条目"
 
   - id: evalplus
     name: EvalPlus Results
@@ -107,7 +107,8 @@ sources:
     url: https://artificialanalysis.ai/api/v2/data/llms/models
     priority: P2
     requires_env: [AA_API_KEY]
+    headers_env: { x-api-key: AA_API_KEY }
     enabled: false
     freq: daily
     verified: 2026-06-12
-    notes: "一次调用拿全行业 智能指数+价格+tokens/s+延迟；需免费注册 API key（x-api-key 头），配好 AA_API_KEY 后 enable"
+    notes: "一次调用拿全行业 智能指数+价格+tokens/s+延迟；免费注册 API key 后 export AA_API_KEY 并 enable（鉴权头由 headers_env 声明，抓取器自动附带）"

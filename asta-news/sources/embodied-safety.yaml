@@ -74,9 +74,10 @@ sources:
     type: html
     url: https://alignment.anthropic.com/
     priority: P1
+    needs_proxy: true
     freq: weekly
     verified: 2026-06-12
-    notes: "无 RSS（/feed.xml 返回 HTML），读索引页"
+    notes: "无 RSS（/feed.xml 返回 HTML），读索引页；部分网络直连 TLS 被中间人拦截（self-signed 报错），走代理正常"
 
   - id: transformer-circuits
     name: Transformer Circuits

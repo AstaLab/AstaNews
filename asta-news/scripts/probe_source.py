@@ -19,6 +19,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import fetch_sources as F  # noqa: E402  复用抓取/解析逻辑
 
+F.DIFF_DRY_RUN = True  # 验证是只读操作：不许推进 diff 快照，否则会偷吃当天的增量
+
 FRESH_DAYS = {"daily": 4, "weekly": 21, "monthly": 75}
 
 
@@ -38,8 +40,10 @@ def probe(source: dict) -> tuple[bool, str]:
     if status == "error":
         return False, detail
     if not items:
-        if source.get("parser") in ("openrouter_models", "mcp_registry", "evalplus", "aider_yaml"):
+        if source.get("parser") in F.DIFF_PARSERS:
             return True, "diff 型源：首跑建立快照，0 条属正常"
+        if source.get("parser") == "mcp_registry":
+            return True, "updated_since 窗口内无更新，属正常"
         return False, "可达但解析出 0 条目"
     dated = [i["published"] for i in items if i["published"]]
     if not dated:

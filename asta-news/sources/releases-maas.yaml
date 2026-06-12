@@ -77,9 +77,9 @@ sources:
     parser: github_org_repos
     url: "https://api.github.com/orgs/deepseek-ai/repos?sort=created&per_page=20"
     priority: P1
-    freq: daily
+    freq: monthly
     verified: 2026-06-12
-    notes: "新模型 = 新 repo，常早于媒体数小时"
+    notes: "新模型 = 新 repo，常早于媒体数小时；建 repo 是低频事件（上次 2026-04-27），freq 必须 monthly 否则 probe 误报 STALE"
 
   - id: qwen-github-org
     name: Qwen GitHub org

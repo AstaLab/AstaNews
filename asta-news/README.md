@@ -24,8 +24,9 @@ rsshub/               # 可选自部署 RSSHub 的 compose 与 .env
 | `ASTA_PROXY` | HTTP 代理，用于直连不可达的源（HF / Anthropic / Google / Mistral 等），如 `http://127.0.0.1:7897` | 视网络 |
 | `ASTA_RSSHUB` | 自部署 RSSHub 地址，默认 `http://127.0.0.1:1200` | 用 rsshub 源时 |
 | `TWITTER_AUTH_TOKEN` | x.com 登录 cookie 的 `auth_token`（RSSHub twitter 路由） | 用 X 源时 |
-| `GITHUB_ACCESS_TOKEN` | GitHub PAT、无需 scope（RSSHub trending 路由必需；api.github.com 提额） | 建议 |
+| `GITHUB_ACCESS_TOKEN` | GitHub PAT、无需 scope。shell 里 export 时抓取器自动给 api.github.com 带上（60/h→5000/h）；RSSHub 容器 .env 里则供 trending 路由用 | 建议 |
 | `ASTA_X_LIST_ID` | 策展用 X List 的 id | 用 X 源时 |
+| `AA_API_KEY` | Artificial Analysis 的免费 API key（enable 该源时） | 否 |
 
 ## 脚本（黑盒：先 `--help`，不必读源码）
 

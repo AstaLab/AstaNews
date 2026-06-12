@@ -12,9 +12,10 @@ sources:
     type: rss                    # 必填：rss | atom | json | github-releases | rsshub | html
     url: https://rss.arxiv.org/rss/cs.CL  # 必填；rsshub 类型填路径（如 /anthropic/news）
     priority: P0                 # 必填：P0 每日必抓且参与裁决 / P1 增强 / P2 按需或备用
-    parser: ""                   # type=json 时必填，见 fetch_sources.py --help 的 parser 列表
+    parser: ""                   # type=json 时必填，完整列表见 fetch_sources.py --help 末尾的 epilog
     needs_proxy: false           # true → 经 ASTA_PROXY 抓取；未配代理时跳过并警告
-    requires_env: []             # 依赖的 env（如 TWITTER_AUTH_TOKEN），缺失时跳过并警告
+    requires_env: []             # 抓取器进程需要的 env（缺失时跳过并警告）；容器内凭证不算
+    headers_env: {}              # 可选鉴权头：{Header-Name: ENV_VAR}，抓取时自动附带
     enabled: true                # false → 默认不抓（保留条目供参考/待修复）
     freq: daily                  # daily | weekly | monthly，probe 的新鲜度阈值
     verified: 2026-06-12         # 必填：最近一次 probe 通过的日期
@@ -27,7 +28,7 @@ sources:
 **type 说明**
 - `rss` / `atom`：标准 feed，feedparser 解析。
 - `github-releases`：`https://github.com/{owner}/{repo}/releases.atom`，按 atom 解析并提取版本号。
-- `json`：结构化 API，需指定 `parser`（hn_algolia / hf_daily_papers / openrouter_models / oss_insight / github_org_repos / swebench / mcp_registry / hf_hub_list / reddit_top / kaggle_datasets / evalplus / aider_yaml）。
+- `json`：结构化 API，需指定 `parser`（hn_algolia / hf_daily_papers / openrouter_models / oss_insight / github_org_repos / github_releases_api / swebench / mcp_registry / hf_hub_list / reddit_top / kaggle_datasets / evalplus / aider_yaml / generic）。其中 openrouter_models、evalplus、aider_yaml、swebench 是 **diff 型**：与本地快照对比只报增量，首跑 0 条属正常。URL 里可写 `{window_start_iso}` 占位符，抓取时按时间窗注入（mcp-registry 用）。
 - `rsshub`：经 `ASTA_RSSHUB`（默认 `http://127.0.0.1:1200`）的 RSSHub 路由。
 - `html`：无 feed 的页面。抓取层只登记 URL 与标题线索，由策展 agent 按需阅读（不做 CSS 选择器爬取——选择器会烂）。
 

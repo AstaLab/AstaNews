@@ -57,15 +57,15 @@ sources:
     verified: 2026-06-12
 
   - id: gh-tensorrt-llm
-    name: TensorRT-LLM Releases
+    name: TensorRT-LLM Releases (PyPI)
     layers: [serving]
-    type: github-releases
-    url: https://github.com/NVIDIA/TensorRT-LLM/releases.atom
+    type: rss
+    url: https://pypi.org/rss/project/tensorrt-llm/releases.xml
     priority: P1
-    freq: weekly
+    freq: monthly
     verified: 2026-06-12
     exclude_pattern: "(?i)rc\\d*"
-    notes: "RC 极多，只报正式版"
+    notes: "GitHub releases.atom 的 10 条窗口被 RC 刷满（正式版会被挤出窗口），改用 PyPI feed；正式版节奏约 50+ 天"
 
   - id: gh-llamacpp
     name: llama.cpp Releases
@@ -79,13 +79,14 @@ sources:
     notes: "每次 CI build 都发 release（一天多个 bXXXX），默认禁用；重大变化由 HN/r-localllama 兜底"
 
   - id: gh-pytorch
-    name: PyTorch Releases
+    name: PyTorch Releases (PyPI)
     layers: [infra]
-    type: github-releases
-    url: https://github.com/pytorch/pytorch/releases.atom
+    type: rss
+    url: https://pypi.org/rss/project/torch/releases.xml
     priority: P1
     freq: monthly
     verified: 2026-06-12
+    notes: "GitHub releases.atom 的 10 条窗口被 trunk/<sha> CI tag 刷满（每天多推，正式版几小时就被挤出），改用 PyPI feed（纯正式版）"
 
   - id: gh-deepspeed
     name: DeepSpeed Releases

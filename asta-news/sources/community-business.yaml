@@ -69,11 +69,10 @@ sources:
     type: rsshub
     url: /github/trending/daily/any
     priority: P2
-    requires_env: [GITHUB_ACCESS_TOKEN]
     enabled: false
     freq: daily
     verified: 2026-06-12
-    notes: "需真实 PAT（GraphQL，无 scope 即可）；与 oss-insight 二选一"
+    notes: "PAT 配在 RSSHub 容器 .env 的 GITHUB_ACCESS_TOKEN（GraphQL，无 scope 即可），抓取器侧无需 env；与 oss-insight 二选一"
 
   - id: x-ai-list
     name: X/Twitter AI List (RSSHub)
@@ -81,7 +80,7 @@ sources:
     type: rsshub
     url: /twitter/list/${ASTA_X_LIST_ID}
     priority: P0
-    requires_env: [TWITTER_AUTH_TOKEN, ASTA_X_LIST_ID]
+    requires_env: [ASTA_X_LIST_ID]   # TWITTER_AUTH_TOKEN 配在 RSSHub 容器的 .env 里，抓取器不需要
     enabled: false
     freq: daily
     verified: 2026-06-12
