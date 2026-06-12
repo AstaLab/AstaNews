@@ -2,6 +2,9 @@ name: daily-digest
 
 # 每天 UTC 01:00（北京 09:00）跑 digest，产物 commit 进仓库，Pages 自动部署。
 # 也可在 Actions 页手动触发（workflow_dispatch）。
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 on:
   schedule:
     - cron: "0 1 * * *"

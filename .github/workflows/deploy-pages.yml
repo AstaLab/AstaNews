@@ -1,6 +1,9 @@
 name: deploy-pages
 
 # 站点内容变化即部署。daily-digest 跑完 push 产物会触发这里；也可手动 dispatch。
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 on:
   push:
     branches: [main]

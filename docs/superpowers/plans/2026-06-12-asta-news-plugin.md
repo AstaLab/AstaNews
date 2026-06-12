@@ -108,7 +108,7 @@ AstaNews/                                    # 仓库根（社区贡献入口）
   "description": "Daily AI full-stack digest agent: papers, model releases, evals, infra/serving, agents, embodied, safety, product/business, devtools. Community-extensible sources.",
   "version": "0.1.0",
   "author": { "name": "Asta Lab" },
-  "repository": "https://github.com/asta-lab/AstaNews"
+  "repository": "https://github.com/ylxmf2005/AstaNews"
 }
 ```
 - [ ] marketplace.json（仓库根 `.claude-plugin/`）：`{"name":"asta-lab","plugins":[{"name":"asta-news","source":"./asta-news","description":"…","version":"0.1.0","category":"productivity"}]}`
