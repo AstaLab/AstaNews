@@ -19,8 +19,8 @@ function applyPerspective(items, persp) {
     .map((x) => x.it);
 }
 
-function Story({ it, n, related, lead }) {
-  const body = it.readable || it.take || "";
+function Story({ it, n, related, lead, sharp }) {
+  const body = (sharp && it.sharp) || it.readable || it.take || "";
   const facts = it.facts || [];
   const links = [];
   if (it.links?.primary) links.push(["一手源", it.links.primary]);
@@ -80,6 +80,7 @@ export default function EditionView({ edition }) {
   const [tier, setTier] = useState("daily");
   const [persp, setPersp] = useState("all");   // 视角（大）：重排+框定
   const [cat, setCat] = useState("all");        // 类别（小）：按 layer 硬筛
+  const [sharp, setSharp] = useState(false);    // 犀利度：中性 / 锐评
   const [related, setRelated] = useState(null); // 预计算的相关新闻（向量近邻）
   useEffect(() => {
     fetch(`${BASE}/data/related.json`).then((r) => r.json()).then(setRelated).catch(() => setRelated({}));
@@ -100,6 +101,8 @@ export default function EditionView({ edition }) {
     if (cat !== "all") raw = raw.filter((it) => lz(it.layer) === cat);
     return raw;
   }, [tier, persp, cat, edition.date]);
+
+  const hasSharp = useMemo(() => (tiers[tier] || []).some((it) => it.sharp), [tier, edition.date]);
 
   const perspLede = edition.perspectives?.[persp]?.lede;
 
@@ -123,6 +126,15 @@ export default function EditionView({ edition }) {
               {PERSPECTIVES.map((p) => (
                 <button key={p.key} className={persp === p.key ? "on" : ""} onClick={() => setPersp(p.key)}>{p.label}</button>
               ))}
+            </div>
+          </div>
+        )}
+        {tier !== "full" && hasSharp && (
+          <div className="ctl-group">
+            <span className="ctl-label">犀利度</span>
+            <div className="seg">
+              <button className={!sharp ? "on" : ""} onClick={() => setSharp(false)}>中性</button>
+              <button className={sharp ? "on" : ""} onClick={() => setSharp(true)}>锐评</button>
             </div>
           </div>
         )}
@@ -155,7 +167,7 @@ export default function EditionView({ edition }) {
         ? <FullRows items={items} />
         : items.length === 0
           ? <p className="empty">该类别下暂无条目。</p>
-          : items.map((it, i) => <Story key={it.id || i} it={it} n={i + 1} related={related} lead={i === 0} />)}
+          : items.map((it, i) => <Story key={it.id || i} it={it} n={i + 1} related={related} lead={i === 0} sharp={sharp} />)}
 
       {tier !== "full" && edition.gaps?.length > 0 && (
         <>
