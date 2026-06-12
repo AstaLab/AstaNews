@@ -13,6 +13,38 @@ function Card({ title, children }) {
   );
 }
 
+function ConfigEditor({ config }) {
+  const names = Object.keys(config);
+  const [name, setName] = useState(names[0]);
+  const [text, setText] = useState(JSON.stringify(config[names[0]], null, 1));
+  const [msg, setMsg] = useState("");
+  function pick(n) { setName(n); setText(JSON.stringify(config[n], null, 1)); setMsg(""); }
+  async function save() {
+    let body;
+    try { body = JSON.parse(text); } catch (e) { setMsg(`JSON 非法：${e}`); return; }
+    setMsg("保存中…");
+    try {
+      const r = await fetch(`${API}/api/config/${name}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+      const d = await r.json();
+      setMsg(r.ok ? `已保存 → ${d.wrote}` : `失败：${d.detail || r.status}`);
+    } catch (e) { setMsg(`失败：${e}`); }
+  }
+  return (
+    <div>
+      <div className="seg" style={{ marginBottom: 10, flexWrap: "wrap" }}>
+        {names.map((n) => <button key={n} className={name === n ? "on" : ""} onClick={() => pick(n)}>{n}</button>)}
+      </div>
+      <textarea value={text} onChange={(e) => setText(e.target.value)} spellCheck={false}
+        style={{ width: "100%", height: 220, fontFamily: "var(--mono)", fontSize: 12, padding: 12, border: "1px solid var(--rule-2)", borderRadius: 8, background: "var(--paper)", color: "var(--ink)", resize: "vertical" }} />
+      <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 12 }}>
+        <button onClick={save} className="chip" style={{ borderColor: "var(--seal)" }}>保存 {name}</button>
+        <span style={{ fontSize: 12, color: "var(--muted)" }}>{msg}</span>
+      </div>
+      <div style={{ fontSize: 11, color: "var(--faint)", marginTop: 6 }}>保存会把 yaml 重写（剥注释）；带注释的规范版在 git 仓库。</div>
+    </div>
+  );
+}
+
 export default function Console() {
   const [health, setHealth] = useState(null);
   const [sources, setSources] = useState(null);
@@ -94,8 +126,8 @@ cd web && NEXT_PUBLIC_API=http://127.0.0.1:8799 npm run dev
       <Card title="数据源">
         {sources ? <span style={{ fontFamily: "var(--mono)", fontSize: 13 }}>{sources.count} 源 · {sources.enabled} 启用</span> : "…"}
       </Card>
-      <Card title="配置">
-        {config ? <span style={{ fontFamily: "var(--mono)", fontSize: 12 }}>{Object.keys(config).join(" · ")}</span> : "…"}
+      <Card title="配置（可编辑保存）">
+        {config ? <ConfigEditor config={config} /> : "…"}
       </Card>
       <Card title="触发">
         <button onClick={trigger} className="chip" style={{ borderColor: "var(--seal)" }}>触发抓取</button>

@@ -136,7 +136,7 @@ group  : 目标 5（上限 8），最严，微信群发
 - ⬜ **P3-STUDY** 研究橘鸦公众号写法/配图、Tim 的 day-day-arxiv 归档模式，沉淀到设计与 skill
 - ✅ **P3-SELFCONTAIN** doctor 全绿(110 源/RSSHub/代理自探测)；setup skill 更新：X 用 grab_x_cookie.sh 自动取 cookie + per-user 路由开箱即用、embed 自包含(hf-mirror)、README 指向 web/ Next 流程
 - 🔵 **P3-CONSOLE** services/ FastAPI 后端已建并验证：列期/取期/**服务端语义检索(跨语言)**/源概览/读写配置/触发抓取 + require_auth 鉴权钩子(预留账号)；待加排程端点 + web 控制台 UI(P3-WEBCTRL)
-- 🔵 **P3-WEBCTRL** 网站 /console 页上线：静态站显引导，配 NEXT_PUBLIC_API 连后端则看状态/源/配置 + 服务端语义检索 + 触发抓取；待加配置编辑表单/排程 UI
+- 🔵 **P3-WEBCTRL** 网站 /console 页上线：静态站显引导，连后端则看状态/源、服务端语义检索、触发抓取、**编辑并保存配置(tiers/perspectives/sharpness/…)**；待加排程 UI
 - ⬜ **P3-ACCT** 账号体系（API auth 预留 → 实现）
 - ⬜ **P3-WECHAT** 公众号自动发布（研究 + 接口）
 - 🔵 **持续** 前端：头条层级 + **item 详情页/永久链接(标题点进站内,含全文/锐评/facts/相关)**；数据源 115（+雷峰网/36氪快讯/虎嗅 中文商业媒体）（+The Decoder/MarkTechPost/Together/Google AI/philschmid/r-ML 等，不止 RSSHub）；前端人类视角打磨、文章质量、更多中文/商业/创意源待续
