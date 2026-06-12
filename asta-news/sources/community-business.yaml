@@ -31,6 +31,26 @@ sources:
     verified: 2026-06-12
     notes: "免费融资/产品新闻 firehose，全文 feed；日 5-15 条，策展层收窄"
 
+  - id: the-decoder
+    name: The Decoder
+    layers: [model, product, business]
+    type: rss
+    url: https://the-decoder.com/feed/
+    priority: P1
+    freq: daily
+    verified: 2026-06-13
+    notes: "AI 新闻媒体，覆盖发布/产品/研究，写法易懂，可作橘鸦式日报参考"
+
+  - id: marktechpost
+    name: MarkTechPost
+    layers: [model, agent]
+    type: rss
+    url: https://www.marktechpost.com/feed/
+    priority: P2
+    freq: daily
+    verified: 2026-06-13
+    notes: "模型/方法新闻聚合，量大，策展层收窄；可补抓新发布"
+
   - id: qbitai
     name: 量子位 (RSSHub)
     layers: [business, product, model]

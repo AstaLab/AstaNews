@@ -193,6 +193,27 @@ sources:
     freq: weekly
     verified: 2026-06-12
 
+  - id: together-blog
+    name: Together AI Blog
+    layers: [serving, maas, infra]
+    type: rss
+    url: https://www.together.ai/blog/rss.xml
+    priority: P1
+    freq: weekly
+    verified: 2026-06-13
+    notes: "推理/训练系统优化、新模型上架的工程博客"
+
+  - id: google-ai-blog
+    name: Google AI Blog
+    layers: [model, safety, infra]
+    type: rss
+    url: https://blog.google/technology/ai/rss/
+    priority: P1
+    needs_proxy: true
+    freq: daily
+    verified: 2026-06-13
+    notes: "比 gemini-api-changelog 更广，覆盖 Google 全线 AI 发布与研究"
+
   - id: bfl-blog
     name: Black Forest Labs Blog
     layers: [model]
