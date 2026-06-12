@@ -1,124 +1,117 @@
-// AstaNews 静态站点：纯客户端，从 ./data/ 加载每日产物渲染。无构建步骤。
+// AstaNews · 情报邸报 — 纯客户端，从 ./data/ 加载每日产物渲染。无构建步骤。
 const LAYER = {
-  model: "🧠 model", "post-training": "🎛️ post-training", eval: "📊 eval",
-  data: "🗂️ data", infra: "🏗️ infra", serving: "⚡ serving", maas: "☁️ maas",
-  agent: "🤖 agent", embodied: "🦾 embodied", safety: "🛡️ safety",
-  product: "📦 product", business: "💰 business", devtool: "🔧 devtool",
+  model: ["🧠", "模型"], "post-training": ["🎛️", "后训练"], eval: ["📊", "评测"],
+  data: ["🗂️", "数据"], infra: ["🏗️", "基建"], serving: ["⚡", "推理"], maas: ["☁️", "MaaS"],
+  agent: ["🤖", "智能体"], embodied: ["🦾", "具身"], safety: ["🛡️", "安全"],
+  product: ["📦", "产品"], business: ["💰", "商业"], devtool: ["🔧", "工具"],
 };
-const layerLabel = (l) => LAYER[l] || l;
+const lz = (l) => (Array.isArray(l) ? l[0] : l) || "";
+const dept = (l) => { const k = lz(l); const v = LAYER[k]; return v ? `${v[0]} ${v[1]}` : k; };
 const esc = (s) => (s == null ? "" : String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])));
 
 async function getJSON(url) {
   const r = await fetch(url, { cache: "no-cache" });
-  if (!r.ok) throw new Error(`${r.status} ${url}`);
+  if (!r.ok) throw new Error(`${r.status}`);
   return r.json();
 }
 
-function renderNav(editions, active) {
-  const nav = document.getElementById("edition-nav");
-  if (!editions.length) { nav.innerHTML = '<div class="empty">暂无归档</div>'; return; }
-  nav.innerHTML = editions.map((e) => `
-    <a class="nav-item${e.date === active ? " active" : ""}" href="#${e.date}" data-date="${e.date}">
-      <div class="nav-date">${esc(e.date)}</div>
-      <div class="nav-sub">${e.selected} 条 · ${(e.layers || []).length} 层</div>
+function renderIssues(eds, active) {
+  const nav = document.getElementById("issues");
+  if (!eds.length) { nav.innerHTML = '<div class="empty">暂无</div>'; return; }
+  nav.innerHTML = eds.map((e, i) => `
+    <a class="iss${e.date === active ? " active" : ""}" href="#${e.date}" data-date="${e.date}">
+      <div class="d">${esc(e.date)}</div>
+      <div class="m">No.${String(eds.length - i).padStart(3, "0")} · ${e.selected} 条 · ${(e.layers || []).length} 层</div>
     </a>`).join("");
 }
 
-function card(it) {
+function story(it, i) {
   const links = [];
   if (it.links?.primary) links.push(`<a href="${esc(it.links.primary)}" target="_blank" rel="noopener">一手源</a>`);
   if (it.links?.discussion) links.push(`<a href="${esc(it.links.discussion)}" target="_blank" rel="noopener">讨论</a>`);
   const facts = (it.facts || []).map((f) => `<li>${esc(f)}</li>`).join("");
-  return `<div class="card">
-    <div class="card-top">
-      <span class="rank">${it.rank ?? ""}</span>
-      <span class="badge">${esc(layerLabel(it.layer))}</span>
-    </div>
-    <h3>${esc(it.title)}</h3>
-    <div class="readable">${esc(it.readable)}</div>
+  const [emoji] = LAYER[lz(it.layer)] || ["", ""];
+  return `<article class="story" style="--i:${i}">
+    <div class="num">${it.rank ?? i + 1}</div>
+    <div class="dept"><span class="emoji">${emoji}</span>${esc(dept(it.layer))}</div>
+    <h2>${esc(it.title)}</h2>
+    <div class="body">${esc(it.readable)}</div>
     ${facts ? `<ul class="facts">${facts}</ul>` : ""}
-    ${links.length ? `<div class="card-links">${links.join("")}</div>` : ""}
-  </div>`;
+    ${links.length ? `<div class="links">${links.join("")}</div>` : ""}
+  </article>`;
 }
 
-function allCandidates(d) {
+function ledger(d) {
   const all = d.all_candidates || [];
   if (!all.length) return "";
   const selUrls = new Set((d.selected || []).concat(d.radar || []).map((x) => x.links?.primary || x.link).filter(Boolean));
-  const bySource = {};
-  for (const c of all) (bySource[c.source] = bySource[c.source] || []).push(c);
-  const groups = Object.keys(bySource).sort().map((src) => {
-    const items = bySource[src].map((c) => {
+  const by = {};
+  for (const c of all) (by[c.source] = by[c.source] || []).push(c);
+  const groups = Object.keys(by).sort().map((src) => {
+    const items = by[src].map((c) => {
       const sel = c.selected || selUrls.has(c.url);
-      const summary = c.summary ? `<div class="cand-summary">${esc(c.summary)}</div>` : "";
-      return `<li class="${sel ? "is-selected" : ""}">
-        <div class="cand-head">
-          <span class="mini-badge">${esc(layerLabel(c.layer ? (Array.isArray(c.layer) ? c.layer[0] : c.layer) : ""))}</span>
-          <a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.title)}</a>
-        </div>${summary}</li>`;
+      const sum = c.summary ? `<div class="lsum">${esc(c.summary)}</div>` : "";
+      return `<li class="${sel ? "sel" : ""}">
+        <div class="lhead"><span class="lb">${esc(dept(c.layer))}</span>
+        <a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.title)}</a></div>${sum}</li>`;
     }).join("");
-    return `<div class="src-group"><h4>${esc(src)} · ${bySource[src].length}</h4><ul>${items}</ul></div>`;
+    return `<div class="lgroup"><h4>${esc(src)}<span class="cnt">${by[src].length}</span></h4><ul>${items}</ul></div>`;
   }).join("");
-  return `<details class="all">
+  return `<details class="ledger">
     <summary><span>全部信息 · ${all.length} 条候选（含未精选）</span><span class="chev">▸</span></summary>
-    <div class="all-body">
-      <p class="all-note">这是当天抓到的全部候选，★ 为精选条目。精选只是为微信群做的减法；要全景看这里。</p>
-      ${groups}
-    </div>
+    <p class="ledger-note">这是当天抓到的全部候选，★ 为精选。精选只是为微信群做的减法；要全景、原文链接与摘要，看这里。</p>
+    <div class="lcol">${groups}</div>
   </details>`;
 }
 
-function renderEdition(d) {
-  const el = document.getElementById("edition");
-  const stats = d.stats || {};
-  const selected = (d.selected || []).map(card).join("");
-  const radar = (d.radar || []).map((r) => `<li><span class="badge">${esc(layerLabel(r.layer))}</span>${esc(r.title)}${r.note ? " — " + esc(r.note) : ""}${r.link ? ` <a href="${esc(r.link)}" target="_blank" rel="noopener">↗</a>` : ""}</li>`).join("");
+function renderIssue(d) {
+  const el = document.getElementById("issue");
+  const st = d.stats || {};
+  const layers = (st.layers_covered || []).map((l) => dept(l)).join(" · ");
+  const stories = (d.selected || []).map(story).join("");
+  const radar = (d.radar || []).map((r) =>
+    `<li><span class="tag">${esc(dept(r.layer))}</span>${esc(r.title)}${r.note ? "，" + esc(r.note) : ""}${r.link ? ` <a href="${esc(r.link)}" target="_blank" rel="noopener">↗</a>` : ""}</li>`).join("");
   const gaps = (d.gaps || []).map((g) => `<li>${esc(g)}</li>`).join("");
   el.innerHTML = `
-    <div class="ed-head">
-      <div class="ed-date">${esc(d.date)}${d.weekday ? " · " + esc(d.weekday) : ""}</div>
-      <h1 class="ed-title">${esc(d.headline || "AI 全栈每日情报")}</h1>
-      ${d.overview ? `<p class="ed-overview">${esc(d.overview)}</p>` : ""}
-      <div class="ed-stats">
-        <span><b>${(d.selected || []).length}</b> 条精选</span>
-        <span>覆盖 <b>${(stats.layers_covered || []).map(layerLabel).join("、") || "—"}</b></span>
-        <span>候选 <b>${stats.candidates ?? "—"}</b> 条</span>
-        ${stats.sources_ok != null ? `<span>源 <b>${stats.sources_ok}</b> 成功${stats.sources_failed ? ` / ${stats.sources_failed} 失败` : ""}</span>` : ""}
-      </div>
+    <div class="dateline">${esc(d.date)} · ${esc(d.weekday || "")} · ${(st.layers_covered || []).length} LAYERS</div>
+    ${d.overview ? `<p class="deck"><span class="lead-in">${esc(d.headline ? d.headline + "。" : "")}</span>${esc(d.overview)}</p>` : ""}
+    <div class="statbar">
+      <span><b>${(d.selected || []).length}</b> 条精选</span><span class="sep">/</span>
+      <span>覆盖 <b>${layers || "—"}</b></span><span class="sep">/</span>
+      <span>候选 <b>${st.candidates ?? "—"}</b> 条</span>
+      ${st.sources_ok != null ? `<span class="sep">/</span><span>源 <b>${st.sources_ok}</b> 成功${st.sources_failed ? ` · ${st.sources_failed} 失败` : ""}</span>` : ""}
     </div>
-    ${selected ? `<div class="section-label">精选</div>${selected}` : ""}
-    ${radar ? `<div class="section-label">📡 雷达</div><ul class="radar-list">${radar}</ul>` : ""}
-    ${gaps ? `<div class="section-label">⚠️ 数据缺口</div><div class="gap-box"><ul class="gap-list">${gaps}</ul></div>` : ""}
-    ${allCandidates(d)}
-  `;
-  window.scrollTo({ top: 0, behavior: "smooth" });
+    ${stories ? `<div class="sec">本期要闻</div>${stories}` : ""}
+    ${radar ? `<div class="sec">雷达 · 快报</div><ul class="briefs">${radar}</ul>` : ""}
+    ${gaps ? `<div class="sec">数据缺口</div><div class="note"><h3>编者按 · 今日未覆盖</h3><ul>${gaps}</ul></div>` : ""}
+    ${ledger(d)}`;
+  window.scrollTo({ top: 0 });
 }
 
-let EDITIONS = [];
+let EDS = [];
 async function show(date) {
-  renderNav(EDITIONS, date);
-  const el = document.getElementById("edition");
+  renderIssues(EDS, date);
+  const idx = EDS.findIndex((e) => e.date === date);
+  const issueNo = idx >= 0 ? EDS.length - idx : EDS.length;
+  document.getElementById("tele-issue").textContent = `第 ${String(issueNo).padStart(3, "0")} 期`;
+  const el = document.getElementById("issue");
   el.innerHTML = '<div class="loading">加载中…</div>';
-  try {
-    renderEdition(await getJSON(`data/${date}.json`));
-  } catch (e) {
-    el.innerHTML = `<div class="empty">无法加载 ${esc(date)}：${esc(e.message)}</div>`;
-  }
+  try { renderIssue(await getJSON(`data/${date}.json`)); }
+  catch (e) { el.innerHTML = `<div class="empty">无法加载 ${esc(date)}（${esc(e.message)}）</div>`; }
 }
 
 async function boot() {
-  try {
-    const idx = await getJSON("data/index.json");
-    EDITIONS = idx.editions || [];
-  } catch (e) {
-    document.getElementById("edition-nav").innerHTML = '<div class="empty">暂无数据</div>';
-    document.getElementById("edition").innerHTML = `<div class="empty">还没有发布任何 digest。跑一次 <code>/asta-news:daily-digest</code> 后用 <code>publish_site.py</code> 发布。</div>`;
+  let idx;
+  try { idx = await getJSON("data/index.json"); EDS = idx.editions || []; }
+  catch {
+    document.getElementById("issues").innerHTML = '<div class="empty">暂无</div>';
+    document.getElementById("issue").innerHTML = '<div class="empty">还没有发布任何 digest。跑一次 <code>/asta-news:daily-digest</code> 后发布即可。</div>';
     return;
   }
-  if (!EDITIONS.length) { document.getElementById("edition").innerHTML = '<div class="empty">暂无归档</div>'; renderNav([], null); return; }
+  if (!EDS.length) { document.getElementById("issue").innerHTML = '<div class="empty">暂无归档</div>'; renderIssues([], null); return; }
   const want = location.hash.slice(1);
-  show(EDITIONS.some((e) => e.date === want) ? want : EDITIONS[0].date);
+  show(EDS.some((e) => e.date === want) ? want : EDS[0].date);
 }
 window.addEventListener("hashchange", () => { const d = location.hash.slice(1); if (d) show(d); });
-document.addEventListener("click", (e) => { const a = e.target.closest(".nav-item"); if (a) { e.preventDefault(); location.hash = a.dataset.date; } });
+document.addEventListener("click", (e) => { const a = e.target.closest(".iss"); if (a) { e.preventDefault(); location.hash = a.dataset.date; } });
 boot();

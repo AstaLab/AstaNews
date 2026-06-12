@@ -74,17 +74,89 @@ sources:
     verified: 2026-06-12
     notes: "PAT 配在 RSSHub 容器 .env 的 GITHUB_ACCESS_TOKEN（GraphQL，无 scope 即可），抓取器侧无需 env；与 oss-insight 二选一"
 
+  # —— X/Twitter：经自部署 RSSHub + 容器内 TWITTER_AUTH_TOKEN（cookie）。实测可用。
+  # 当前用 per-user 路由（无需建 List，开箱即用）。若改用一个 X List 更省请求：
+  # 启用下方 x-ai-list（填 ASTA_X_LIST_ID）并把这些 per-user 源 enabled:false。
+  - id: x-karpathy
+    name: X · @karpathy
+    layers: [model, devtool]
+    type: rsshub
+    url: /twitter/user/karpathy
+    priority: P1
+    freq: daily
+    verified: 2026-06-13
+    notes: "需 RSSHub + 容器内 auth_token（已配）；策展时滤掉纯 RT"
+  - id: x-_jasonwei
+    name: X · @_jasonwei
+    layers: [model, post-training]
+    type: rsshub
+    url: /twitter/user/_jasonwei
+    priority: P1
+    freq: daily
+    verified: 2026-06-13
+  - id: x-_akhaliq
+    name: X · @_akhaliq (AK 论文聚合)
+    layers: [model, agent]
+    type: rsshub
+    url: /twitter/user/_akhaliq
+    priority: P1
+    freq: daily
+    verified: 2026-06-13
+    notes: "每日 HF 热门论文转推，与 hf-daily-papers 交叉验证"
+  - id: x-sama
+    name: X · @sama
+    layers: [business, product, model]
+    type: rsshub
+    url: /twitter/user/sama
+    priority: P1
+    freq: daily
+    verified: 2026-06-13
+  - id: x-teortaxesTex
+    name: X · @teortaxesTex
+    layers: [model, post-training]
+    type: rsshub
+    url: /twitter/user/teortaxesTex
+    priority: P1
+    freq: daily
+    verified: 2026-06-13
+    notes: "中国模型/post-training 高信号"
+  - id: x-DrJimFan
+    name: X · @DrJimFan
+    layers: [embodied, model]
+    type: rsshub
+    url: /twitter/user/DrJimFan
+    priority: P1
+    freq: daily
+    verified: 2026-06-13
+  - id: x-swyx
+    name: X · @swyx
+    layers: [agent, devtool]
+    type: rsshub
+    url: /twitter/user/swyx
+    priority: P1
+    freq: daily
+    verified: 2026-06-13
+  - id: x-OpenAI
+    name: X · @OpenAI
+    layers: [model, maas, product]
+    type: rsshub
+    url: /twitter/user/OpenAI
+    priority: P1
+    freq: daily
+    verified: 2026-06-13
+    notes: "官方发布；与 openai-news RSS 去重"
+
   - id: x-ai-list
     name: X/Twitter AI List (RSSHub)
     layers: [model, agent, product]
     type: rsshub
     url: /twitter/list/${ASTA_X_LIST_ID}
     priority: P0
-    requires_env: [ASTA_X_LIST_ID]   # TWITTER_AUTH_TOKEN 配在 RSSHub 容器的 .env 里，抓取器不需要
+    requires_env: [ASTA_X_LIST_ID]
     enabled: false
     freq: daily
     verified: 2026-06-12
-    notes: "setup 配好 cookie 与 List id 后 enable。建议 List 成员（继承自旧项目并扩充）：karpathy, sama, AndrewYNg, DrJimFan, _akhaliq, emollick, goodside, simonw, HamelHusain, mckaywrigley, geoffreylitt, swyx, nearcyan, teortaxesTex, scaling01, _jasonwei, adcock_brett, physical_int, Tesla_AI, AnthropicAI, OpenAI, GoogleDeepMind。备选方案：twitterapi.io（按量 ~$0.15/1k 推、需 key）；浏览器 agent 读同一 List（零额外配置但每次跑成本高）"
+    notes: "可选：建一个 X List 收所有 KOL，一次请求拿全（比上面 per-user 省请求）。填 ASTA_X_LIST_ID 后 enable，并把 x-* per-user 源 disable。"
 
   - id: last-week-in-ai
     name: Last Week in AI

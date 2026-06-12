@@ -4,31 +4,45 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AstaNews · AI 全栈每日情报</title>
-<meta name="description" content="Asta Lab 的 AI 全栈每日 digest：论文、模型发布、评测、infra、agent、具身、安全、产品商业、devtool。">
+<meta name="description" content="Asta Lab 的 AI 全栈每日情报：论文、模型发布、评测、infra、agent、具身、安全、产品商业、devtool。每天精选，全栈视野。">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<header class="topbar">
-  <div class="wrap">
-    <a class="brand" href="./"><span class="sat">🛰️</span> AstaNews</a>
-    <span class="tagline">AI 全栈每日情报 · Asta Lab</span>
-  </div>
-</header>
+<div class="wrap">
+  <header class="masthead">
+    <div class="tele">
+      <span>Asta Lab · 全栈情报站</span>
+      <span id="tele-mid" class="seal-txt">AI FULL-STACK INTELLIGENCE</span>
+      <span id="tele-issue">第 — 期</span>
+    </div>
+    <div class="nameplate">
+      <svg class="emblem" viewBox="0 0 64 64" fill="none" stroke="#b23a23" stroke-width="2">
+        <ellipse cx="32" cy="32" rx="29" ry="12" transform="rotate(-28 32 32)"/>
+        <circle cx="32" cy="32" r="7" fill="#b23a23" stroke="none"/>
+        <circle cx="54" cy="18" r="2.5" fill="#b23a23" stroke="none"/>
+      </svg>
+      <h1 class="wordmark">Asta<span class="o">News</span></h1>
+      <span class="sub">AI 全栈每日情报</span>
+    </div>
+    <div class="masthead-rule"></div>
+  </header>
 
-<main class="wrap layout">
-  <aside class="sidebar">
-    <h2 class="side-title">归档</h2>
-    <nav id="edition-nav" class="edition-nav"><div class="loading">加载中…</div></nav>
-    <p class="side-foot">每天精选 ≤8 条，覆盖 13 个 stack layer。<a href="https://github.com/asta-lab/AstaNews" target="_blank" rel="noopener">关于</a></p>
-  </aside>
+  <main class="gazette">
+    <section class="issue" id="issue"><div class="loading">加载中…</div></section>
+    <aside class="rail">
+      <h3>往期</h3>
+      <nav id="issues" class="issues"><div class="loading">…</div></nav>
+      <p class="foot">每天精选 ≤8 条，覆盖 13 个 stack layer。新与领先优先。<br><a href="https://github.com/asta-lab/AstaNews" target="_blank" rel="noopener">关于 / 贡献源</a></p>
+    </aside>
+  </main>
 
-  <article id="edition" class="edition">
-    <div class="loading">加载中…</div>
-  </article>
-</main>
-
-<footer class="footer"><div class="wrap">AstaNews · 数据源开放贡献 · 抓取与去重确定，筛选与撰写由 agent 按编辑准则裁决</div></footer>
-
+  <footer class="colophon">
+    <span>AstaNews</span>
+    <span>抓取与去重确定 · 筛选与撰写由 agent 按编辑准则裁决</span>
+    <span>数据源开放贡献</span>
+  </footer>
+</div>
 <script src="app.js"></script>
 </body>
 </html>

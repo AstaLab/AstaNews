@@ -55,6 +55,32 @@ def render_md(d: dict) -> str:
     return "\n".join(L)
 
 
+def prune_full(data_dir: Path, keep_days: int) -> int:
+    """瘦身：早于 keep_days 的 edition 只保留精选/雷达，删掉沉重的 all_candidates。
+    日期比较用文件名（YYYY-MM-DD），不依赖运行时钟（GitHub Actions 友好、可复现）。"""
+    import datetime
+    dates = sorted(f.stem for f in data_dir.glob("20*.json") if f.name != "index.json")
+    if len(dates) <= keep_days:
+        return 0
+    cutoff = dates[-keep_days]  # 保留最近 keep_days 期的全量
+    pruned = 0
+    for f in data_dir.glob("20*.json"):
+        if f.name == "index.json" or f.stem >= cutoff:
+            continue
+        try:
+            d = json.loads(f.read_text())
+        except (json.JSONDecodeError, OSError):
+            continue
+        if d.get("all_candidates"):
+            d["all_candidates"] = []
+            d["pruned"] = True
+            f.write_text(json.dumps(d, ensure_ascii=False, indent=1))
+            pruned += 1
+    if pruned:
+        print(f"瘦身：{pruned} 期早于 {cutoff} 的全量候选已清空（精选/雷达保留）", file=sys.stderr)
+    return pruned
+
+
 def rebuild_index(data_dir: Path) -> int:
     entries = []
     for f in sorted(data_dir.glob("20*.json"), reverse=True):
@@ -95,10 +121,17 @@ def main() -> int:
     ap.add_argument("--digest", help="digest.json 路径")
     ap.add_argument("--site-dir", default=str(DEFAULT_SITE), help=f"站点根，默认 {DEFAULT_SITE}")
     ap.add_argument("--rebuild-index", action="store_true", help="仅重建 index.json")
+    ap.add_argument("--prune-full-after", type=int, metavar="N",
+                    help="把早于最近 N 期的 all_candidates 清空以瘦身（精选/雷达保留），然后重建 index")
     args = ap.parse_args()
 
     data_dir = Path(args.site_dir) / "data"
     data_dir.mkdir(parents=True, exist_ok=True)
+
+    if args.prune_full_after is not None and not args.digest:
+        prune_full(data_dir, args.prune_full_after)
+        rebuild_index(data_dir)
+        return 0
 
     if args.rebuild_index and not args.digest:
         rebuild_index(data_dir)

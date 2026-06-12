@@ -37,9 +37,11 @@ jobs:
 
       - name: Run daily digest
         env:
+          # 用 API URL + Key 跑 Claude Code（非 OAuth）。BASE_URL 可指向官方或自建中转。
+          ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}   # 留空=官方 api.anthropic.com
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          # GitHub runner 在墙外，needs_proxy 的源直连即可，无需 ASTA_PROXY。
-          # 产物直接落仓库 site/：
+          ANTHROPIC_MODEL: ${{ vars.ANTHROPIC_MODEL }}            # 可选，覆盖默认模型
+          # GitHub runner 在墙外，needs_proxy 的源直连即可，无需 ASTA_PROXY。产物直接落仓库 site/：
           ASTA_NEWS_HOME: ${{ github.workspace }}/.asta-runtime   # 中间产物/临时态
           ASTA_OUTPUT_DIR: ${{ github.workspace }}/site           # 最终产物（提交用）
           GITHUB_ACCESS_TOKEN: ${{ github.token }}                # api.github.com 提额
@@ -51,29 +53,19 @@ jobs:
             --allowedTools "Bash,Read,Write,Edit,WebFetch,Agent,Skill" \
             2>&1 | tee digest-run.log
 
+      - name: Prune old full candidate lists (keep repo lean)
+        run: |
+          # 保留近 60 天的 all_candidates（全量信息），更早的只留精选/雷达，瘦身仓库
+          uv run asta-news/scripts/publish_site.py --prune-full-after 60 --site-dir site
+
       - name: Commit artifacts
         run: |
           git config user.name  "asta-news-bot"
           git config user.email "actions@github.com"
           git add site/data editions
           if git diff --cached --quiet; then
-            echo "今日无新增产物（可能周末空 diff 或已发布），跳过提交"
+            echo "今日无新增产物（周末空 diff 或已发布），跳过提交"
           else
-            git commit -m "digest: $(date -u +%Y-%m-%d) [skip ci]"
-            git push
+            git commit -m "digest: $(date -u +%Y-%m-%d)"
+            git push    # push 触发 deploy-pages.yml，Pages 自动更新
           fi
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with: { path: ./site }
-
-  deploy:
-    needs: digest
-    runs-on: ubuntu-latest
-    permissions: { pages: write, id-token: write }
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
-    steps:
-      - id: deploy
-        uses: actions/deploy-pages@v4
