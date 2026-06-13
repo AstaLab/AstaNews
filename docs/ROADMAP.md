@@ -122,6 +122,7 @@ group  : 目标 5（上限 8），最严，微信群发
 
 状态：⬜ 待办 / 🔵 进行中 / ✅ 完成
 
+- 🔵 **P1-SCRIPTIFY**（当前焦点·待用户签字）把分类/初筛/解析从贵 agent 下放到脚本+小模型，解决成本规模化。设计已落 spec：`docs/superpowers/specs/2026-06-13-scriptify-classify-rank-design.md`。Approach A：embedding 零样本分类+源先验（零 LLM）、多信号确定性初筛 134→30、小模型薄层重排 30→15，agent 只对 ~15 终选+改写。小模型走 OpenAI 兼容接口（base_url/model/key 进 config，生产默认便宜云 API、自测走本地 ollama），无 LLM 时优雅退化为纯确定性。新增 `scripts/{llm,classify,prerank,extract}.py`，改 daily-digest SKILL 第 3–4 步。**下次从这继续：用户拍 A/B/C → writing-plans → 实现**。
 - ✅ **P0-DOC** 写本 ROADMAP（PO 总纲）
 - ✅ **生产** 2026-06-13 首次端到端 v2 digest 跑通并上线(往期已 2 期)；publish_site 加 facts/links 归一容错
 - ✅ **P0-CRON** 5am 北京定时任务已设（durable cron），进入持续迭代循环
