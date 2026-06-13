@@ -40,7 +40,8 @@
      "url": "https://developer-blogs.nvidia.com/wp-content/uploads/2026/06/ai-agent-1.webp",
      "credit": "developer.nvidia.com",
      "source": "https://developer.nvidia.com/blog/nvidia-achieves-leading-agentic-coding-performance-on-first-agentic-ai-benchmark/"
-    }
+    },
+    "source_excerpt": "AI agents have fundamentally changed the complexity of inference workloads. Until now, the industry has struggled to define a standard for measuring how..."
    },
    {
     "url": "https://huggingface.co/MiniMaxAI/MiniMax-M3",
@@ -84,7 +85,8 @@
      "url": "https://www.qbitai.com/wp-content/uploads/imgs/qbitai-logo-1.png",
      "credit": "qbitai.com",
      "source": "https://www.qbitai.com/2026/06/434774.html"
-    }
+    },
+    "source_excerpt": "“智能体最后的考试”，Fable 5竟然不敌GPT 5.5 一水 2026-06-12 12:13:23 来源： 量子位 最难档通通零蛋 没想到打脸来得如此之快！！ 刚刚，UC伯克利放出了一场号称 “智能体最后的考试” 的全新基准测试。 它把当今最强的AI Agent们拉到考场上，让它们干真正的活—— 在Siemens NX里建3D模型、在Unreal Engine里搭游戏场景、在Adobe After Effects里做特效合成。 结果成绩令人傻眼： 最难的一档，当今公认最强的Claude Fable 5、GPT 5.5，全是大写的零蛋 。 你说难度稍微放低一点呢？分数倒是有了，但结果也相当令人意外—— GPT 5.5竟然还小胜了Claude Fable 5 。 我没听错吧，A家刚发布的最强模型Claude Fable 5，被几个月前的GPT 5.5打败了？？ 要知道在此前几乎所有主流b"
    },
    {
     "url": "https://blogs.nvidia.com/blog/nvidia-blackwell-agentperf-artificial-analysis/",
@@ -106,7 +108,8 @@
      "url": "https://blogs.nvidia.com/wp-content/uploads/2026/06/dgx-social-gb300-2048x2048-1-1.jpg",
      "credit": "blogs.nvidia.com",
      "source": "https://blogs.nvidia.com/blog/nvidia-blackwell-agentperf-artificial-analysis/"
-    }
+    },
+    "source_excerpt": "AgentPerf from Artificial Analysis, the industry’s first agentic AI benchmark, gives developers, enterprises and infrastructure providers a clear way to compare systems for agentic AI. In the first round of published results, the NVIDIA Blackwell Ultra NVL72 platform delivers leading performance across the agentic AI workloads tested, running 20x more agents per megawatt than NVIDIA […]"
    },
    {
     "url": "https://huggingface.co/papers/2606.13174",
@@ -130,7 +133,8 @@
      "url": "https://cdn-thumbnails.huggingface.co/social-thumbnails/papers/2606.13174/gradient.png",
      "credit": "huggingface.co",
      "source": "https://huggingface.co/papers/2606.13174"
-    }
+    },
+    "source_excerpt": "Interactive LLM agents are becoming part of daily work, but they do not reliably become easier to work with over time: a correction remembered in one session may still be violated in the next. We study this gap between preference access and preference compliance. In tasks derived from anonymized real-user friction cases, Mem0 memory still leaves 57.5% of applicable preference checks violated. We i"
    },
    {
     "url": "https://huggingface.co/papers/2606.13594",
@@ -153,7 +157,8 @@
      "url": "https://cdn-thumbnails.huggingface.co/social-thumbnails/papers/2606.13594/gradient.png",
      "credit": "huggingface.co",
      "source": "https://huggingface.co/papers/2606.13594"
-    }
+    },
+    "source_excerpt": "Multi-agent systems communicate mostly through text, paying a lossy and expensive decode and re-encode cost. KV-cache communication is a promising alternative, yet most prior work is homogeneous, using duplicate copies of the same model, and avoids the central challenge of cross-model latent alignment; existing heterogeneous methods are also restrictive, typically assuming shared input and using t"
    }
   ],
   "daily": [
@@ -175,7 +180,8 @@
      "url": "https://developer-blogs.nvidia.com/wp-content/uploads/2026/06/ai-agent-1.webp",
      "credit": "developer.nvidia.com",
      "source": "https://developer.nvidia.com/blog/nvidia-achieves-leading-agentic-coding-performance-on-first-agentic-ai-benchmark/"
-    }
+    },
+    "source_excerpt": "AI agents have fundamentally changed the complexity of inference workloads. Until now, the industry has struggled to define a standard for measuring how..."
    },
    {
     "url": "https://huggingface.co/MiniMaxAI/MiniMax-M3",
@@ -215,7 +221,8 @@
      "url": "https://www.qbitai.com/wp-content/uploads/imgs/qbitai-logo-1.png",
      "credit": "qbitai.com",
      "source": "https://www.qbitai.com/2026/06/434774.html"
-    }
+    },
+    "source_excerpt": "“智能体最后的考试”，Fable 5竟然不敌GPT 5.5 一水 2026-06-12 12:13:23 来源： 量子位 最难档通通零蛋 没想到打脸来得如此之快！！ 刚刚，UC伯克利放出了一场号称 “智能体最后的考试” 的全新基准测试。 它把当今最强的AI Agent们拉到考场上，让它们干真正的活—— 在Siemens NX里建3D模型、在Unreal Engine里搭游戏场景、在Adobe After Effects里做特效合成。 结果成绩令人傻眼： 最难的一档，当今公认最强的Claude Fable 5、GPT 5.5，全是大写的零蛋 。 你说难度稍微放低一点呢？分数倒是有了，但结果也相当令人意外—— GPT 5.5竟然还小胜了Claude Fable 5 。 我没听错吧，A家刚发布的最强模型Claude Fable 5，被几个月前的GPT 5.5打败了？？ 要知道在此前几乎所有主流b"
    },
    {
     "url": "https://blogs.nvidia.com/blog/nvidia-blackwell-agentperf-artificial-analysis/",
@@ -235,7 +242,8 @@
      "url": "https://blogs.nvidia.com/wp-content/uploads/2026/06/dgx-social-gb300-2048x2048-1-1.jpg",
      "credit": "blogs.nvidia.com",
      "source": "https://blogs.nvidia.com/blog/nvidia-blackwell-agentperf-artificial-analysis/"
-    }
+    },
+    "source_excerpt": "AgentPerf from Artificial Analysis, the industry’s first agentic AI benchmark, gives developers, enterprises and infrastructure providers a clear way to compare systems for agentic AI. In the first round of published results, the NVIDIA Blackwell Ultra NVL72 platform delivers leading performance across the agentic AI workloads tested, running 20x more agents per megawatt than NVIDIA […]"
    },
    {
     "url": "https://huggingface.co/papers/2606.13174",
@@ -257,7 +265,8 @@
      "url": "https://cdn-thumbnails.huggingface.co/social-thumbnails/papers/2606.13174/gradient.png",
      "credit": "huggingface.co",
      "source": "https://huggingface.co/papers/2606.13174"
-    }
+    },
+    "source_excerpt": "Interactive LLM agents are becoming part of daily work, but they do not reliably become easier to work with over time: a correction remembered in one session may still be violated in the next. We study this gap between preference access and preference compliance. In tasks derived from anonymized real-user friction cases, Mem0 memory still leaves 57.5% of applicable preference checks violated. We i"
    },
    {
     "url": "https://huggingface.co/papers/2606.13594",
@@ -278,7 +287,8 @@
      "url": "https://cdn-thumbnails.huggingface.co/social-thumbnails/papers/2606.13594/gradient.png",
      "credit": "huggingface.co",
      "source": "https://huggingface.co/papers/2606.13594"
-    }
+    },
+    "source_excerpt": "Multi-agent systems communicate mostly through text, paying a lossy and expensive decode and re-encode cost. KV-cache communication is a promising alternative, yet most prior work is homogeneous, using duplicate copies of the same model, and avoids the central challenge of cross-model latent alignment; existing heterogeneous methods are also restrictive, typically assuming shared input and using t"
    },
    {
     "url": "https://www.alignmentforum.org/posts/qi4mNbZYAFDYwfRba/building-and-evaluating-model-diffing-agents",
@@ -297,7 +307,8 @@
      "url": "https://res.cloudinary.com/lesswrong-2-0/image/upload/f_auto,q_auto/v1/mirroredImages/qi4mNbZYAFDYwfRba/lryvpvtyfkl7co0pjrhq",
      "credit": "alignmentforum.org",
      "source": "https://www.alignmentforum.org/posts/qi4mNbZYAFDYwfRba/building-and-evaluating-model-diffing-agents"
-    }
+    },
+    "source_excerpt": "This is the second in a series of informal research updates from the Google DeepMind Language Model Interpretability team, in interpretability and adjacent areas. The first post can be found here . TL;DR It is possible to build extremely simple agents that reliably find interesting behavioural differences between distinct models. We call these ‘diffing agents’. The closest previous 'behavioural mo"
    },
    {
     "url": "https://huggingface.co/blog/allenai/olmo-eval",
@@ -335,7 +346,8 @@
      "url": "https://opengraph.githubassets.com/1/huggingface/transformers",
      "credit": "github.com",
      "source": "https://github.com/huggingface/transformers/releases/tag/v5.12.0"
-    }
+    },
+    "source_excerpt": "Release v5.12.0 New Model additions MiniMax-M3-VL MiniMax-M3-VL is the vision-language member of the MiniMax-M3 family that pairs a CLIP-style vision tower with 3D rotary position embeddings with the MiniMax-M3 text backbone. It uses a mixed dense/sparse Mixture-of-Experts decoder with SwiGLU-OAI gated experts and a lightning indexer for block-sparse attention. The model processes images through a"
    },
    {
     "url": "https://the-decoder.com/openai-buys-ona-to-push-codex-toward-long-running-autonomous-coding-tasks/",
@@ -354,7 +366,8 @@
      "url": "https://the-decoder.com/wp-content/uploads/2026/04/openai_dark_pattern.png",
      "credit": "the-decoder.com",
      "source": "https://the-decoder.com/openai-buys-ona-to-push-codex-toward-long-running-autonomous-coding-tasks/"
-    }
+    },
+    "source_excerpt": "OpenAI is acquiring Ona, previously known as Gitpod, a startup founded in Kiel, Germany in 2020 that specializes in AI agents and secure cloud development environments for software development. The article OpenAI buys Ona to push Codex toward long-running, autonomous coding tasks appeared first on The Decoder ."
    },
    {
     "url": "https://x.com/teortaxesTex/status/2065447458742673424",
@@ -373,7 +386,8 @@
      "url": "https://pbs.twimg.com/media/HKnwGD1XoAAnrmg.jpg:large",
      "credit": "x.com",
      "source": "https://x.com/teortaxesTex/status/2065447458742673424"
-    }
+    },
+    "source_excerpt": "Huawei has finally credibly (?) pretrained a big LLM on Ascends. \"hyper-node optimized training\" suggests 950s I guess. Builds on DSA (\"with SWA\"). They want to prove it can be done on their hardware. What is ModAttn? (pics from Reddit, some translations are off) Living In Harmony ⭕🔥🥉🏅🕊🦾🆙🆗🎯🔑💼🛡️👑🇨: openPangu 2.0 fully upgraded #HDC2026 #HDC #HarmonyOS7 #HarmonyOS #Pangu #openPangu2 #Upgrade"
    },
    {
     "url": "https://developer.nvidia.com/blog/deploy-long-context-reasoning-and-agentic-workflows-with-minimax-m3-on-nvidia-accelerated-infrastructure/",
@@ -392,7 +406,8 @@
      "url": "https://developer-blogs.nvidia.com/wp-content/uploads/2026/04/MM-Release.webp",
      "credit": "developer.nvidia.com",
      "source": "https://developer.nvidia.com/blog/deploy-long-context-reasoning-and-agentic-workflows-with-minimax-m3-on-nvidia-accelerated-infrastructure/"
-    }
+    },
+    "source_excerpt": "As enterprise AI adoption scales, developers are increasingly forced to stitch together fragmented pipelines—separate models for text, vision, and..."
    }
   ],
   "full": [
@@ -1514,7 +1529,8 @@
     "url": "https://developer-blogs.nvidia.com/wp-content/uploads/2026/06/ai-agent-1.webp",
     "credit": "developer.nvidia.com",
     "source": "https://developer.nvidia.com/blog/nvidia-achieves-leading-agentic-coding-performance-on-first-agentic-ai-benchmark/"
-   }
+   },
+   "source_excerpt": "AI agents have fundamentally changed the complexity of inference workloads. Until now, the industry has struggled to define a standard for measuring how..."
   },
   {
    "url": "https://huggingface.co/MiniMaxAI/MiniMax-M3",
@@ -1558,7 +1574,8 @@
     "url": "https://www.qbitai.com/wp-content/uploads/imgs/qbitai-logo-1.png",
     "credit": "qbitai.com",
     "source": "https://www.qbitai.com/2026/06/434774.html"
-   }
+   },
+   "source_excerpt": "“智能体最后的考试”，Fable 5竟然不敌GPT 5.5 一水 2026-06-12 12:13:23 来源： 量子位 最难档通通零蛋 没想到打脸来得如此之快！！ 刚刚，UC伯克利放出了一场号称 “智能体最后的考试” 的全新基准测试。 它把当今最强的AI Agent们拉到考场上，让它们干真正的活—— 在Siemens NX里建3D模型、在Unreal Engine里搭游戏场景、在Adobe After Effects里做特效合成。 结果成绩令人傻眼： 最难的一档，当今公认最强的Claude Fable 5、GPT 5.5，全是大写的零蛋 。 你说难度稍微放低一点呢？分数倒是有了，但结果也相当令人意外—— GPT 5.5竟然还小胜了Claude Fable 5 。 我没听错吧，A家刚发布的最强模型Claude Fable 5，被几个月前的GPT 5.5打败了？？ 要知道在此前几乎所有主流b"
   },
   {
    "url": "https://blogs.nvidia.com/blog/nvidia-blackwell-agentperf-artificial-analysis/",
@@ -1580,7 +1597,8 @@
     "url": "https://blogs.nvidia.com/wp-content/uploads/2026/06/dgx-social-gb300-2048x2048-1-1.jpg",
     "credit": "blogs.nvidia.com",
     "source": "https://blogs.nvidia.com/blog/nvidia-blackwell-agentperf-artificial-analysis/"
-   }
+   },
+   "source_excerpt": "AgentPerf from Artificial Analysis, the industry’s first agentic AI benchmark, gives developers, enterprises and infrastructure providers a clear way to compare systems for agentic AI. In the first round of published results, the NVIDIA Blackwell Ultra NVL72 platform delivers leading performance across the agentic AI workloads tested, running 20x more agents per megawatt than NVIDIA […]"
   },
   {
    "url": "https://huggingface.co/papers/2606.13174",
@@ -1604,7 +1622,8 @@
     "url": "https://cdn-thumbnails.huggingface.co/social-thumbnails/papers/2606.13174/gradient.png",
     "credit": "huggingface.co",
     "source": "https://huggingface.co/papers/2606.13174"
-   }
+   },
+   "source_excerpt": "Interactive LLM agents are becoming part of daily work, but they do not reliably become easier to work with over time: a correction remembered in one session may still be violated in the next. We study this gap between preference access and preference compliance. In tasks derived from anonymized real-user friction cases, Mem0 memory still leaves 57.5% of applicable preference checks violated. We i"
   },
   {
    "url": "https://huggingface.co/papers/2606.13594",
@@ -1627,7 +1646,8 @@
     "url": "https://cdn-thumbnails.huggingface.co/social-thumbnails/papers/2606.13594/gradient.png",
     "credit": "huggingface.co",
     "source": "https://huggingface.co/papers/2606.13594"
-   }
+   },
+   "source_excerpt": "Multi-agent systems communicate mostly through text, paying a lossy and expensive decode and re-encode cost. KV-cache communication is a promising alternative, yet most prior work is homogeneous, using duplicate copies of the same model, and avoids the central challenge of cross-model latent alignment; existing heterogeneous methods are also restrictive, typically assuming shared input and using t"
   }
  ],
  "all_candidates": [

@@ -76,7 +76,7 @@ uv run ${CLAUDE_PLUGIN_ROOT}/scripts/dedup.py --filter <candidates 路径>
 - `full` = 全部候选（all_candidates）。
 
 对每个 group 与 daily 条目整理**信息很全**的记录（下一步改写的输入，facts 越全越不会写错）：
-`{id, rank, layer, source, title（忠实转述）, facts:[尽量全的量化点], why_matters, links:{primary, discussion}, scores}`。
+`{id, rank, layer, source, title（忠实转述）, facts:[尽量全的量化点], why_matters, links:{primary, discussion}, scores, source_excerpt（原文摘要/正文截断 ~400 字，供网页"深读"展示）}`。
 
 ## 5. Readiness 改写（独立 subagent）
 

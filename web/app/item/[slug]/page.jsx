@@ -41,6 +41,12 @@ export default async function ItemPage({ params }) {
           <div className="body" style={{ fontSize: 15, whiteSpace: "pre-wrap", color: "var(--ink-2)", marginTop: 8 }}>{it.sharp}</div>
         </details>
       )}
+      {it.source_excerpt && (
+        <details style={{ marginTop: 12 }}>
+          <summary style={{ fontFamily: "var(--mono)", fontSize: 12, color: "var(--gold)", cursor: "pointer" }}>原文摘录（深读）</summary>
+          <blockquote style={{ marginTop: 8, borderLeft: "3px solid var(--rule-2)", paddingLeft: 14, fontSize: 14, color: "var(--muted)", lineHeight: 1.7 }}>{it.source_excerpt}</blockquote>
+        </details>
+      )}
       {facts.length > 0 && <ul className="facts" style={{ marginTop: 16 }}>{facts.map((f, i) => <li key={i}>{f}</li>)}</ul>}
       <div className="links" style={{ marginTop: 18 }}>
         {it.links?.primary && <a href={it.links.primary} target="_blank" rel="noopener">一手源</a>}
