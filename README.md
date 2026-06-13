@@ -49,6 +49,7 @@ claude --plugin-dir ./asta-news
 - **进默认注册表**：改 `asta-news/sources/*.yaml` 提 PR。schema 与验收标准见 [`asta-news/sources/_schema.md`](asta-news/sources/_schema.md)；PR 前必须 `uv run asta-news/scripts/probe_source.py --url <url>` 通过（可达性 + 新鲜度），并在 `notes` 标注验证日期。
 - **只想自己用**：`/asta-news:manage-sources` 写入本地 `sources.local.yaml`，不动仓库。
 - **调编辑规则**：全局默认在 `asta-news/rules.yaml`（走 PR）；个人口味在本地 `rules.local.yaml`。
+- PR 会自动跑校验（`uv run asta-news/scripts/validate_registry.py`：id 唯一/layer/type/parser/必填字段），本地先跑一遍更稳。
 - 已知坑收录于 `_schema.md`（Papers with Code 已死、semianalysis 旧 feed 停更、机器之心无可用源等），加源前先看。
 
 ## 网页（综合资讯站）
