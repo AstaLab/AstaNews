@@ -75,6 +75,8 @@ def main() -> int:
     check("uv", shutil.which("uv") is not None, shutil.which("uv") or "未安装：https://docs.astral.sh/uv/")
     check("docker", shutil.which("docker") is not None,
           "可用（RSSHub 部署需要）" if shutil.which("docker") else "未安装——仅影响可选的 RSSHub 自部署", warn_only=True)
+    check("node", shutil.which("node") is not None,
+          (shutil.which("node") or "") + "（web/ React 站点构建需要）" if shutil.which("node") else "未安装——仅影响 web 站点本地构建", warn_only=True)
 
     # 2. 数据目录
     dd = F.data_dir()
@@ -123,6 +125,34 @@ def main() -> int:
     except Exception as exc:
         check("注册表", False, str(exc))
         sources, enabled = [], []
+
+    # 5b. 模块化配置文件
+    cfg = F.PLUGIN_ROOT / "config"
+    try:
+        import yaml
+        names = ["tiers", "perspectives", "sharpness", "site", "search"]
+        missing = [n for n in names if not (cfg / f"{n}.yaml").exists()]
+        bad = []
+        for n in names:
+            f = cfg / f"{n}.yaml"
+            if f.exists():
+                try:
+                    yaml.safe_load(f.read_text())
+                except Exception:
+                    bad.append(n)
+        ok = not missing and not bad
+        check("配置 config/", ok, "tiers/perspectives/sharpness/site/search 齐全且合法" if ok
+              else f"缺 {missing} 坏 {bad}")
+    except Exception as exc:
+        check("配置 config/", False, str(exc))
+
+    # 5c. 平台脚本/模块就绪（各自 PEP 723 env，uv run 时自动装依赖）
+    check("embedding 脚本", (F.PLUGIN_ROOT / "scripts" / "embed.py").exists(),
+          "embed.py 就绪（语义检索/相关新闻；首次 --build 经 hf-mirror 装 fastembed）")
+    check("控制台后端", (F.PLUGIN_ROOT.parent / "services" / "app.py").exists(),
+          "services/app.py 就绪（uv run services/app.py 起后端）")
+    check("公众号转换器", (F.PLUGIN_ROOT / "scripts" / "publish_wechat.py").exists(),
+          "publish_wechat.py 就绪（md→公众号 HTML；发布需 WECHAT 凭证）")
 
     # 6. P0 源抽样（排除 html/rsshub/needs_proxy/diff 型——diff 型健康时也常 0 条，无法用条目数判断）
     pool = [s for s in enabled if s.get("priority") == "P0"
