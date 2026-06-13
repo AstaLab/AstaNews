@@ -140,7 +140,7 @@ group  : 目标 5（上限 8），最严，微信群发
 - ✅ **P1-TIERS** 多级筛选固化并生产验证(06-13 真实跑出 group6/daily12/full134)
 - ✅ **P1-WEB** React MPA（Next 15 静态导出，真多页：home/edition/archive/search/about）读 v2，gazette 美学，构建通过；部署中
 - ✅ **P2-PERSP** 两类 filter 上线：视角(全栈/技术/产品/商业/研究/具身, 重排)×类别(13 layer, 硬筛)，网站可组合切换 + 视角导语
-- 🔵 **P2-SEARCH** 关键词搜索 + 相关新闻(预计算近邻)已稳上线；语义搜索框(浏览器 transformers.js 同款模型嵌入 query×vectors.bin)已实现为渐进增强(graceful fallback 到关键词)，真机大概率可用，headless sandbox 加载不了 CDN 模块故未能本地验证——待真机确认/改自托管模型
+- 🔵 **P2-SEARCH** **混合检索(BM25+向量, RRF 融合)已落地**：`scripts/search.py` 把 BM25 关键词(jieba 中文分词，TF-IDF+长度归一)与向量语义(fastembed 跨语言)各出一榜、RRF 融合(免量纲调参)，替换原 services `/api/search` 的"向量+子串 boost"hack。自测 PASS(分词/BM25/RRF 离线)，真实索引端到端验证：「块级稀疏注意力」→MiniMax MSA #1、「agent benchmark 推理基准」→NVIDIA AA-AgentPerf #1；API 端到端 200 真混合(两榜)；fastembed 缺失等情况优雅退化为单榜。相关新闻(预计算近邻)已稳上线；浏览器 transformers.js 语义搜为渐进增强，真机大概率可用、headless sandbox 加载不了 CDN 故未本地验证——待真机确认/改自托管模型
 - ✅ **P2-IMG** 精选 6/6 配 AI 信息图(arXiv 架构图/行为率图)+ daily og:image 兜底(11 张上线)+ enrich_images.py + images.md how-to + 卡片渲染；待续:提升 daily/arXiv 覆盖、防盗链兜底
 - ✅ **P2-SHARP** 犀利度上线：中性/锐评 切换(网站控件)，今日 6 精选含 sharp 锐评变体，readiness.md 写明产出规范；深读档待加
 - ✅ **P3-STUDY** 橘鸦研究完成(docs/study-juya.md)：发现我们 gazette 美学已天然对齐橘鸦；借鉴'今日概览编号列表'已应用到微信版 md；公众号发布路径(md2juya/md2wechat→微信API)已规划进 P3-WECHAT

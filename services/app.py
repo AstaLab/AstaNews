@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.10"
-# dependencies = ["fastapi", "uvicorn", "pyyaml", "fastembed", "numpy"]
+# dependencies = ["fastapi", "uvicorn", "pyyaml", "fastembed", "numpy", "rank-bm25", "jieba"]
 # ///
 """AstaNews 控制台后端（本地/全功能模式）。
 
@@ -70,27 +70,17 @@ def edition(date: str):
     return JSONResponse(json.loads(f.read_text()))
 
 
-# ---- 服务端语义检索（解决静态站浏览器模型加载问题） ----
+# ---- 服务端混合检索：BM25 关键词 + 向量语义，RRF 融合（解决静态站浏览器模型加载问题） ----
 @app.get("/api/search")
 def search(q: str = Query(..., min_length=1), top: int = 12):
     try:
-        import embed
-        idx = DATA / "vectors.npz"
-        if not idx.exists():
-            raise FileNotFoundError("vectors.npz 不存在，先 embed.py --build")
-        sem = embed.search(q, idx, top * 2)
+        import search as hybrid  # asta-news/scripts/search.py（SCRIPTS 已在 sys.path）
+        res = hybrid.hybrid_search(q, DATA, DATA / "vectors.npz", top)
     except Exception as e:
-        raise HTTPException(503, f"语义索引不可用：{e}")
-    # 关键词加权融合：整串命中标题强 boost（命名实体/术语查询），词命中弱 boost
-    ql = q.lower().strip()
-    terms = [t for t in ql.split() if t]
-    for r in sem:
-        title = (r.get("title", "") or "").lower()
-        boost = 0.22 if (ql and ql in title) else 0.0
-        boost += sum(0.04 for t in terms if t in title)
-        r["score"] = round(r["score"] + boost, 3)
-    sem.sort(key=lambda r: -r["score"])
-    return {"query": q, "results": sem[:top]}
+        raise HTTPException(503, f"检索不可用：{e}")
+    if not res:
+        raise HTTPException(503, "检索无结果（索引为空？先 embed.py --build site/data）")
+    return {"query": q, "results": res}
 
 
 # ---- 配置：读 / 写（网站控制台编辑 tiers/perspectives/rules…） ----
