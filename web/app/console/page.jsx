@@ -49,6 +49,7 @@ export default function Console() {
   const [health, setHealth] = useState(null);
   const [sources, setSources] = useState(null);
   const [config, setConfig] = useState(null);
+  const [sched, setSched] = useState(null);
   const [err, setErr] = useState(null);
   const [q, setQ] = useState("");
   const [res, setRes] = useState([]);
@@ -61,6 +62,7 @@ export default function Console() {
         setHealth(await (await fetch(`${API}/api/health`)).json());
         setSources(await (await fetch(`${API}/api/sources`)).json());
         setConfig(await (await fetch(`${API}/api/config`)).json());
+        setSched(await (await fetch(`${API}/api/schedule`)).json());
       } catch (e) { setErr(String(e)); }
     })();
   }, []);
@@ -134,6 +136,14 @@ cd web && NEXT_PUBLIC_API=http://127.0.0.1:8799 npm run dev
       </Card>
       <Card title="数据源">
         {sources ? <span style={{ fontFamily: "var(--mono)", fontSize: 13 }}>{sources.count} 源 · {sources.enabled} 启用</span> : "…"}
+      </Card>
+      <Card title="排程">
+        {sched?.schedules?.length ? (
+          <div style={{ fontFamily: "var(--mono)", fontSize: 12.5, color: "var(--ink-2)" }}>
+            {sched.schedules.map((s) => <div key={s.workflow}>{s.workflow}: {s.cron.join(", ")} {s.note && <span style={{ color: "var(--faint)" }}>（{s.note}）</span>}</div>)}
+            <div style={{ color: "var(--faint)", marginTop: 6 }}>{sched.hint}</div>
+          </div>
+        ) : "…"}
       </Card>
       <Card title="配置（可编辑保存）">
         {config ? <ConfigEditor config={config} /> : "…"}

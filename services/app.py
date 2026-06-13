@@ -131,6 +131,25 @@ def run_fetch(_=Depends(require_auth)):
     return {"ok": True, "pid": p.pid, "note": "已后台启动抓取；完整 digest（评分/改写）由 claude headless 或 5am cron 跑"}
 
 
+@app.get("/api/schedule")
+def schedule():
+    """读 GitHub Actions workflow 的 cron（生产/部署排程，网站可见）。"""
+    import re
+    out = []
+    wf = REPO / ".github" / "workflows"
+    for f in sorted(wf.glob("*.yml")):
+        try:
+            text = f.read_text()
+        except OSError:
+            continue
+        crons = re.findall(r'cron:\s*["\']([^"\']+)["\']', text)
+        if crons:
+            out.append({"workflow": f.stem, "cron": crons,
+                        "note": "UTC；daily-digest 01:00=北京 09:00" if f.stem == "daily-digest" else ""})
+    return {"schedules": out,
+            "hint": "改排程=编辑对应 workflow 的 cron 并提交（网站直接改排程属 P3 计划项）。本地另有 5am/20min routine。"}
+
+
 @app.post("/api/publish/wechat")
 def publish_wechat(date: str = Query(...), publish: bool = False, _=Depends(require_auth)):
     """把某期 editions/<date>.md 转成公众号内联样式 HTML；publish=true 且配了
