@@ -84,9 +84,16 @@ GitHub runner 在墙外，被墙的源直连即可（无需代理），数据覆
 
 ```
 .claude-plugin/marketplace.json   # marketplace 清单
-asta-news/                        # plugin 本体（skills + scripts + sources）
-site/                             # 静态站点（从 data/ 自动加载每日产物）
-docs/ARCHITECTURE.md              # 原理：怎么工作、为什么这么设计
-docs/superpowers/plans/           # 实施计划
+.github/workflows/                # daily-digest（生产）/ deploy-pages / validate（贡献门）
+asta-news/                        # Claude Code plugin（编排）
+  config/                         #   模块化配置：tiers/perspectives/sharpness/site/search.yaml
+  sources/*.yaml                  #   源注册表（121+，社区 PR 改这里）
+  scripts/                        #   fetch/dedup/probe/doctor/embed/enrich_images/publish_site/publish_wechat/validate
+  skills/                         #   daily-digest / setup / manage-sources
+web/                              # React 多页站（Next 静态导出 → Pages）★ 站点本体
+services/                         # FastAPI 控制台后端（语义检索/配置/触发/公众号）
+site/data/<date>.json             # 每日产物（网页数据，唯一事实源）+ vectors/related/feed
+editions/<date>.md                # 微信可读归档（+ .wechat.html 由 publish_wechat 生成）
+docs/                             # ARCHITECTURE / ROADMAP（PRD+backlog）/ study-juya
 research/                         # 数据源验证报告、参考项目分析、RSSHub 实测
 ```
