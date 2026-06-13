@@ -81,10 +81,14 @@ def search(q: str = Query(..., min_length=1), top: int = 12):
         sem = embed.search(q, idx, top * 2)
     except Exception as e:
         raise HTTPException(503, f"语义索引不可用：{e}")
-    # 关键词加权融合
-    ql = q.lower()
+    # 关键词加权融合：整串命中标题强 boost（命名实体/术语查询），词命中弱 boost
+    ql = q.lower().strip()
+    terms = [t for t in ql.split() if t]
     for r in sem:
-        r["score"] = r["score"] + (0.06 if ql in (r.get("title", "").lower()) else 0)
+        title = (r.get("title", "") or "").lower()
+        boost = 0.22 if (ql and ql in title) else 0.0
+        boost += sum(0.04 for t in terms if t in title)
+        r["score"] = round(r["score"] + boost, 3)
     sem.sort(key=lambda r: -r["score"])
     return {"query": q, "results": sem[:top]}
 
