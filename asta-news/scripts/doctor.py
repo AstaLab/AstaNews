@@ -130,7 +130,7 @@ def main() -> int:
     cfg = F.PLUGIN_ROOT / "config"
     try:
         import yaml
-        names = ["tiers", "perspectives", "sharpness", "site", "search"]
+        names = ["tiers", "perspectives", "sharpness", "site", "search", "prerank", "llm"]
         missing = [n for n in names if not (cfg / f"{n}.yaml").exists()]
         bad = []
         for n in names:
@@ -141,7 +141,7 @@ def main() -> int:
                 except Exception:
                     bad.append(n)
         ok = not missing and not bad
-        check("配置 config/", ok, "tiers/perspectives/sharpness/site/search 齐全且合法" if ok
+        check("配置 config/", ok, "tiers/perspectives/sharpness/site/search/prerank/llm 齐全且合法" if ok
               else f"缺 {missing} 坏 {bad}")
     except Exception as exc:
         check("配置 config/", False, str(exc))
@@ -153,6 +153,21 @@ def main() -> int:
           "services/app.py 就绪（uv run services/app.py 起后端）")
     check("公众号转换器", (F.PLUGIN_ROOT / "scripts" / "publish_wechat.py").exists(),
           "publish_wechat.py 就绪（md→公众号 HTML；发布需 WECHAT 凭证）")
+    # 5d. 初筛脚本（P1-SCRIPTIFY：分类/初筛/解析下放，agent 只看 top-N）
+    scriptify = ["classify.py", "prerank.py", "llm.py", "extract.py"]
+    miss_s = [s for s in scriptify if not (F.PLUGIN_ROOT / "scripts" / s).exists()]
+    check("初筛脚本", not miss_s, "classify/prerank/llm/extract 就绪（分类=embedding 零样本+源先验、初筛=多信号确定性、解析=trafilatura）"
+          if not miss_s else f"缺 {miss_s}")
+    # 5e. 小模型底座（可选；未配则初筛/分类走纯确定性，pipeline 不受阻）
+    try:
+        import llm as _llm
+        c = _llm.config()
+        avail = _llm.available()
+        check("小模型底座", avail, f"{c['base_url']} · {c['model']} 可用"
+              if avail else f"未配可用底座（enabled={c.get('enabled')}，云端需 .env 里 {c.get('api_key_env')}；本地可用 ollama）——初筛/分类走纯确定性，不阻塞",
+              warn_only=True)
+    except Exception as exc:
+        check("小模型底座", False, f"llm.py 加载失败：{exc}", warn_only=True)
 
     # 6. P0 源抽样（排除 html/rsshub/needs_proxy/diff 型——diff 型健康时也常 0 条，无法用条目数判断）
     pool = [s for s in enabled if s.get("priority") == "P0"
