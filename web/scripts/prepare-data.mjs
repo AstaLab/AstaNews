@@ -72,4 +72,16 @@ const feed =
   `  <subtitle>每天精选 AI 全栈进展（Asta Lab）</subtitle>\n` +
   feedItems.join("\n") + `\n</feed>\n`;
 writeFileSync(join(root, "public", "feed.xml"), feed);
-console.log(`prepare-data: ${files.length} editions, ${corpus.length} corpus, ${feedItems.length} feed entries → public/`);
+
+// sitemap.xml + robots.txt（可被搜索引擎/聚合器发现）
+const urls = [`${SITE}/`, `${SITE}/archive`, `${SITE}/search`, `${SITE}/about`, `${SITE}/console`];
+for (const e of index) urls.push(`${SITE}/edition/${e.date}`);
+const lastmod = (index[0]?.date || "2026-01-01");
+const sitemap =
+  `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
+  urls.map((u) => `  <url><loc>${u}</loc><lastmod>${lastmod}</lastmod></url>`).join("\n") +
+  `\n</urlset>\n`;
+writeFileSync(join(root, "public", "sitemap.xml"), sitemap);
+writeFileSync(join(root, "public", "robots.txt"),
+  `User-agent: *\nAllow: /\nSitemap: ${SITE}/sitemap.xml\n`);
+console.log(`prepare-data: ${files.length} editions, ${corpus.length} corpus, ${feedItems.length} feed, ${urls.length} sitemap urls → public/`);
