@@ -6,6 +6,20 @@ export function generateStaticParams() {
   return allDates().map((date) => ({ date }));
 }
 
+export async function generateMetadata({ params }) {
+  const { date } = await params;
+  const ed = getEdition(date);
+  if (!ed) return { title: "AstaNews" };
+  const title = `${ed.headline || "AI 全栈每日情报"} · ${date} · AstaNews`;
+  const desc = (ed.overview || "").slice(0, 150);
+  const lead = (ed.tiers?.group || ed.selected || [])[0]?.image?.url;
+  return {
+    title, description: desc,
+    openGraph: { title, description: desc, type: "article", images: lead ? [lead] : [] },
+    twitter: { card: lead ? "summary_large_image" : "summary", title, description: desc, images: lead ? [lead] : [] },
+  };
+}
+
 export default async function EditionPage({ params }) {
   const { date } = await params;
   const ed = getEdition(date);
