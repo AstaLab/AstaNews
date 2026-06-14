@@ -130,9 +130,11 @@ group  : 目标 5（上限 8），最严，微信群发
     - `scripts/extract.py`：trafilatura 规则法抽正文（剥导航/页脚），给摘要过薄的候选回填 `summary`/`clean_text`，零 LLM、失败开放、被墙域名走代理。自测 PASS（抽取/薄摘要升级/够料跳过/无网络优雅）。与 A/B/C 正交。
     - `doctor.py` 已纳入新组件健康检查：config 校验含 `prerank`/`llm`、「初筛脚本」就绪项、「小模型底座」可用性（未配=走纯确定性、warn 不阻塞）。实测通过。
   - ⬜ **待用户签字后做**：① 拍 A/B/C；② `dedup.py` 暴露 `cluster_size`、fetch 候选带 `priority`（喂 prerank 的共识/权威信号）；③ **改 daily-digest SKILL 第 3–4 步接线**（删 subagent fan-out，改跑 classify+prerank+extract，agent 只看 top~15）——这是唯一改生产行为的一步，gate 在签字。
+  - **2026-06-15 实证**：当日 digest 我手动走了 scriptify 漏斗（fetch 192 → dedup 120 → **classify + prerank 取 30** → editor 选 6+7 + 改写），**没有 subagent fan-out**，端到端跑通并上线。证明 classify/prerank 在真实生产数据上可用（确定性 prerank 把强稿顶上、把测试数据集/灌水推文沉底，剩余噪声由 editor 一眼剔除）——这正是 SKILL 接线后的预期形态，给「用户签字接线」加了一份实证。
   - **下次从这继续**：用户确认 A → writing-plans 出接线计划 → 改 SKILL + dedup/fetch 字段 → 端到端跑一期验证。
 - ✅ **P0-DOC** 写本 ROADMAP（PO 总纲）
-- ✅ **生产** 2026-06-13 首次端到端 v2 digest 跑通并上线(往期已 2 期)；publish_site 加 facts/links 归一容错
+- ✅ **生产** 2026-06-13 首次端到端 v2 digest 跑通并上线；publish_site 加 facts/links 归一容错。**2026-06-15** 第三期上线（精选 6/日报 13/全候选 120/8 层；主题「方法学抢镜 + agent 去魅」：SWE-Explore/Mirage/SkillOpt/HRM/KPMG/谷歌 OKF），走确定性漏斗 + WebFetch 核实事实 + editor 改写，已 commit+push 触发 Pages、curl 实测 index 含 06-15。
+  - **下次循环从这继续**：①若当日无 digest 先产出（同上流程：fetch→dedup→classify→prerank→editor 选+WebFetch 核实+改写→enrich_images→publish_site→embed→commit/push→curl 验证）；②backlog 取高价值非破坏项。注意：06-14 缺一期（未补发旧闻，符合不补发原则）。
 - ✅ **P0-CRON** 5am 北京定时任务已设（durable cron），进入持续迭代循环
 - ✅ **P1-EMBED** 本地 embedding（fastembed multilingual-MiniLM，hf-mirror，离线 CPU）+ 向量索引 + 跨语言检索，`scripts/embed.py` 自测通过
 - ✅ **P1-CONFIG** `asta-news/config/` 已建：tiers/perspectives/sharpness/site/search.yaml
@@ -141,7 +143,7 @@ group  : 目标 5（上限 8），最严，微信群发
 - ✅ **P1-WEB** React MPA（Next 15 静态导出，真多页：home/edition/archive/search/about）读 v2，gazette 美学，构建通过；部署中
 - ✅ **P2-PERSP** 两类 filter 上线：视角(全栈/技术/产品/商业/研究/具身, 重排)×类别(13 layer, 硬筛)，网站可组合切换 + 视角导语
 - 🔵 **P2-SEARCH** **混合检索(BM25+向量, RRF 融合)已落地**：`scripts/search.py` 把 BM25 关键词(jieba 中文分词，TF-IDF+长度归一)与向量语义(fastembed 跨语言)各出一榜、RRF 融合(免量纲调参)，替换原 services `/api/search` 的"向量+子串 boost"hack。自测 PASS(分词/BM25/RRF 离线)，真实索引端到端验证：「块级稀疏注意力」→MiniMax MSA #1、「agent benchmark 推理基准」→NVIDIA AA-AgentPerf #1；API 端到端 200 真混合(两榜)；fastembed 缺失等情况优雅退化为单榜。相关新闻(预计算近邻)已稳上线；浏览器 transformers.js 语义搜为渐进增强，真机大概率可用、headless sandbox 加载不了 CDN 故未本地验证——待真机确认/改自托管模型
-- ✅ **P2-IMG** 精选 6/6 配 AI 信息图(arXiv 架构图/行为率图)+ daily og:image 兜底(11 张上线)+ enrich_images.py + images.md how-to + 卡片渲染；待续:提升 daily/arXiv 覆盖、防盗链兜底
+- ✅ **P2-IMG** 精选配图 + daily og:image 兜底 + enrich_images.py + images.md how-to + 卡片渲染。**2026-06-15 升级**：enrich_images 现 ① 一手源是 arXiv（无 og:image）时用 `links.discussion` 兜底取图（当日精选 1/6→5/6），② group↔daily 按 url 双向同步（修掉「精选缺图、日报有图」不一致）；logo/占位图仍按规则过滤（HRM 只有 qbitai logo→正确留空，前端走层色卡）。待续:更多一手源类型（HF/GitHub 已有）、防盗链实测兜底（the-decoder 经 github.io referer 实测可加载）
 - ✅ **P2-SHARP** 犀利度上线：中性/锐评/**深读** 三档全在 config/sharpness.yaml；前端控件已从二元泛化为**三档数据门控**(中性恒在，锐评/深读各按 it.sharp/it.deep 存在与否显示，切 tier 不可用则回退)，item 详情页加深读版块——本地 build 验证(2026-06-12 页：犀利度控件在、中性/锐评渲染、深读因无数据正确隐藏)。**只剩改写层产出 `it.deep` 深读变体**(属 readiness/改写，待 SKILL 接线或橘鸦研究落地一并做)，产出后深读按钮自动出现
 - ✅ **P3-STUDY** 橘鸦研究完成(docs/study-juya.md)：发现我们 gazette 美学已天然对齐橘鸦；借鉴'今日概览编号列表'已应用到微信版 md；公众号发布路径(md2juya/md2wechat→微信API)已规划进 P3-WECHAT
 - ✅ **P3-SELFCONTAIN** doctor 升级为全平台健康检查(uv/node/docker/配置/embed/后端/公众号脚本/源/RSSHub)，全绿(110 源/RSSHub/代理自探测)；setup skill 更新：X 用 grab_x_cookie.sh 自动取 cookie + per-user 路由开箱即用、embed 自包含(hf-mirror)、README 指向 web/ Next 流程
@@ -151,6 +153,7 @@ group  : 目标 5（上限 8），最严，微信群发
 - 🔵 **分发** sitemap.xml + robots.txt(可被搜索引擎/聚合器发现)+ Atom 订阅 feed + **社交分享卡(OG/Twitter meta:首页+每期+每条 item,带图)**——分享到微信群/推特有预览卡
 - 🔵 **P3-WECHAT** md→公众号内联样式 HTML 转换器(publish_wechat.py,橘鸦风,≤1MB,实测渲染 OK)已成；微信 draft/publish API 接口已写好,gated 在 WECHAT_APPID/SECRET(等用户公众号凭证)；services 端点 /api/publish/wechat + 控制台「生成公众号 HTML」按钮已加(实测生成成功,发布等凭证)
 - 🔵 **持续** 前端：favicon(轨道印记)+品牌 404 页 + 头条层级 + **item 详情页 + **往期 prev/next 顺序导航**；数据源 121（+TLDR AI/Ben's Bites/Ethan Mollick/Zvi/RunPod/Meta新闻RSS 等）（+The Decoder/MarkTechPost/Together/Google AI/philschmid/r-ML 等，不止 RSSHub）；前端人类视角打磨、文章质量、更多中文/商业/创意源待续
+- ✅ **前端·用户vs内部**（2026-06-14，按用户反馈）逐页用浏览器以普通用户身份审查，清掉 UI 上「给自己看」的内容：删「编者按·今日未覆盖」流水线日志(429/抓取失败/人工读)、相关&搜索去掉原始相似度分数、删「全部 134」原始候选计数、关于页/页脚改读者口吻(去 脚本/agent/embedding/GitHub Actions/微信群发 术语)、搜索提示去技术细节、**「控制台」开发者页从公开导航隐藏(仅本地连后端显示)**、空态不再露内部命令。原则记入 memory。判断法：build→serve→headless Chrome 截图逐页看，可见文字里凡流水线状态/分数/实现术语/admin 工具皆不入产品。
 
 - ✅ **健壮** 云端 daily-digest 无 ANTHROPIC_API_KEY 时优雅跳过(不再每日失败,设了即每日自动跑)
 
