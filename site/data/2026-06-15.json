@@ -39,7 +39,12 @@
     "take": "新基准 SWE-Explore 把编程 agent 的「找代码」和「改代码」分开评测，发现一个尴尬真相：Claude Code、Codex 这类 agent 能稳稳定位到正确文件，但对真正该改的代码行，覆盖率只有 14–19%——只要核心区露出不到一半，修复基本就会失败。",
     "readable": "如果你用过 Claude Code、Codex 这类编程 agent，大概都有过这种体验：它能很快翻到出问题的那个文件，但改起来要么不到点子上、要么漏掉关键的几行。上海交大等团队的新基准 SWE-Explore 第一次把这件事量化了——它把「代码定位」从「代码修复」里单拎出来单独评测，给 agent 一段 bug 描述和整个项目，让它返回一份「相关代码段」的排名，再和真正成功的修复实际看过的代码比对。\n\n规模不小：848 个问题、203 个开源项目、10 种语言（Python 547 个为主，也有 Go、JS、Rust）；受测的既有通用 agent（Claude Code、Codex、OpenHands），也有 CoSIL、AutoCodeRover、OrcaLoca 这些专用方案，底座覆盖 GPT-5.4、Gemini 3 Pro、Claude Sonnet 4.6、Kimi K2.6。\n\n结论很扎心：文件级定位大家普遍都行，但落到「行级」，对真正相关代码行的覆盖只有 14–19%。论文给了一句很实在的判断——只要必要核心区露出不到一半，修复大多会失败；而且存在明显的阈值效应：核心区覆盖率从 50% 抬到 75% 这一段，修复成功率会突然跳上去。\n\n这对做 agent 工程的人是个有用的指向标：与其继续卷「能不能找到文件」，不如把力气花在「把对的上下文喂够」。它也解释了为什么很多失败不是模型不会改，而是压根没看全该看的地方。",
     "rank": 1,
-    "score": 4.0
+    "score": 4.0,
+    "image": {
+     "url": "https://the-decoder.com/wp-content/uploads/2026/06/swe-explore-nano-banana-pro.jpg",
+     "credit": "the-decoder.com",
+     "source": "https://the-decoder.com/ai-coding-agents-find-the-right-file-but-miss-the-exact-lines-that-matter-study-shows/"
+    }
    },
    {
     "layer": "model",
@@ -59,7 +64,12 @@
     "take": "微软 Mirage 给视频世界模型装了「空间记忆」：不再用费算力的像素点云，而把场景特征直接存进隐空间，长镜头转来转去也不「失忆」。代价端很漂亮——每帧最高提速 10.57×、显存最高省 55×，WorldScore 和 RealEstate10K 闭环测试上都领先同类。",
     "readable": "视频生成模型有个老毛病：镜头转过去再转回来，刚才的桌子椅子可能就变样了——它「记不住」拐角后面有什么。微软研究院联合多所高校做的 Mirage 想治这个病，思路是给模型一份「空间记忆」。\n\n关键在怎么存这份记忆。以往不少做法用基于像素的 3D 点云，但点云要先渲染、再重新编码回模型，是个「双重瓶颈」，又慢又吃显存。Mirage 直接把图像特征存进模型内部的隐空间（latent space）里当空间记忆，绕过了这道关。它本身是在阿里开源的 Wan2.2 上搭起来的。\n\n省下来的代价很可观：每帧生成最高提速 10.57×，显存最高比同类基于色彩的方法少 55×，而且长距离镜头移动时场景结构和纹理能稳住不漂。基准上，WorldScore 优于 Spatia 和 Wan2.1；在 RealEstate10K 的闭环测试里（镜头绕一圈回到起点，误差会一路累积，是个硬场景）三项指标领先两项。\n\n要泼的冷水也写在脸上：运动物体在分段边界会被刻意滤掉，因为长期几何追不准；安静室内收益大，繁忙场景收益小。但「把空间一致性做进隐空间、还顺手把算力和显存砍下来」这个方向，对世界模型和可交互视频是实打实的一步。",
     "rank": 2,
-    "score": 3.88
+    "score": 3.88,
+    "image": {
+     "url": "https://the-decoder.com/wp-content/uploads/2026/06/latent-video-memory-nano-banana-pro.jpg",
+     "credit": "the-decoder.com",
+     "source": "https://the-decoder.com/microsoft-researchs-mirage-gives-video-generation-a-persistent-spatial-memory-that-doesnt-forget-whats-around-the-corner/"
+    }
    },
    {
     "layer": "post-training",
@@ -79,7 +89,12 @@
     "take": "SkillOpt 把「写提示词」变成了「训练一份 Markdown」：一个优化器模型反复增删改技能文档，只保留在验证集上变好的改动，整套流程照搬深度学习的验证集、编辑预算、按 epoch 巩固。结果不碰权重就把 GPT-5.5 在六个基准上平均抬高约 23 分，且训好的技能能跨模型迁移。",
     "readable": "提示词工程一直被当成「手艺活」，靠人反复试。微软联合三所中国高校做的 SkillOpt 想把它变成「可训练」的工程：把给模型的指令文档（他们叫 skill）当作一份可训练的外部状态，不动模型权重，只优化那份纯 Markdown 文件。\n\n做法很像把深度学习搬到文本层面：一个独立的「优化器模型」对技能文档提增、删、改，每个改动只有在留出的验证集上表现更好才被接受；还设了编辑预算、拒绝缓冲、按 epoch 巩固这些机制，防止越改越乱。\n\n效果不小。在 GPT-5.5、六个基准的直接对话设置下，平均提升约 23 分；增益最大的是格式要求严、需要工具调用的任务，比如表格编辑。更有意思的是迁移性：在大模型上训出的技能能提升同族的小模型；一个在别处训好的表格技能，原样搬进 Claude Code 就能把它的表现拉到「在 Claude Code 里直接训」的同一水平。实验共覆盖七个目标模型（含 GPT-5.5、Qwen3.5-4B）、六个基准（搜索、表格、文档分析、数学、具身动作）。\n\n这条路线的诱人之处在于便宜且可移植——不需要微调、不碰权重，产出的还是人能读、能改的 Markdown。对手上有一堆 agent、想榨出更多能力又不想动模型的人，这是个很现实的工具。",
     "rank": 3,
-    "score": 3.76
+    "score": 3.76,
+    "image": {
+     "url": "https://the-decoder.com/wp-content/uploads/2026/06/skillopt-markdown-neural-training-nano-banana-pro.jpg",
+     "credit": "the-decoder.com",
+     "source": "https://the-decoder.com/microsofts-skillopt-boosts-gpt-5-5-by-using-nothing-but-a-trained-markdown-file/"
+    }
    },
    {
     "layer": "model",
@@ -119,7 +134,12 @@
     "take": "KPMG 一份劝客户拥抱 AI 的报告，自己先栽在 AI 上：里面 UBS、NHS、瑞士联邦铁路、伦敦交通局的「落地案例」全是编的，当事方一律否认。GPTZero 查出根因是「vibe citing」——引用全靠宽泛转述、查无原文；CEO Edward Tian 警告这种出自大牌机构的错误会形成「二次幻觉」反复扩散。",
     "readable": "这是个有点讽刺的故事：一家四大之一的 KPMG，发了份名为《Redefining excellence in the age of agentic AI》的报告，劝企业客户大胆上 AI，结果报告本身翻了车——里面列举的多个 AI 落地案例是编造的。\n\n被点名的机构分量不轻：UBS、英国 NHS、瑞士联邦铁路、伦敦交通局，全部出面否认有过报告所述的项目。问题由 AI 检测公司 GPTZero 查出，金融时报独立核实。根因被归为草率的「AI 检索式写作」：引用大多是宽泛转述，缺 URL、缺作者，有些干脆查无原文——GPTZero 给它起了个名字叫「vibe citing」（凭感觉引用）。\n\n比错误本身更值得警惕的是传播方式。GPTZero CEO Edward Tian 提出「二次幻觉」：这类错误因为出自受信任的咨询机构，会被人和 AI 系统反复采信、再加工、再扩散，公信力反而成了错误的加速器。目前 KPMG 已把报告从多个网站撤下。\n\n对正在用 AI 写报告、做尽调的团队，这是一记很实的警钟：模型敢「自信地编」，而越权威的出处，越容易让编出来的东西被当真。",
     "rank": 5,
-    "score": 3.52
+    "score": 3.52,
+    "image": {
+     "url": "https://storage.ghost.io/c/93/d8/93d84efe-2017-4168-9591-b749ab8330d5/content/images/size/w1200/2026/06/Printable-KPMG-Report-3-1.png",
+     "credit": "gptzero.me",
+     "source": "https://gptzero.me/news/investigations-kpmg"
+    }
    },
    {
     "layer": "product",
@@ -169,8 +189,8 @@
     "score": 4.0,
     "image": {
      "url": "https://the-decoder.com/wp-content/uploads/2026/06/swe-explore-nano-banana-pro.jpg",
-     "source": "https://the-decoder.com/ai-coding-agents-find-the-right-file-but-miss-the-exact-lines-that-matter-study-shows/",
-     "credit": "arXiv · 上海交大等"
+     "credit": "the-decoder.com",
+     "source": "https://the-decoder.com/ai-coding-agents-find-the-right-file-but-miss-the-exact-lines-that-matter-study-shows/"
     }
    },
    {
@@ -194,8 +214,8 @@
     "score": 3.88,
     "image": {
      "url": "https://the-decoder.com/wp-content/uploads/2026/06/latent-video-memory-nano-banana-pro.jpg",
-     "source": "https://the-decoder.com/microsoft-researchs-mirage-gives-video-generation-a-persistent-spatial-memory-that-doesnt-forget-whats-around-the-corner/",
-     "credit": "Microsoft Research"
+     "credit": "the-decoder.com",
+     "source": "https://the-decoder.com/microsoft-researchs-mirage-gives-video-generation-a-persistent-spatial-memory-that-doesnt-forget-whats-around-the-corner/"
     }
    },
    {
@@ -219,8 +239,8 @@
     "score": 3.76,
     "image": {
      "url": "https://the-decoder.com/wp-content/uploads/2026/06/skillopt-markdown-neural-training-nano-banana-pro.jpg",
-     "source": "https://the-decoder.com/microsofts-skillopt-boosts-gpt-5-5-by-using-nothing-but-a-trained-markdown-file/",
-     "credit": "Microsoft Research"
+     "credit": "the-decoder.com",
+     "source": "https://the-decoder.com/microsofts-skillopt-boosts-gpt-5-5-by-using-nothing-but-a-trained-markdown-file/"
     }
    },
    {
@@ -241,12 +261,7 @@
     "take": "一个约 1500 美元、10 亿参数、从零预训练的小模型 HRM，把「潜空间递归推理」顶到了下一代架构讨论的中心。它不靠显式思维链，而用高层慢、低层快的分层递归在隐空间里多轮内部推理；HuggingFace CEO 转发力荐，Bengio 参与的新论文也复用了它的骨架。",
     "readable": "这次出圈的不是又一个大模型，而是个「小而巧」的反例。Sapient Intelligence 发布的 HRM-Text 只有约 10 亿参数、训练成本约 1500 美元（16 张 H100、不到两天），却把一种叫「潜空间递归推理」（latent recursive reasoning）的架构推到了下一代推理模型讨论的正中央。\n\n它的反常识之处在于：不靠把推理过程「说出来」的显式思维链，而是在模型内部做多轮递归。架构分两层——高层模块 H 慢、管战略，低层模块 L 快、管执行，两个时间尺度在隐空间里反复推演，等想清楚了再出结果。\n\n小归小，分数不寒碜：MATH 56.2、GSM8K 84.5、ARC-Challenge 81.9、DROP 82.2。更能说明热度的是背书——HuggingFace 联合创始人兼 CEO Clem Delangue 亲自转发推荐；图灵奖得主 Yoshua Bengio 作为共同作者的新论文《Generative Recursive Reasoning》（GRAM 框架）也高度复用了 HRM 的骨架，等于把这条「在隐空间里递归地想」的路线往学术主线上又推了一把。\n\n当然 1B 模型的绝对能力有限，几个数学/常识基准也不等于通用推理。但它给行业的提醒很清楚：把算力堆在参数上不是唯一解，「让模型在隐空间里多想几轮」可能是另一条更省的路。",
     "rank": 4,
-    "score": 3.64,
-    "image": {
-     "url": "https://www.qbitai.com/wp-content/uploads/imgs/qbitai-logo-1.png",
-     "source": "https://www.qbitai.com/2026/06/435483.html",
-     "credit": "Sapient Intelligence · 量子位"
-    }
+    "score": 3.64
    },
    {
     "layer": "business",
@@ -269,8 +284,8 @@
     "score": 3.52,
     "image": {
      "url": "https://storage.ghost.io/c/93/d8/93d84efe-2017-4168-9591-b749ab8330d5/content/images/size/w1200/2026/06/Printable-KPMG-Report-3-1.png",
-     "source": "https://gptzero.me/news/investigations-kpmg",
-     "credit": "Financial Times"
+     "credit": "gptzero.me",
+     "source": "https://gptzero.me/news/investigations-kpmg"
     }
    },
    {
@@ -1457,7 +1472,12 @@
    "take": "新基准 SWE-Explore 把编程 agent 的「找代码」和「改代码」分开评测，发现一个尴尬真相：Claude Code、Codex 这类 agent 能稳稳定位到正确文件，但对真正该改的代码行，覆盖率只有 14–19%——只要核心区露出不到一半，修复基本就会失败。",
    "readable": "如果你用过 Claude Code、Codex 这类编程 agent，大概都有过这种体验：它能很快翻到出问题的那个文件，但改起来要么不到点子上、要么漏掉关键的几行。上海交大等团队的新基准 SWE-Explore 第一次把这件事量化了——它把「代码定位」从「代码修复」里单拎出来单独评测，给 agent 一段 bug 描述和整个项目，让它返回一份「相关代码段」的排名，再和真正成功的修复实际看过的代码比对。\n\n规模不小：848 个问题、203 个开源项目、10 种语言（Python 547 个为主，也有 Go、JS、Rust）；受测的既有通用 agent（Claude Code、Codex、OpenHands），也有 CoSIL、AutoCodeRover、OrcaLoca 这些专用方案，底座覆盖 GPT-5.4、Gemini 3 Pro、Claude Sonnet 4.6、Kimi K2.6。\n\n结论很扎心：文件级定位大家普遍都行，但落到「行级」，对真正相关代码行的覆盖只有 14–19%。论文给了一句很实在的判断——只要必要核心区露出不到一半，修复大多会失败；而且存在明显的阈值效应：核心区覆盖率从 50% 抬到 75% 这一段，修复成功率会突然跳上去。\n\n这对做 agent 工程的人是个有用的指向标：与其继续卷「能不能找到文件」，不如把力气花在「把对的上下文喂够」。它也解释了为什么很多失败不是模型不会改，而是压根没看全该看的地方。",
    "rank": 1,
-   "score": 4.0
+   "score": 4.0,
+   "image": {
+    "url": "https://the-decoder.com/wp-content/uploads/2026/06/swe-explore-nano-banana-pro.jpg",
+    "credit": "the-decoder.com",
+    "source": "https://the-decoder.com/ai-coding-agents-find-the-right-file-but-miss-the-exact-lines-that-matter-study-shows/"
+   }
   },
   {
    "layer": "model",
@@ -1477,7 +1497,12 @@
    "take": "微软 Mirage 给视频世界模型装了「空间记忆」：不再用费算力的像素点云，而把场景特征直接存进隐空间，长镜头转来转去也不「失忆」。代价端很漂亮——每帧最高提速 10.57×、显存最高省 55×，WorldScore 和 RealEstate10K 闭环测试上都领先同类。",
    "readable": "视频生成模型有个老毛病：镜头转过去再转回来，刚才的桌子椅子可能就变样了——它「记不住」拐角后面有什么。微软研究院联合多所高校做的 Mirage 想治这个病，思路是给模型一份「空间记忆」。\n\n关键在怎么存这份记忆。以往不少做法用基于像素的 3D 点云，但点云要先渲染、再重新编码回模型，是个「双重瓶颈」，又慢又吃显存。Mirage 直接把图像特征存进模型内部的隐空间（latent space）里当空间记忆，绕过了这道关。它本身是在阿里开源的 Wan2.2 上搭起来的。\n\n省下来的代价很可观：每帧生成最高提速 10.57×，显存最高比同类基于色彩的方法少 55×，而且长距离镜头移动时场景结构和纹理能稳住不漂。基准上，WorldScore 优于 Spatia 和 Wan2.1；在 RealEstate10K 的闭环测试里（镜头绕一圈回到起点，误差会一路累积，是个硬场景）三项指标领先两项。\n\n要泼的冷水也写在脸上：运动物体在分段边界会被刻意滤掉，因为长期几何追不准；安静室内收益大，繁忙场景收益小。但「把空间一致性做进隐空间、还顺手把算力和显存砍下来」这个方向，对世界模型和可交互视频是实打实的一步。",
    "rank": 2,
-   "score": 3.88
+   "score": 3.88,
+   "image": {
+    "url": "https://the-decoder.com/wp-content/uploads/2026/06/latent-video-memory-nano-banana-pro.jpg",
+    "credit": "the-decoder.com",
+    "source": "https://the-decoder.com/microsoft-researchs-mirage-gives-video-generation-a-persistent-spatial-memory-that-doesnt-forget-whats-around-the-corner/"
+   }
   },
   {
    "layer": "post-training",
@@ -1497,7 +1522,12 @@
    "take": "SkillOpt 把「写提示词」变成了「训练一份 Markdown」：一个优化器模型反复增删改技能文档，只保留在验证集上变好的改动，整套流程照搬深度学习的验证集、编辑预算、按 epoch 巩固。结果不碰权重就把 GPT-5.5 在六个基准上平均抬高约 23 分，且训好的技能能跨模型迁移。",
    "readable": "提示词工程一直被当成「手艺活」，靠人反复试。微软联合三所中国高校做的 SkillOpt 想把它变成「可训练」的工程：把给模型的指令文档（他们叫 skill）当作一份可训练的外部状态，不动模型权重，只优化那份纯 Markdown 文件。\n\n做法很像把深度学习搬到文本层面：一个独立的「优化器模型」对技能文档提增、删、改，每个改动只有在留出的验证集上表现更好才被接受；还设了编辑预算、拒绝缓冲、按 epoch 巩固这些机制，防止越改越乱。\n\n效果不小。在 GPT-5.5、六个基准的直接对话设置下，平均提升约 23 分；增益最大的是格式要求严、需要工具调用的任务，比如表格编辑。更有意思的是迁移性：在大模型上训出的技能能提升同族的小模型；一个在别处训好的表格技能，原样搬进 Claude Code 就能把它的表现拉到「在 Claude Code 里直接训」的同一水平。实验共覆盖七个目标模型（含 GPT-5.5、Qwen3.5-4B）、六个基准（搜索、表格、文档分析、数学、具身动作）。\n\n这条路线的诱人之处在于便宜且可移植——不需要微调、不碰权重，产出的还是人能读、能改的 Markdown。对手上有一堆 agent、想榨出更多能力又不想动模型的人，这是个很现实的工具。",
    "rank": 3,
-   "score": 3.76
+   "score": 3.76,
+   "image": {
+    "url": "https://the-decoder.com/wp-content/uploads/2026/06/skillopt-markdown-neural-training-nano-banana-pro.jpg",
+    "credit": "the-decoder.com",
+    "source": "https://the-decoder.com/microsofts-skillopt-boosts-gpt-5-5-by-using-nothing-but-a-trained-markdown-file/"
+   }
   },
   {
    "layer": "model",
@@ -1537,7 +1567,12 @@
    "take": "KPMG 一份劝客户拥抱 AI 的报告，自己先栽在 AI 上：里面 UBS、NHS、瑞士联邦铁路、伦敦交通局的「落地案例」全是编的，当事方一律否认。GPTZero 查出根因是「vibe citing」——引用全靠宽泛转述、查无原文；CEO Edward Tian 警告这种出自大牌机构的错误会形成「二次幻觉」反复扩散。",
    "readable": "这是个有点讽刺的故事：一家四大之一的 KPMG，发了份名为《Redefining excellence in the age of agentic AI》的报告，劝企业客户大胆上 AI，结果报告本身翻了车——里面列举的多个 AI 落地案例是编造的。\n\n被点名的机构分量不轻：UBS、英国 NHS、瑞士联邦铁路、伦敦交通局，全部出面否认有过报告所述的项目。问题由 AI 检测公司 GPTZero 查出，金融时报独立核实。根因被归为草率的「AI 检索式写作」：引用大多是宽泛转述，缺 URL、缺作者，有些干脆查无原文——GPTZero 给它起了个名字叫「vibe citing」（凭感觉引用）。\n\n比错误本身更值得警惕的是传播方式。GPTZero CEO Edward Tian 提出「二次幻觉」：这类错误因为出自受信任的咨询机构，会被人和 AI 系统反复采信、再加工、再扩散，公信力反而成了错误的加速器。目前 KPMG 已把报告从多个网站撤下。\n\n对正在用 AI 写报告、做尽调的团队，这是一记很实的警钟：模型敢「自信地编」，而越权威的出处，越容易让编出来的东西被当真。",
    "rank": 5,
-   "score": 3.52
+   "score": 3.52,
+   "image": {
+    "url": "https://storage.ghost.io/c/93/d8/93d84efe-2017-4168-9591-b749ab8330d5/content/images/size/w1200/2026/06/Printable-KPMG-Report-3-1.png",
+    "credit": "gptzero.me",
+    "source": "https://gptzero.me/news/investigations-kpmg"
+   }
   },
   {
    "layer": "product",

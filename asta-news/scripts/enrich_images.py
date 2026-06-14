@@ -94,25 +94,37 @@ def main() -> int:
                 break
             if it.get("image"):
                 continue
-            url = (it.get("links") or {}).get("primary", "")
-            if not url:
+            # 一手源常是 arXiv（无 og:image）：依次试 primary → discussion，谁先有图用谁
+            links = it.get("links") or {}
+            cands = [u for u in (links.get("primary", ""), links.get("discussion", "")) if u]
+            if not cands:
                 continue
-            if url in seen:
-                it["image"] = seen[url]
-                continue
-            img = find_image(url)
-            n += 1
+            img = next((seen[u] for u in cands if u in seen), None)
+            for u in cands:
+                if img:
+                    break
+                img = find_image(u)
+                n += 1
+                if img:
+                    seen[u] = img
             if img:
                 it["image"] = img
-                seen[url] = img
                 done += 1
                 print(f"  ✓ {it.get('title','')[:46]}  ←  {img['url'][:60]}", file=sys.stderr)
-    # group 与 daily 里同 id 的条目同步图
-    gimg = {i.get("id") or i.get("title"): i.get("image") for i in tiers.get("group", []) if i.get("image")}
-    for it in tiers.get("daily", []):
-        k = it.get("id") or it.get("title")
-        if not it.get("image") and gimg.get(k):
-            it["image"] = gimg[k]
+    # group 与 daily 互相同步图（按 primary url / url 配对，双向）——精选与日报里的同一条永远配同一张图
+    def key(it):
+        return (it.get("links") or {}).get("primary") or it.get("url")
+    by_url = {}
+    for tier in ("group", "daily"):
+        for it in tiers.get(tier, []):
+            k = key(it)
+            if k and it.get("image"):
+                by_url.setdefault(k, it["image"])
+    for tier in ("group", "daily"):
+        for it in tiers.get(tier, []):
+            k = key(it)
+            if k and not it.get("image") and by_url.get(k):
+                it["image"] = by_url[k]
     if "group" in tiers:
         d["selected"] = tiers["group"]
     open(args.edition, "w").write(json.dumps(d, ensure_ascii=False, indent=1))
