@@ -66,7 +66,7 @@ export default async function ItemPage({ params }) {
             {rel.map((r) => (
               <li className="row" key={r.url}>
                 <div className="rhead">
-                  <span className="lb">{r.date} · {layerName(r.layer)} · {r.score?.toFixed(2)}</span>
+                  <span className="lb">{r.date} · {layerName(r.layer)}</span>
                   <a href={r.url} target="_blank" rel="noopener">{r.title}</a>
                 </div>
               </li>

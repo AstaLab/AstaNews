@@ -42,38 +42,13 @@ function Story({ it, n, related, lead, level }) {
         <div className="related">
           <span className="rel-label">相关</span>
           {rel.map((r) => (
-            <a key={r.url} href={r.url} target="_blank" rel="noopener" title={`相似度 ${r.score}`}>
+            <a key={r.url} href={r.url} target="_blank" rel="noopener">
               <span className="rel-lb">{layerName(r.layer)}</span>{r.title}
             </a>
           ))}
         </div>
       )}
     </article>
-  );
-}
-
-function FullRows({ items }) {
-  const by = {};
-  for (const c of items) (by[c.source] = by[c.source] || []).push(c);
-  return (
-    <div>
-      {Object.keys(by).sort().map((src) => (
-        <div key={src} style={{ marginBottom: 18 }}>
-          <div className="sec" style={{ margin: "20px 0 8px" }}>{src} · {by[src].length}</div>
-          <ul className="rows">
-            {by[src].map((c, i) => (
-              <li className="row" key={i}>
-                <div className="rhead">
-                  <span className="lb">{layerName(c.layer)}</span>
-                  <a href={c.url} target="_blank" rel="noopener">{c.title}</a>
-                </div>
-                {c.summary && <div className="rsum">{c.summary}</div>}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
-    </div>
   );
 }
 
@@ -86,7 +61,7 @@ export default function EditionView({ edition }) {
   useEffect(() => {
     fetch(`${BASE}/data/related.json`).then((r) => r.json()).then(setRelated).catch(() => setRelated({}));
   }, []);
-  const tiers = edition.tiers || { group: edition.selected || [], daily: edition.selected || [], full: edition.all_candidates || [] };
+  const tiers = edition.tiers || { group: edition.selected || [], daily: edition.selected || [] };
   const perspObj = PERSPECTIVES.find((p) => p.key === persp) || PERSPECTIVES[0];
 
   // 当前 tier 里出现的类别（只展示有内容的，按数量排序）
@@ -97,8 +72,7 @@ export default function EditionView({ edition }) {
   }, [tier, edition.date]);
 
   const items = useMemo(() => {
-    let raw = tiers[tier] || [];
-    if (tier !== "full") raw = applyPerspective(raw, perspObj);
+    let raw = applyPerspective(tiers[tier] || [], perspObj);
     if (cat !== "all") raw = raw.filter((it) => lz(it.layer) === cat);
     return raw;
   }, [tier, persp, cat, edition.date]);
@@ -125,17 +99,15 @@ export default function EditionView({ edition }) {
             ))}
           </div>
         </div>
-        {tier !== "full" && (
-          <div className="ctl-group">
-            <span className="ctl-label">视角</span>
-            <div className="seg">
-              {PERSPECTIVES.map((p) => (
-                <button key={p.key} className={persp === p.key ? "on" : ""} onClick={() => setPersp(p.key)}>{p.label}</button>
-              ))}
-            </div>
+        <div className="ctl-group">
+          <span className="ctl-label">视角</span>
+          <div className="seg">
+            {PERSPECTIVES.map((p) => (
+              <button key={p.key} className={persp === p.key ? "on" : ""} onClick={() => setPersp(p.key)}>{p.label}</button>
+            ))}
           </div>
-        )}
-        {tier !== "full" && levels.length > 1 && (
+        </div>
+        {levels.length > 1 && (
           <div className="ctl-group">
             <span className="ctl-label">犀利度</span>
             <div className="seg">
@@ -159,30 +131,20 @@ export default function EditionView({ edition }) {
         ))}
       </div>
 
-      {tier !== "full" && persp !== "all" && (
+      {persp !== "all" && (
         <p className="persp-lede">{perspLede || `${perspObj.label}视角`}</p>
       )}
 
       <div className="sec">
         {TIERS.find((t) => t.key === tier)?.label}
-        {tier !== "full" && persp !== "all" ? ` · ${perspObj.label}视角` : ""}
+        {persp !== "all" ? ` · ${perspObj.label}视角` : ""}
         {cat !== "all" ? ` · ${layerName(cat)}` : ""}
         <span style={{ fontFamily: "var(--mono)", color: "var(--faint)", marginLeft: 8 }}>{items.length}</span>
       </div>
 
-      {tier === "full"
-        ? <FullRows items={items} />
-        : items.length === 0
-          ? <p className="empty">该类别下暂无条目。</p>
-          : items.map((it, i) => <Story key={it.id || i} it={it} n={i + 1} related={related} lead={i === 0} level={activeLevel} />)}
-
-      {tier !== "full" && edition.gaps?.length > 0 && (
-        <>
-          <div className="sec">数据缺口</div>
-          <div className="note"><h3>编者按 · 今日未覆盖</h3>
-            <ul>{edition.gaps.map((g, i) => <li key={i}>{g}</li>)}</ul></div>
-        </>
-      )}
+      {items.length === 0
+        ? <p className="empty">该类别下暂无条目。</p>
+        : items.map((it, i) => <Story key={it.id || i} it={it} n={i + 1} related={related} lead={i === 0} level={activeLevel} />)}
     </div>
   );
 }

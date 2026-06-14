@@ -27,7 +27,7 @@ export default function RootLayout({ children }) {
               <div className="tele">
                 <span>{SITE.lab} · 全栈情报站</span>
                 <span className="seal-txt">AI FULL-STACK INTELLIGENCE</span>
-                <span>每日 · 多级 · 多视角</span>
+                <span>每日 · 全栈 · 多视角</span>
               </div>
               <div className="nameplate">
                 <svg className="emblem" viewBox="0 0 64 64" fill="none" stroke="#b23a23" strokeWidth="2">
@@ -44,7 +44,7 @@ export default function RootLayout({ children }) {
             <main className="main">{children}</main>
             <footer className="colophon">
               <span>AstaNews</span>
-              <span>抓取与去重确定 · 筛选与撰写由 agent 按编辑准则裁决</span>
+              <span>{SITE.lab} · AI 全栈每日情报</span>
               <span>
                 <a href={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/feed.xml`}>订阅 RSS</a>
                 {" · "}

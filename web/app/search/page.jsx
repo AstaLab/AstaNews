@@ -101,24 +101,24 @@ export default function Search() {
   const list = showSem ? results.map((r) => ({ ...r.it, _sc: r.sem })) : kwResults.map((r) => ({ ...r.it, _kw: r.s }));
 
   const hint = {
-    "api": "服务端语义检索（已连后端）",
-    "loading-index": "加载索引…",
-    "loading-model": "语义模型加载中（首次约 30MB，之后浏览器缓存）— 先用关键词",
-    "ready": `语义检索就绪 · ${meta?.length || 0} 条已索引`,
-    "keyword-only": `关键词检索 · ${meta?.length || 0} 条（语义模型不可用）`,
+    "api": "搜索全部归档",
+    "loading-index": "正在准备…",
+    "loading-model": "正在准备搜索，可先用关键词",
+    "ready": `可搜索 ${meta?.length || 0} 篇报道`,
+    "keyword-only": `可搜索 ${meta?.length || 0} 篇报道`,
   }[status];
 
   return (
     <>
       <div className="dateline">搜索 · 全部归档</div>
       <input className="searchbox" autoFocus value={q} onChange={(e) => setQ(e.target.value)}
-        placeholder="语义搜索：输入一个新闻、概念、模型名（如 长上下文推理优化 / tactile robot / 开源编程模型）" />
-      <div className="search-hint">{q.trim() ? `${list.length} 条命中 · ${showSem ? "语义+关键词" : "关键词"}` : hint}</div>
+        placeholder="搜索报道、概念、模型名（如 长上下文推理优化 / 开源编程模型）" />
+      <div className="search-hint">{q.trim() ? `${list.length} 篇命中` : hint}</div>
       <ul className="rows" style={{ marginTop: 20 }}>
         {list.map((it, i) => (
           <li className="row" key={it.u || i}>
             <div className="rhead">
-              <span className="lb">{it.d} · {layerName(it.l)}{it._sc != null ? ` · ${(it._sc).toFixed(2)}` : ""}</span>
+              <span className="lb">{it.d} · {layerName(it.l)}</span>
               <a href={it.u || "#"} target="_blank" rel="noopener">{it.t}</a>
             </div>
           </li>

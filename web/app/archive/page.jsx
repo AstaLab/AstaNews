@@ -17,7 +17,7 @@ export default function Archive() {
                 <span className="d">{e.date} · {e.weekday}</span>
                 <div className="h">{e.headline || "AI 全栈每日情报"}</div>
                 <div className="o">{e.overview}</div>
-                <div className="m">No.{String(eds.length - i).padStart(3, "0")} · 日报 {e.daily || e.group} · 精选 {e.group} · 候选 {e.candidates} · {(e.layers || []).map(layerName).join(" / ")}</div>
+                <div className="m">No.{String(eds.length - i).padStart(3, "0")} · {(e.layers || []).map(layerName).join(" / ")}</div>
               </Link>
             </li>
           ))}

@@ -4,7 +4,7 @@ import EditionView from "../components/EditionView";
 
 export default function Home() {
   const ed = latestEdition();
-  if (!ed) return <p className="empty">还没有发布任何 digest。跑一次 /asta-news:daily-digest 后发布即可。</p>;
+  if (!ed) return <p className="empty">今日尚未发布，请稍后再来。</p>;
   const dates = allDates();
   const prev = dates.length > 1 ? dates[1] : null; // 上一期
   return (

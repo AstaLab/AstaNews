@@ -25,9 +25,8 @@ export const layerEmoji = (l) => LAYERS[lz(l)]?.emoji || "";
 export const layerColor = (l) => LAYERS[lz(l)]?.color || "#6a6150";
 
 export const TIERS = [
-  { key: "daily", label: "日报", desc: "约 20 条，全栈覆盖" },
-  { key: "group", label: "精选", desc: "5-8 条，最严" },
-  { key: "full", label: "全部", desc: "当天全部候选" },
+  { key: "daily", label: "日报", desc: "当天全栈精选" },
+  { key: "group", label: "精选", desc: "每日最重要的几条" },
 ];
 
 export const PERSPECTIVES = [
