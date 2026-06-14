@@ -1,0 +1,2530 @@
+{
+ "date": "2026-06-15",
+ "weekday": "周一",
+ "schema_version": 2,
+ "headline": "本周开篇：方法学比参数更抢镜，agent 的「真本事」被逐条拆开看",
+ "overview": "周一不靠大模型发布撑场，亮点几乎都在「巧劲」：微软 SkillOpt 不动权重、只「训练」一个 Markdown 技能文件就把 GPT-5.5 抬高约 23 分，1500 美元训出的 10 亿参数 HRM 把潜空间递归推理推上下一代架构的讨论，微软 Mirage 用隐空间「空间记忆」把长镜头视频世界模型提速 10 倍、省显存 55 倍。与此同时，评测在给 agent 去魅——SWE-Explore 发现编程 agent 能找对文件、却只覆盖 14–19% 该改的行；信任面则有 KPMG 卖 AI 的报告自曝编造案例。",
+ "stats": {
+  "candidates": 120,
+  "sources_ok": 61,
+  "sources_failed": 1,
+  "layers_covered": [
+   "agent",
+   "business",
+   "devtool",
+   "maas",
+   "model",
+   "post-training",
+   "product",
+   "safety"
+  ]
+ },
+ "tiers": {
+  "group": [
+   {
+    "layer": "agent",
+    "source": "arXiv · 上海交大等",
+    "title": "SWE-Explore：AI 编程 agent 能找对文件，却抓不准该改的那几行",
+    "url": "https://arxiv.org/abs/2606.07297",
+    "links": {
+     "primary": "https://arxiv.org/abs/2606.07297",
+     "discussion": "https://the-decoder.com/ai-coding-agents-find-the-right-file-but-miss-the-exact-lines-that-matter-study-shows/"
+    },
+    "facts": [
+     "新基准 SWE-Explore 首次把「代码定位」从「修复」里单拆出来评测：848 个问题、203 个开源项目、10 种语言（Python 547 个为主，含 Go/JS/Rust）。",
+     "受测含通用 agent（Claude Code、Codex、OpenHands）与专用方案（CoSIL、AutoCodeRover、OrcaLoca 等），底座覆盖 GPT-5.4、Gemini 3 Pro、Claude Sonnet 4.6、Kimi K2.6。",
+     "文件级定位普遍准，但相关代码「行级」覆盖只有 14–19%；当核心代码区可见比例低于一半时，修复大多失败。",
+     "存在阈值效应：核心区覆盖率在 50%→75% 之间时，修复成功率出现明显跃升。"
+    ],
+    "take": "新基准 SWE-Explore 把编程 agent 的「找代码」和「改代码」分开评测，发现一个尴尬真相：Claude Code、Codex 这类 agent 能稳稳定位到正确文件，但对真正该改的代码行，覆盖率只有 14–19%——只要核心区露出不到一半，修复基本就会失败。",
+    "readable": "如果你用过 Claude Code、Codex 这类编程 agent，大概都有过这种体验：它能很快翻到出问题的那个文件，但改起来要么不到点子上、要么漏掉关键的几行。上海交大等团队的新基准 SWE-Explore 第一次把这件事量化了——它把「代码定位」从「代码修复」里单拎出来单独评测，给 agent 一段 bug 描述和整个项目，让它返回一份「相关代码段」的排名，再和真正成功的修复实际看过的代码比对。\n\n规模不小：848 个问题、203 个开源项目、10 种语言（Python 547 个为主，也有 Go、JS、Rust）；受测的既有通用 agent（Claude Code、Codex、OpenHands），也有 CoSIL、AutoCodeRover、OrcaLoca 这些专用方案，底座覆盖 GPT-5.4、Gemini 3 Pro、Claude Sonnet 4.6、Kimi K2.6。\n\n结论很扎心：文件级定位大家普遍都行，但落到「行级」，对真正相关代码行的覆盖只有 14–19%。论文给了一句很实在的判断——只要必要核心区露出不到一半，修复大多会失败；而且存在明显的阈值效应：核心区覆盖率从 50% 抬到 75% 这一段，修复成功率会突然跳上去。\n\n这对做 agent 工程的人是个有用的指向标：与其继续卷「能不能找到文件」，不如把力气花在「把对的上下文喂够」。它也解释了为什么很多失败不是模型不会改，而是压根没看全该看的地方。",
+    "rank": 1,
+    "score": 4.0
+   },
+   {
+    "layer": "model",
+    "source": "Microsoft Research",
+    "title": "微软 Mirage：把「空间记忆」塞进隐空间，长镜头视频世界模型提速 10 倍、省显存 55 倍",
+    "url": "https://arxiv.org/abs/2606.09828",
+    "links": {
+     "primary": "https://arxiv.org/abs/2606.09828",
+     "discussion": "https://the-decoder.com/microsoft-researchs-mirage-gives-video-generation-a-persistent-spatial-memory-that-doesnt-forget-whats-around-the-corner/"
+    },
+    "facts": [
+     "Mirage 是微软研究院联合多所高校的视频世界模型，基于阿里开源的 Wan2.2；把场景信息直接存进隐空间的「空间记忆」，而非基于像素的 3D 点云，省掉「渲染点云→再编码」的双重瓶颈。",
+     "每帧生成最高提速 10.57×，显存最高比同类色彩法少 55×；长距离镜头移动下保持结构与纹理稳定。",
+     "WorldScore 上优于 Spatia、Wan2.1；RealEstate10K 闭环测试（镜头回到起点、误差会累积）三项指标领先两项。",
+     "局限：运动物体在分段边界被刻意滤除（长期几何难追踪），繁忙场景收益小于安静室内。"
+    ],
+    "take": "微软 Mirage 给视频世界模型装了「空间记忆」：不再用费算力的像素点云，而把场景特征直接存进隐空间，长镜头转来转去也不「失忆」。代价端很漂亮——每帧最高提速 10.57×、显存最高省 55×，WorldScore 和 RealEstate10K 闭环测试上都领先同类。",
+    "readable": "视频生成模型有个老毛病：镜头转过去再转回来，刚才的桌子椅子可能就变样了——它「记不住」拐角后面有什么。微软研究院联合多所高校做的 Mirage 想治这个病，思路是给模型一份「空间记忆」。\n\n关键在怎么存这份记忆。以往不少做法用基于像素的 3D 点云，但点云要先渲染、再重新编码回模型，是个「双重瓶颈」，又慢又吃显存。Mirage 直接把图像特征存进模型内部的隐空间（latent space）里当空间记忆，绕过了这道关。它本身是在阿里开源的 Wan2.2 上搭起来的。\n\n省下来的代价很可观：每帧生成最高提速 10.57×，显存最高比同类基于色彩的方法少 55×，而且长距离镜头移动时场景结构和纹理能稳住不漂。基准上，WorldScore 优于 Spatia 和 Wan2.1；在 RealEstate10K 的闭环测试里（镜头绕一圈回到起点，误差会一路累积，是个硬场景）三项指标领先两项。\n\n要泼的冷水也写在脸上：运动物体在分段边界会被刻意滤掉，因为长期几何追不准；安静室内收益大，繁忙场景收益小。但「把空间一致性做进隐空间、还顺手把算力和显存砍下来」这个方向，对世界模型和可交互视频是实打实的一步。",
+    "rank": 2,
+    "score": 3.88
+   },
+   {
+    "layer": "post-training",
+    "source": "Microsoft Research",
+    "title": "微软 SkillOpt：不动权重，只「训练」一个 Markdown 技能文件，就把 GPT-5.5 拉高 23 分",
+    "url": "https://arxiv.org/abs/2605.23904",
+    "links": {
+     "primary": "https://arxiv.org/abs/2605.23904",
+     "discussion": "https://the-decoder.com/microsofts-skillopt-boosts-gpt-5-5-by-using-nothing-but-a-trained-markdown-file/"
+    },
+    "facts": [
+     "SkillOpt 把指令文档（「skill」）当成可训练的外部状态：一个独立的优化器模型对 Markdown 文件提增删改，只有在留出验证集上变好才接受，并引入编辑预算、拒绝缓冲、按 epoch 巩固——把深度学习那套搬到纯文本层面。",
+     "在 GPT-5.5、六个基准的直接对话设置下平均提升约 23 分；格式严格、需工具调用的任务（如表格编辑）增益最大。",
+     "可跨模型迁移：大模型上训出的 skill 能提升同族小模型；一个表格 skill 原样搬进 Claude Code，效果追平在 Claude Code 里直接训的版本。",
+     "共测七个目标模型（含 GPT-5.5、Qwen3.5-4B），六个基准覆盖搜索/表格/文档分析/数学/具身动作。"
+    ],
+    "take": "SkillOpt 把「写提示词」变成了「训练一份 Markdown」：一个优化器模型反复增删改技能文档，只保留在验证集上变好的改动，整套流程照搬深度学习的验证集、编辑预算、按 epoch 巩固。结果不碰权重就把 GPT-5.5 在六个基准上平均抬高约 23 分，且训好的技能能跨模型迁移。",
+    "readable": "提示词工程一直被当成「手艺活」，靠人反复试。微软联合三所中国高校做的 SkillOpt 想把它变成「可训练」的工程：把给模型的指令文档（他们叫 skill）当作一份可训练的外部状态，不动模型权重，只优化那份纯 Markdown 文件。\n\n做法很像把深度学习搬到文本层面：一个独立的「优化器模型」对技能文档提增、删、改，每个改动只有在留出的验证集上表现更好才被接受；还设了编辑预算、拒绝缓冲、按 epoch 巩固这些机制，防止越改越乱。\n\n效果不小。在 GPT-5.5、六个基准的直接对话设置下，平均提升约 23 分；增益最大的是格式要求严、需要工具调用的任务，比如表格编辑。更有意思的是迁移性：在大模型上训出的技能能提升同族的小模型；一个在别处训好的表格技能，原样搬进 Claude Code 就能把它的表现拉到「在 Claude Code 里直接训」的同一水平。实验共覆盖七个目标模型（含 GPT-5.5、Qwen3.5-4B）、六个基准（搜索、表格、文档分析、数学、具身动作）。\n\n这条路线的诱人之处在于便宜且可移植——不需要微调、不碰权重，产出的还是人能读、能改的 Markdown。对手上有一堆 agent、想榨出更多能力又不想动模型的人，这是个很现实的工具。",
+    "rank": 3,
+    "score": 3.76
+   },
+   {
+    "layer": "model",
+    "source": "Sapient Intelligence · 量子位",
+    "title": "1500 美元训出的 10 亿参数 HRM：把「潜空间递归推理」推上下一代架构的牌桌",
+    "url": "https://arxiv.org/abs/2605.20613",
+    "links": {
+     "primary": "https://arxiv.org/abs/2605.20613",
+     "discussion": "https://www.qbitai.com/2026/06/435483.html"
+    },
+    "facts": [
+     "HRM-Text 由 Sapient Intelligence 发布，约 1B 参数，训练成本约 1500 美元，16 张 H100 不到两天。",
+     "架构为「分层递归推理」：高层 H（慢，战略脑）+ 低层 L（快，执行脑），双时间尺度在隐空间内多轮内部推理，而非显式思维链。",
+     "成绩：MATH 56.2、GSM8K 84.5、ARC-Challenge 81.9、DROP 82.2。",
+     "HuggingFace CEO Clem Delangue 亲自转发；图灵奖得主 Bengio 参与的《Generative Recursive Reasoning》论文（GRAM 框架）高度复用 HRM 骨架。"
+    ],
+    "take": "一个约 1500 美元、10 亿参数、从零预训练的小模型 HRM，把「潜空间递归推理」顶到了下一代架构讨论的中心。它不靠显式思维链，而用高层慢、低层快的分层递归在隐空间里多轮内部推理；HuggingFace CEO 转发力荐，Bengio 参与的新论文也复用了它的骨架。",
+    "readable": "这次出圈的不是又一个大模型，而是个「小而巧」的反例。Sapient Intelligence 发布的 HRM-Text 只有约 10 亿参数、训练成本约 1500 美元（16 张 H100、不到两天），却把一种叫「潜空间递归推理」（latent recursive reasoning）的架构推到了下一代推理模型讨论的正中央。\n\n它的反常识之处在于：不靠把推理过程「说出来」的显式思维链，而是在模型内部做多轮递归。架构分两层——高层模块 H 慢、管战略，低层模块 L 快、管执行，两个时间尺度在隐空间里反复推演，等想清楚了再出结果。\n\n小归小，分数不寒碜：MATH 56.2、GSM8K 84.5、ARC-Challenge 81.9、DROP 82.2。更能说明热度的是背书——HuggingFace 联合创始人兼 CEO Clem Delangue 亲自转发推荐；图灵奖得主 Yoshua Bengio 作为共同作者的新论文《Generative Recursive Reasoning》（GRAM 框架）也高度复用了 HRM 的骨架，等于把这条「在隐空间里递归地想」的路线往学术主线上又推了一把。\n\n当然 1B 模型的绝对能力有限，几个数学/常识基准也不等于通用推理。但它给行业的提醒很清楚：把算力堆在参数上不是唯一解，「让模型在隐空间里多想几轮」可能是另一条更省的路。",
+    "rank": 4,
+    "score": 3.64
+   },
+   {
+    "layer": "business",
+    "source": "Financial Times",
+    "title": "KPMG 一份卖 AI 的报告，案例是编的：UBS、NHS 都否认，「二次幻觉」警报拉响",
+    "url": "https://www.ft.com/content/b3828e92-4961-4b39-84f0-c42f33be3c3f",
+    "links": {
+     "primary": "https://www.ft.com/content/b3828e92-4961-4b39-84f0-c42f33be3c3f",
+     "discussion": "https://gptzero.me/news/investigations-kpmg"
+    },
+    "facts": [
+     "KPMG 报告《Redefining excellence in the age of agentic AI》虚构了多家机构的 AI 落地案例，涉及 UBS、英国 NHS、瑞士联邦铁路、伦敦交通局——全部否认。",
+     "GPTZero 查出问题、金融时报独立核实；根因是草率的 AI 检索式写作：引用多为宽泛转述、缺 URL 与作者，部分根本查无原文，被称为「vibe citing」。",
+     "GPTZero CEO Edward Tian 警告「二次幻觉」：错误因出自可信咨询机构而被人和 AI 反复采信、扩散。",
+     "KPMG 已从多个网站撤下该报告。"
+    ],
+    "take": "KPMG 一份劝客户拥抱 AI 的报告，自己先栽在 AI 上：里面 UBS、NHS、瑞士联邦铁路、伦敦交通局的「落地案例」全是编的，当事方一律否认。GPTZero 查出根因是「vibe citing」——引用全靠宽泛转述、查无原文；CEO Edward Tian 警告这种出自大牌机构的错误会形成「二次幻觉」反复扩散。",
+    "readable": "这是个有点讽刺的故事：一家四大之一的 KPMG，发了份名为《Redefining excellence in the age of agentic AI》的报告，劝企业客户大胆上 AI，结果报告本身翻了车——里面列举的多个 AI 落地案例是编造的。\n\n被点名的机构分量不轻：UBS、英国 NHS、瑞士联邦铁路、伦敦交通局，全部出面否认有过报告所述的项目。问题由 AI 检测公司 GPTZero 查出，金融时报独立核实。根因被归为草率的「AI 检索式写作」：引用大多是宽泛转述，缺 URL、缺作者，有些干脆查无原文——GPTZero 给它起了个名字叫「vibe citing」（凭感觉引用）。\n\n比错误本身更值得警惕的是传播方式。GPTZero CEO Edward Tian 提出「二次幻觉」：这类错误因为出自受信任的咨询机构，会被人和 AI 系统反复采信、再加工、再扩散，公信力反而成了错误的加速器。目前 KPMG 已把报告从多个网站撤下。\n\n对正在用 AI 写报告、做尽调的团队，这是一记很实的警钟：模型敢「自信地编」，而越权威的出处，越容易让编出来的东西被当真。",
+    "rank": 5,
+    "score": 3.52
+   },
+   {
+    "layer": "product",
+    "source": "Google Cloud",
+    "title": "谷歌云 Open Knowledge Format：把散落的组织知识压成带 YAML 头的 Markdown，喂给 agent",
+    "url": "https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing/",
+    "links": {
+     "primary": "https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing/",
+     "discussion": "https://the-decoder.com/google-clouds-open-knowledge-format-turns-scattered-docs-into-markdown-files-for-ai-agents/"
+    },
+    "facts": [
+     "OKF 把知识表示成一目录的 Markdown 文件 + YAML frontmatter，跨系统可移植；只有一个必填字段 type，其余（title/description/resource/tags/时间戳）可选，概念间用标准 Markdown 链接连成知识图。",
+     "针对的痛点：知识散落在元数据目录、wiki、代码注释、notebook、工程师脑子里，agent 取上下文（如给特定数据集写 SQL）要四处拼。",
+     "把 Karpathy 近期带火的「LLM wiki」模式形式化为可互操作标准；bundle 任意编辑器可读、GitHub 直接渲染，不绑云厂商/数据库/agent 框架。",
+     "谷歌给了参考实现：BigQuery 数据集的富化 agent、静态 HTML 可视化器，及 GA4 电商/Stack Overflow/比特币数据集样例；规范与代码已在 GitHub 开放。"
+    ],
+    "take": "谷歌云推出 Open Knowledge Format（OKF），把组织里散落的知识统一成「Markdown + YAML 头」的可移植格式，专门喂给 AI agent。它只要求一个必填字段 type，用标准 Markdown 链接把概念连成知识图，等于把 Karpathy 带火的「LLM wiki」形式化为开放标准，不绑任何云厂商或框架。",
+    "readable": "AI agent 落地时常卡在一个不性感但要命的环节：它要干活，得先把分散在元数据目录、wiki、代码注释、notebook、甚至工程师脑子里的知识拼起来——比如给某个数据集写 SQL，得四处找口径。谷歌云的 Open Knowledge Format（OKF）想给这件事定个标准。\n\nOKF 的形态很克制：把知识表示成一个目录的 Markdown 文件，每个文件带 YAML frontmatter，只有一个必填字段 type，其余 title、description、resource、tags、时间戳都可选；概念之间用标准 Markdown 链接互连，自然连成一张知识图。它把 Andrej Karpathy 近期带火的「LLM wiki」模式，正式做成了一个可互操作的规范。\n\n卖点是「不绑定」：OKF bundle 任意编辑器能读、GitHub 直接渲染，也不挑云厂商、数据库或 agent 框架。谷歌还附了参考实现——给 BigQuery 数据集做富化的 agent、一个静态 HTML 可视化器，以及 GA4 电商、Stack Overflow、比特币数据集的样例；规范和代码都已在 GitHub 开放。\n\n值得看的不是技术多深，而是方向：当「给 agent 喂上下文」成为刚需，谁能把知识的「装箱格式」标准化，谁就卡住了一个关键接口。OKF 故意做得极简、可移植，正是冲着「被广泛采用」去的。",
+    "rank": 6,
+    "score": 3.4,
+    "image": {
+     "url": "https://storage.googleapis.com/gweb-cloudblog-publish/images/09_-_Data_Analytics_tFH57V6.max-2600x2600.jpg",
+     "credit": "cloud.google.com",
+     "source": "https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing/"
+    }
+   }
+  ],
+  "daily": [
+   {
+    "layer": "agent",
+    "source": "arXiv · 上海交大等",
+    "title": "SWE-Explore：AI 编程 agent 能找对文件，却抓不准该改的那几行",
+    "url": "https://arxiv.org/abs/2606.07297",
+    "links": {
+     "primary": "https://arxiv.org/abs/2606.07297",
+     "discussion": "https://the-decoder.com/ai-coding-agents-find-the-right-file-but-miss-the-exact-lines-that-matter-study-shows/"
+    },
+    "facts": [
+     "新基准 SWE-Explore 首次把「代码定位」从「修复」里单拆出来评测：848 个问题、203 个开源项目、10 种语言（Python 547 个为主，含 Go/JS/Rust）。",
+     "受测含通用 agent（Claude Code、Codex、OpenHands）与专用方案（CoSIL、AutoCodeRover、OrcaLoca 等），底座覆盖 GPT-5.4、Gemini 3 Pro、Claude Sonnet 4.6、Kimi K2.6。",
+     "文件级定位普遍准，但相关代码「行级」覆盖只有 14–19%；当核心代码区可见比例低于一半时，修复大多失败。",
+     "存在阈值效应：核心区覆盖率在 50%→75% 之间时，修复成功率出现明显跃升。"
+    ],
+    "take": "新基准 SWE-Explore 把编程 agent 的「找代码」和「改代码」分开评测，发现一个尴尬真相：Claude Code、Codex 这类 agent 能稳稳定位到正确文件，但对真正该改的代码行，覆盖率只有 14–19%——只要核心区露出不到一半，修复基本就会失败。",
+    "readable": "如果你用过 Claude Code、Codex 这类编程 agent，大概都有过这种体验：它能很快翻到出问题的那个文件，但改起来要么不到点子上、要么漏掉关键的几行。上海交大等团队的新基准 SWE-Explore 第一次把这件事量化了——它把「代码定位」从「代码修复」里单拎出来单独评测，给 agent 一段 bug 描述和整个项目，让它返回一份「相关代码段」的排名，再和真正成功的修复实际看过的代码比对。\n\n规模不小：848 个问题、203 个开源项目、10 种语言（Python 547 个为主，也有 Go、JS、Rust）；受测的既有通用 agent（Claude Code、Codex、OpenHands），也有 CoSIL、AutoCodeRover、OrcaLoca 这些专用方案，底座覆盖 GPT-5.4、Gemini 3 Pro、Claude Sonnet 4.6、Kimi K2.6。\n\n结论很扎心：文件级定位大家普遍都行，但落到「行级」，对真正相关代码行的覆盖只有 14–19%。论文给了一句很实在的判断——只要必要核心区露出不到一半，修复大多会失败；而且存在明显的阈值效应：核心区覆盖率从 50% 抬到 75% 这一段，修复成功率会突然跳上去。\n\n这对做 agent 工程的人是个有用的指向标：与其继续卷「能不能找到文件」，不如把力气花在「把对的上下文喂够」。它也解释了为什么很多失败不是模型不会改，而是压根没看全该看的地方。",
+    "rank": 1,
+    "score": 4.0,
+    "image": {
+     "url": "https://the-decoder.com/wp-content/uploads/2026/06/swe-explore-nano-banana-pro.jpg",
+     "source": "https://the-decoder.com/ai-coding-agents-find-the-right-file-but-miss-the-exact-lines-that-matter-study-shows/",
+     "credit": "arXiv · 上海交大等"
+    }
+   },
+   {
+    "layer": "model",
+    "source": "Microsoft Research",
+    "title": "微软 Mirage：把「空间记忆」塞进隐空间，长镜头视频世界模型提速 10 倍、省显存 55 倍",
+    "url": "https://arxiv.org/abs/2606.09828",
+    "links": {
+     "primary": "https://arxiv.org/abs/2606.09828",
+     "discussion": "https://the-decoder.com/microsoft-researchs-mirage-gives-video-generation-a-persistent-spatial-memory-that-doesnt-forget-whats-around-the-corner/"
+    },
+    "facts": [
+     "Mirage 是微软研究院联合多所高校的视频世界模型，基于阿里开源的 Wan2.2；把场景信息直接存进隐空间的「空间记忆」，而非基于像素的 3D 点云，省掉「渲染点云→再编码」的双重瓶颈。",
+     "每帧生成最高提速 10.57×，显存最高比同类色彩法少 55×；长距离镜头移动下保持结构与纹理稳定。",
+     "WorldScore 上优于 Spatia、Wan2.1；RealEstate10K 闭环测试（镜头回到起点、误差会累积）三项指标领先两项。",
+     "局限：运动物体在分段边界被刻意滤除（长期几何难追踪），繁忙场景收益小于安静室内。"
+    ],
+    "take": "微软 Mirage 给视频世界模型装了「空间记忆」：不再用费算力的像素点云，而把场景特征直接存进隐空间，长镜头转来转去也不「失忆」。代价端很漂亮——每帧最高提速 10.57×、显存最高省 55×，WorldScore 和 RealEstate10K 闭环测试上都领先同类。",
+    "readable": "视频生成模型有个老毛病：镜头转过去再转回来，刚才的桌子椅子可能就变样了——它「记不住」拐角后面有什么。微软研究院联合多所高校做的 Mirage 想治这个病，思路是给模型一份「空间记忆」。\n\n关键在怎么存这份记忆。以往不少做法用基于像素的 3D 点云，但点云要先渲染、再重新编码回模型，是个「双重瓶颈」，又慢又吃显存。Mirage 直接把图像特征存进模型内部的隐空间（latent space）里当空间记忆，绕过了这道关。它本身是在阿里开源的 Wan2.2 上搭起来的。\n\n省下来的代价很可观：每帧生成最高提速 10.57×，显存最高比同类基于色彩的方法少 55×，而且长距离镜头移动时场景结构和纹理能稳住不漂。基准上，WorldScore 优于 Spatia 和 Wan2.1；在 RealEstate10K 的闭环测试里（镜头绕一圈回到起点，误差会一路累积，是个硬场景）三项指标领先两项。\n\n要泼的冷水也写在脸上：运动物体在分段边界会被刻意滤掉，因为长期几何追不准；安静室内收益大，繁忙场景收益小。但「把空间一致性做进隐空间、还顺手把算力和显存砍下来」这个方向，对世界模型和可交互视频是实打实的一步。",
+    "rank": 2,
+    "score": 3.88,
+    "image": {
+     "url": "https://the-decoder.com/wp-content/uploads/2026/06/latent-video-memory-nano-banana-pro.jpg",
+     "source": "https://the-decoder.com/microsoft-researchs-mirage-gives-video-generation-a-persistent-spatial-memory-that-doesnt-forget-whats-around-the-corner/",
+     "credit": "Microsoft Research"
+    }
+   },
+   {
+    "layer": "post-training",
+    "source": "Microsoft Research",
+    "title": "微软 SkillOpt：不动权重，只「训练」一个 Markdown 技能文件，就把 GPT-5.5 拉高 23 分",
+    "url": "https://arxiv.org/abs/2605.23904",
+    "links": {
+     "primary": "https://arxiv.org/abs/2605.23904",
+     "discussion": "https://the-decoder.com/microsofts-skillopt-boosts-gpt-5-5-by-using-nothing-but-a-trained-markdown-file/"
+    },
+    "facts": [
+     "SkillOpt 把指令文档（「skill」）当成可训练的外部状态：一个独立的优化器模型对 Markdown 文件提增删改，只有在留出验证集上变好才接受，并引入编辑预算、拒绝缓冲、按 epoch 巩固——把深度学习那套搬到纯文本层面。",
+     "在 GPT-5.5、六个基准的直接对话设置下平均提升约 23 分；格式严格、需工具调用的任务（如表格编辑）增益最大。",
+     "可跨模型迁移：大模型上训出的 skill 能提升同族小模型；一个表格 skill 原样搬进 Claude Code，效果追平在 Claude Code 里直接训的版本。",
+     "共测七个目标模型（含 GPT-5.5、Qwen3.5-4B），六个基准覆盖搜索/表格/文档分析/数学/具身动作。"
+    ],
+    "take": "SkillOpt 把「写提示词」变成了「训练一份 Markdown」：一个优化器模型反复增删改技能文档，只保留在验证集上变好的改动，整套流程照搬深度学习的验证集、编辑预算、按 epoch 巩固。结果不碰权重就把 GPT-5.5 在六个基准上平均抬高约 23 分，且训好的技能能跨模型迁移。",
+    "readable": "提示词工程一直被当成「手艺活」，靠人反复试。微软联合三所中国高校做的 SkillOpt 想把它变成「可训练」的工程：把给模型的指令文档（他们叫 skill）当作一份可训练的外部状态，不动模型权重，只优化那份纯 Markdown 文件。\n\n做法很像把深度学习搬到文本层面：一个独立的「优化器模型」对技能文档提增、删、改，每个改动只有在留出的验证集上表现更好才被接受；还设了编辑预算、拒绝缓冲、按 epoch 巩固这些机制，防止越改越乱。\n\n效果不小。在 GPT-5.5、六个基准的直接对话设置下，平均提升约 23 分；增益最大的是格式要求严、需要工具调用的任务，比如表格编辑。更有意思的是迁移性：在大模型上训出的技能能提升同族的小模型；一个在别处训好的表格技能，原样搬进 Claude Code 就能把它的表现拉到「在 Claude Code 里直接训」的同一水平。实验共覆盖七个目标模型（含 GPT-5.5、Qwen3.5-4B）、六个基准（搜索、表格、文档分析、数学、具身动作）。\n\n这条路线的诱人之处在于便宜且可移植——不需要微调、不碰权重，产出的还是人能读、能改的 Markdown。对手上有一堆 agent、想榨出更多能力又不想动模型的人，这是个很现实的工具。",
+    "rank": 3,
+    "score": 3.76,
+    "image": {
+     "url": "https://the-decoder.com/wp-content/uploads/2026/06/skillopt-markdown-neural-training-nano-banana-pro.jpg",
+     "source": "https://the-decoder.com/microsofts-skillopt-boosts-gpt-5-5-by-using-nothing-but-a-trained-markdown-file/",
+     "credit": "Microsoft Research"
+    }
+   },
+   {
+    "layer": "model",
+    "source": "Sapient Intelligence · 量子位",
+    "title": "1500 美元训出的 10 亿参数 HRM：把「潜空间递归推理」推上下一代架构的牌桌",
+    "url": "https://arxiv.org/abs/2605.20613",
+    "links": {
+     "primary": "https://arxiv.org/abs/2605.20613",
+     "discussion": "https://www.qbitai.com/2026/06/435483.html"
+    },
+    "facts": [
+     "HRM-Text 由 Sapient Intelligence 发布，约 1B 参数，训练成本约 1500 美元，16 张 H100 不到两天。",
+     "架构为「分层递归推理」：高层 H（慢，战略脑）+ 低层 L（快，执行脑），双时间尺度在隐空间内多轮内部推理，而非显式思维链。",
+     "成绩：MATH 56.2、GSM8K 84.5、ARC-Challenge 81.9、DROP 82.2。",
+     "HuggingFace CEO Clem Delangue 亲自转发；图灵奖得主 Bengio 参与的《Generative Recursive Reasoning》论文（GRAM 框架）高度复用 HRM 骨架。"
+    ],
+    "take": "一个约 1500 美元、10 亿参数、从零预训练的小模型 HRM，把「潜空间递归推理」顶到了下一代架构讨论的中心。它不靠显式思维链，而用高层慢、低层快的分层递归在隐空间里多轮内部推理；HuggingFace CEO 转发力荐，Bengio 参与的新论文也复用了它的骨架。",
+    "readable": "这次出圈的不是又一个大模型，而是个「小而巧」的反例。Sapient Intelligence 发布的 HRM-Text 只有约 10 亿参数、训练成本约 1500 美元（16 张 H100、不到两天），却把一种叫「潜空间递归推理」（latent recursive reasoning）的架构推到了下一代推理模型讨论的正中央。\n\n它的反常识之处在于：不靠把推理过程「说出来」的显式思维链，而是在模型内部做多轮递归。架构分两层——高层模块 H 慢、管战略，低层模块 L 快、管执行，两个时间尺度在隐空间里反复推演，等想清楚了再出结果。\n\n小归小，分数不寒碜：MATH 56.2、GSM8K 84.5、ARC-Challenge 81.9、DROP 82.2。更能说明热度的是背书——HuggingFace 联合创始人兼 CEO Clem Delangue 亲自转发推荐；图灵奖得主 Yoshua Bengio 作为共同作者的新论文《Generative Recursive Reasoning》（GRAM 框架）也高度复用了 HRM 的骨架，等于把这条「在隐空间里递归地想」的路线往学术主线上又推了一把。\n\n当然 1B 模型的绝对能力有限，几个数学/常识基准也不等于通用推理。但它给行业的提醒很清楚：把算力堆在参数上不是唯一解，「让模型在隐空间里多想几轮」可能是另一条更省的路。",
+    "rank": 4,
+    "score": 3.64,
+    "image": {
+     "url": "https://www.qbitai.com/wp-content/uploads/imgs/qbitai-logo-1.png",
+     "source": "https://www.qbitai.com/2026/06/435483.html",
+     "credit": "Sapient Intelligence · 量子位"
+    }
+   },
+   {
+    "layer": "business",
+    "source": "Financial Times",
+    "title": "KPMG 一份卖 AI 的报告，案例是编的：UBS、NHS 都否认，「二次幻觉」警报拉响",
+    "url": "https://www.ft.com/content/b3828e92-4961-4b39-84f0-c42f33be3c3f",
+    "links": {
+     "primary": "https://www.ft.com/content/b3828e92-4961-4b39-84f0-c42f33be3c3f",
+     "discussion": "https://gptzero.me/news/investigations-kpmg"
+    },
+    "facts": [
+     "KPMG 报告《Redefining excellence in the age of agentic AI》虚构了多家机构的 AI 落地案例，涉及 UBS、英国 NHS、瑞士联邦铁路、伦敦交通局——全部否认。",
+     "GPTZero 查出问题、金融时报独立核实；根因是草率的 AI 检索式写作：引用多为宽泛转述、缺 URL 与作者，部分根本查无原文，被称为「vibe citing」。",
+     "GPTZero CEO Edward Tian 警告「二次幻觉」：错误因出自可信咨询机构而被人和 AI 反复采信、扩散。",
+     "KPMG 已从多个网站撤下该报告。"
+    ],
+    "take": "KPMG 一份劝客户拥抱 AI 的报告，自己先栽在 AI 上：里面 UBS、NHS、瑞士联邦铁路、伦敦交通局的「落地案例」全是编的，当事方一律否认。GPTZero 查出根因是「vibe citing」——引用全靠宽泛转述、查无原文；CEO Edward Tian 警告这种出自大牌机构的错误会形成「二次幻觉」反复扩散。",
+    "readable": "这是个有点讽刺的故事：一家四大之一的 KPMG，发了份名为《Redefining excellence in the age of agentic AI》的报告，劝企业客户大胆上 AI，结果报告本身翻了车——里面列举的多个 AI 落地案例是编造的。\n\n被点名的机构分量不轻：UBS、英国 NHS、瑞士联邦铁路、伦敦交通局，全部出面否认有过报告所述的项目。问题由 AI 检测公司 GPTZero 查出，金融时报独立核实。根因被归为草率的「AI 检索式写作」：引用大多是宽泛转述，缺 URL、缺作者，有些干脆查无原文——GPTZero 给它起了个名字叫「vibe citing」（凭感觉引用）。\n\n比错误本身更值得警惕的是传播方式。GPTZero CEO Edward Tian 提出「二次幻觉」：这类错误因为出自受信任的咨询机构，会被人和 AI 系统反复采信、再加工、再扩散，公信力反而成了错误的加速器。目前 KPMG 已把报告从多个网站撤下。\n\n对正在用 AI 写报告、做尽调的团队，这是一记很实的警钟：模型敢「自信地编」，而越权威的出处，越容易让编出来的东西被当真。",
+    "rank": 5,
+    "score": 3.52,
+    "image": {
+     "url": "https://storage.ghost.io/c/93/d8/93d84efe-2017-4168-9591-b749ab8330d5/content/images/size/w1200/2026/06/Printable-KPMG-Report-3-1.png",
+     "source": "https://gptzero.me/news/investigations-kpmg",
+     "credit": "Financial Times"
+    }
+   },
+   {
+    "layer": "product",
+    "source": "Google Cloud",
+    "title": "谷歌云 Open Knowledge Format：把散落的组织知识压成带 YAML 头的 Markdown，喂给 agent",
+    "url": "https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing/",
+    "links": {
+     "primary": "https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing/",
+     "discussion": "https://the-decoder.com/google-clouds-open-knowledge-format-turns-scattered-docs-into-markdown-files-for-ai-agents/"
+    },
+    "facts": [
+     "OKF 把知识表示成一目录的 Markdown 文件 + YAML frontmatter，跨系统可移植；只有一个必填字段 type，其余（title/description/resource/tags/时间戳）可选，概念间用标准 Markdown 链接连成知识图。",
+     "针对的痛点：知识散落在元数据目录、wiki、代码注释、notebook、工程师脑子里，agent 取上下文（如给特定数据集写 SQL）要四处拼。",
+     "把 Karpathy 近期带火的「LLM wiki」模式形式化为可互操作标准；bundle 任意编辑器可读、GitHub 直接渲染，不绑云厂商/数据库/agent 框架。",
+     "谷歌给了参考实现：BigQuery 数据集的富化 agent、静态 HTML 可视化器，及 GA4 电商/Stack Overflow/比特币数据集样例；规范与代码已在 GitHub 开放。"
+    ],
+    "take": "谷歌云推出 Open Knowledge Format（OKF），把组织里散落的知识统一成「Markdown + YAML 头」的可移植格式，专门喂给 AI agent。它只要求一个必填字段 type，用标准 Markdown 链接把概念连成知识图，等于把 Karpathy 带火的「LLM wiki」形式化为开放标准，不绑任何云厂商或框架。",
+    "readable": "AI agent 落地时常卡在一个不性感但要命的环节：它要干活，得先把分散在元数据目录、wiki、代码注释、notebook、甚至工程师脑子里的知识拼起来——比如给某个数据集写 SQL，得四处找口径。谷歌云的 Open Knowledge Format（OKF）想给这件事定个标准。\n\nOKF 的形态很克制：把知识表示成一个目录的 Markdown 文件，每个文件带 YAML frontmatter，只有一个必填字段 type，其余 title、description、resource、tags、时间戳都可选；概念之间用标准 Markdown 链接互连，自然连成一张知识图。它把 Andrej Karpathy 近期带火的「LLM wiki」模式，正式做成了一个可互操作的规范。\n\n卖点是「不绑定」：OKF bundle 任意编辑器能读、GitHub 直接渲染，也不挑云厂商、数据库或 agent 框架。谷歌还附了参考实现——给 BigQuery 数据集做富化的 agent、一个静态 HTML 可视化器，以及 GA4 电商、Stack Overflow、比特币数据集的样例；规范和代码都已在 GitHub 开放。\n\n值得看的不是技术多深，而是方向：当「给 agent 喂上下文」成为刚需，谁能把知识的「装箱格式」标准化，谁就卡住了一个关键接口。OKF 故意做得极简、可移植，正是冲着「被广泛采用」去的。",
+    "rank": 6,
+    "score": 3.4,
+    "image": {
+     "url": "https://storage.googleapis.com/gweb-cloudblog-publish/images/09_-_Data_Analytics_tFH57V6.max-2600x2600.jpg",
+     "credit": "cloud.google.com",
+     "source": "https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing/"
+    }
+   },
+   {
+    "layer": "maas",
+    "source": "OpenRouter",
+    "title": "OpenRouter 推出 Fusion API：用多模型「专家小组」拼出组合模型",
+    "url": "https://x.com/swyx/status/2065893584528957877",
+    "links": {
+     "primary": "https://openrouter.ai/",
+     "discussion": "https://x.com/swyx/status/2065893584528957877"
+    },
+    "facts": [
+     "厂商发布口径：深度研究任务上达到 Fable 级表现、成本约减半，部分任务用「专家小组（panels）」超过单模型 SOTA。"
+    ],
+    "take": "OpenRouter 发布 Fusion API，主打「组合模型」：让多模型小组（panels）协作而非单模型独大，宣称在深度研究任务上达到 Fable 级表现、成本减半，部分任务超过单模型 SOTA，口号是「AI 的未来是神经多样性」。属厂商发布口径，独立评测待补。",
+    "rank": 7,
+    "score": 3.2,
+    "image": {
+     "url": "https://openrouter.ai/dynamic-og?pathname=default&amp;title=OpenRouter&amp;description=The+unified+interface+for+LLMs.+Find+the+best+models+%26+prices+for+your+prompts",
+     "credit": "openrouter.ai",
+     "source": "https://openrouter.ai/"
+    }
+   },
+   {
+    "layer": "safety",
+    "source": "arXiv · ACM CAIS 2026",
+    "title": "The Verifier Tax：工具型 agent 的「安全—成功」权衡随任务时长恶化",
+    "url": "https://www.reddit.com/r/MachineLearning/comments/1u58mkq/the_verifier_tax_horizondependent_safetysuccess/",
+    "links": {
+     "primary": "https://www.reddit.com/r/MachineLearning/comments/1u58mkq/the_verifier_tax_horizondependent_safetysuccess/"
+    },
+    "facts": [
+     "把结果拆成「安全成功 / 不安全成功 / 失败」三类，而非只看任务完成率。",
+     "核心论点：任务时间跨度越长，安全与成功之间的代价（验证税）越大。"
+    ],
+    "take": "一篇 ACM CAIS 2026 论文指出，只看「任务完成」会误导——agent 可能一边完成任务一边违反安全/合规约束，应把结果分成「安全成功 / 不安全成功 / 失败」三类。作者称之为「验证税」：任务时间跨度越长，安全与成功之间的代价越大。",
+    "rank": 8,
+    "score": 3.14
+   },
+   {
+    "layer": "product",
+    "source": "the-decoder",
+    "title": "Count Anything：只凭一句话，给任意图像里的东西计数",
+    "url": "https://the-decoder.com/new-ai-model-called-count-anything-does-exactly-what-it-says-and-thats-harder-than-it-sounds/",
+    "links": {
+     "primary": "https://the-decoder.com/new-ai-model-called-count-anything-does-exactly-what-it-says-and-thats-harder-than-it-sounds/"
+    },
+    "facts": [
+     "号称首个能对任意图像计数的模型，从人群到显微镜下的细胞，只需文字提示。",
+     "对比测试中把错误率砍掉一半，但方法仍有局限。"
+    ],
+    "take": "「Count Anything」号称首个能对任意图像计数的模型——从人群到显微镜下的细胞样本，只需一句文字提示。对比测试中把错误率砍掉一半，作者也坦承方法仍有局限。「数数」听着简单，对视觉模型其实是老大难。",
+    "rank": 9,
+    "score": 3.08,
+    "image": {
+     "url": "https://the-decoder.com/wp-content/uploads/2026/06/count-anything-generated-image-nano-banana-pro.jpg",
+     "credit": "the-decoder.com",
+     "source": "https://the-decoder.com/new-ai-model-called-count-anything-does-exactly-what-it-says-and-thats-harder-than-it-sounds/"
+    }
+   },
+   {
+    "layer": "business",
+    "source": "the-decoder",
+    "title": "亚马逊等六家公司被指触发了对 Anthropic Fable 模型的监管叫停",
+    "url": "https://the-decoder.com/amazon-and-five-other-companies-reportedly-triggered-the-government-crackdown-on-anthropics-fable-model/",
+    "links": {
+     "primary": "https://the-decoder.com/amazon-and-five-other-companies-reportedly-triggered-the-government-crackdown-on-anthropics-fable-model/"
+    },
+    "facts": [
+     "据报道，亚马逊 CEO Andy Jassy 等多家科技公司高管向政府示警 Anthropic Fable 模型的安全漏洞。",
+     "数小时内白宫以出口管制令其下线——而亚马逊是 Anthropic 最大投资方之一。"
+    ],
+    "take": "据报道，亚马逊 CEO Andy Jassy 等六家公司高管向政府示警 Anthropic Fable 模型的安全漏洞，数小时内白宫以一纸出口管制令其下线——耐人寻味的是，亚马逊本身是 Anthropic 最大投资方之一。投资与监管立场的错位是看点。消息源为媒体报道。",
+    "rank": 10,
+    "score": 3.02,
+    "image": {
+     "url": "https://the-decoder.com/wp-content/uploads/2026/06/white_house_claude-2.png",
+     "credit": "the-decoder.com",
+     "source": "https://the-decoder.com/amazon-and-five-other-companies-reportedly-triggered-the-government-crackdown-on-anthropics-fable-model/"
+    }
+   },
+   {
+    "layer": "model",
+    "source": "arXiv",
+    "title": "Modality Forcing：把文生图模型后训练成 RGB-深度，单目深度 5 基准拿下 4 个 SOTA",
+    "url": "https://x.com/_akhaliq/status/2065924377720295745",
+    "links": {
+     "primary": "https://x.com/_akhaliq/status/2065924377720295745"
+    },
+    "facts": [
+     "Bardienus Duisterhof 等提出 Modality Forcing，一种把 T2I 模型后训练为 RGB-Depth 生成器的配方。",
+     "在单目深度估计的 5 个基准里拿下 4 个 SOTA；Niels Rogge 转发力荐。"
+    ],
+    "take": "Modality Forcing 提出一种把文生图（T2I）模型后训练成 RGB-深度生成器的配方，在单目深度估计的 5 个基准里拿下 4 个 SOTA。给机器人/具身感知的「深度从哪来」提供了一条更省的路；Niels Rogge 转发力荐。",
+    "rank": 11,
+    "score": 2.96,
+    "image": {
+     "url": "https://pbs.twimg.com/profile_images/1451191636810092553/kpM5Fe12_200x200.jpg",
+     "credit": "x.com",
+     "source": "https://x.com/_akhaliq/status/2065924377720295745"
+    }
+   },
+   {
+    "layer": "devtool",
+    "source": "GitHub · Alibaba",
+    "title": "阿里开源 open-code-review：经阿里规模实战的混合架构代码审查工具",
+    "url": "https://github.com/alibaba/open-code-review",
+    "links": {
+     "primary": "https://github.com/alibaba/open-code-review"
+    },
+    "facts": [
+     "混合架构：确定性流水线 + 模型；称在阿里规模下经过实战检验，开源免费。"
+    ],
+    "take": "阿里开源 open-code-review，一个「确定性流水线 + 模型」混合架构的代码审查工具，称在阿里内部规模下经过实战检验、免费可用，本周登上 OSS 趋势榜。又一个把 LLM 接进研发流水线的务实工具。",
+    "rank": 12,
+    "score": 2.9,
+    "image": {
+     "url": "https://opengraph.githubassets.com/1/alibaba/open-code-review",
+     "credit": "github.com",
+     "source": "https://github.com/alibaba/open-code-review"
+    }
+   },
+   {
+    "layer": "model",
+    "source": "Hacker News",
+    "title": "里约的「自研」LLM 被指其实是现成模型的合并",
+    "url": "https://news.ycombinator.com/item?id=44567890",
+    "links": {
+     "primary": "https://news.ycombinator.com/item?id=44567890"
+    },
+    "facts": [
+     "有分析指出，里约热内卢对外宣称「自研」的 LLM，实为对一个既有模型做的 merge。"
+    ],
+    "take": "有分析指出，里约热内卢对外宣称「自研」的 LLM，实为对一个既有开源模型做的 merge。又一例提醒：「自研大模型」的说法得看权重与训练证据，而不是发布稿上的措辞。",
+    "rank": 13,
+    "score": 2.84
+   }
+  ],
+  "full": [
+   {
+    "source": "hf-new-datasets",
+    "layer": "model",
+    "title": "fosters/dzhordzh-oruel-ferma-jaska-haspadar-valer-budzevich_all",
+    "url": "https://huggingface.co/datasets/fosters/dzhordzh-oruel-ferma-jaska-haspadar-valer-budzevich_all",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "hf-new-datasets",
+    "layer": "data",
+    "title": "ArabicSpeech/ArA-DF-2026",
+    "url": "https://huggingface.co/datasets/ArabicSpeech/ArA-DF-2026",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "hf-new-datasets",
+    "layer": "embodied",
+    "title": "zomi-language-corpora/zomi_syllabified_human",
+    "url": "https://huggingface.co/datasets/zomi-language-corpora/zomi_syllabified_human",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "hf-new-datasets",
+    "layer": "data",
+    "title": "adminns/test",
+    "url": "https://huggingface.co/datasets/adminns/test",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "hf-new-datasets",
+    "layer": "data",
+    "title": "physicl-test/je-veux-un-pack-de-computer-vision-pour-detecter-les-objets",
+    "url": "https://huggingface.co/datasets/physicl-test/je-veux-un-pack-de-computer-vision-pour-detecter-les-objets",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "hf-new-datasets",
+    "layer": "eval",
+    "title": "isalgo/aldan3_test",
+    "url": "https://huggingface.co/datasets/isalgo/aldan3_test",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "hf-new-datasets",
+    "layer": "data",
+    "title": "MK0727/CleanedFineWeb2Edu-jp",
+    "url": "https://huggingface.co/datasets/MK0727/CleanedFineWeb2Edu-jp",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "hf-new-datasets",
+    "layer": "model",
+    "title": "introvoyz041/open-h-embodiment",
+    "url": "https://huggingface.co/datasets/introvoyz041/open-h-embodiment",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "hf-new-datasets",
+    "layer": "eval",
+    "title": "Jakub1210/eval_test_17",
+    "url": "https://huggingface.co/datasets/Jakub1210/eval_test_17",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "hf-new-datasets",
+    "layer": "eval",
+    "title": "Jakub1210/eval_test_16",
+    "url": "https://huggingface.co/datasets/Jakub1210/eval_test_16",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "hf-new-datasets",
+    "layer": "data",
+    "title": "selenelindsay/rais-caged-bronze",
+    "url": "https://huggingface.co/datasets/selenelindsay/rais-caged-bronze",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "hf-new-datasets",
+    "layer": "data",
+    "title": "haowu89/moce-eval-code-lcbv6",
+    "url": "https://huggingface.co/datasets/haowu89/moce-eval-code-lcbv6",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "hf-new-datasets",
+    "layer": "data",
+    "title": "christopher/notable-people",
+    "url": "https://huggingface.co/datasets/christopher/notable-people",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "hf-new-datasets",
+    "layer": "eval",
+    "title": "Jakub1210/eval_test_15",
+    "url": "https://huggingface.co/datasets/Jakub1210/eval_test_15",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "hf-new-datasets",
+    "layer": "data",
+    "title": "CompassioninMachineLearning/pretraining_research_documents_urbandensity_ideas",
+    "url": "https://huggingface.co/datasets/CompassioninMachineLearning/pretraining_research_documents_urbandensity_ideas",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "hf-new-datasets",
+    "layer": "safety",
+    "title": "LUNALOVEFOOD/moe-clustering-pilots",
+    "url": "https://huggingface.co/datasets/LUNALOVEFOOD/moe-clustering-pilots",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "hf-new-datasets",
+    "layer": "model",
+    "title": "LeoJiangOR/opentouch-vitra-cleaned-versions",
+    "url": "https://huggingface.co/datasets/LeoJiangOR/opentouch-vitra-cleaned-versions",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "hf-new-datasets",
+    "layer": "product",
+    "title": "introvoyz041/SoFTA",
+    "url": "https://huggingface.co/datasets/introvoyz041/SoFTA",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "hf-new-datasets",
+    "layer": "model",
+    "title": "danielkorth/sage-materialistic-val",
+    "url": "https://huggingface.co/datasets/danielkorth/sage-materialistic-val",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "hf-new-datasets",
+    "layer": "safety",
+    "title": "mattpa/trolleygame",
+    "url": "https://huggingface.co/datasets/mattpa/trolleygame",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "hf-new-datasets",
+    "layer": "data",
+    "title": "Kiria-Nozan/Starling-bioavailability-direction",
+    "url": "https://huggingface.co/datasets/Kiria-Nozan/Starling-bioavailability-direction",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "hf-new-datasets",
+    "layer": "data",
+    "title": "Kiria-Nozan/Starling-bioavailability-transfer",
+    "url": "https://huggingface.co/datasets/Kiria-Nozan/Starling-bioavailability-transfer",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "hn-frontpage",
+    "layer": "infra",
+    "title": "Zinnia: A modular 64-bit Unix-like kernel written in Rust",
+    "url": "https://zinnia-os.org/",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "hf-new-datasets",
+    "layer": "eval",
+    "title": "aievangelistash/med42_8B_GRPO_FineTunned",
+    "url": "https://huggingface.co/datasets/aievangelistash/med42_8B_GRPO_FineTunned",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "hf-new-datasets",
+    "layer": "devtool",
+    "title": "introvoyz041/RE-Net",
+    "url": "https://huggingface.co/datasets/introvoyz041/RE-Net",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "hf-new-datasets",
+    "layer": "embodied",
+    "title": "penguinnator/Valence",
+    "url": "https://huggingface.co/datasets/penguinnator/Valence",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "hf-new-datasets",
+    "layer": "data",
+    "title": "Beetle-Data/ar-28B",
+    "url": "https://huggingface.co/datasets/Beetle-Data/ar-28B",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "hf-new-datasets",
+    "layer": "data",
+    "title": "aomocelin/palavras_pt_faber_10K_cadu_100",
+    "url": "https://huggingface.co/datasets/aomocelin/palavras_pt_faber_10K_cadu_100",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "hf-new-datasets",
+    "layer": "devtool",
+    "title": "introvoyz041/ER-Net",
+    "url": "https://huggingface.co/datasets/introvoyz041/ER-Net",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "hf-new-datasets",
+    "layer": "serving",
+    "title": "hbhjederew/dsadsdwqe23q2edwaa",
+    "url": "https://huggingface.co/datasets/hbhjederew/dsadsdwqe23q2edwaa",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "hf-new-datasets",
+    "layer": "model",
+    "title": "kfallah/world-model-pi-sft-formatted",
+    "url": "https://huggingface.co/datasets/kfallah/world-model-pi-sft-formatted",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "hn-frontpage",
+    "layer": "devtool",
+    "title": "Vibe Coder vs. Software Engineer",
+    "url": "https://yusufaytas.com/vibe-coder-vs-software-engineer",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "x-_akhaliq",
+    "layer": "agent",
+    "title": "RT Niels Rogge: This is what open AI acceleration looks like From DeepSeek v3.2 all the way to @MiniMax_AI M3 See https://paperswithcode.co/benchmark/...",
+    "url": "https://x.com/_akhaliq/status/2066265831068070376",
+    "summary": "RT Niels Rogge This is what open AI acceleration looks like From DeepSeek v3.2 all the way to @MiniMax_AI M3 See https://paperswithcode.co/benchmark/claw-eval",
+    "selected": false
+   },
+   {
+    "source": "mcp-registry",
+    "layer": "agent",
+    "title": "MCP registry: ai.inxy/seo-audit — Score any site or Shopify store for AEO/GEO/LLMO readiness — how likely AI search is to cite it.",
+    "url": "https://github.com/riverliu8/inxy-mcp",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "alignment-forum",
+    "layer": "safety",
+    "title": "Why Do Naive SFT Filters For Safety Properties Fail?",
+    "url": "https://www.alignmentforum.org/posts/wyZRNgpeiPeRXB6eT/why-do-naive-sft-filters-for-safety-properties-fail",
+    "summary": "This is the fourth in a series of informal research updates from the Google DeepMind Language Model Interpretability team, in interpretability and adjacent areas. The third post can be found here . Since SFT is the cause for many safety rel",
+    "selected": false
+   },
+   {
+    "source": "x-teortaxesTex",
+    "layer": "post-training",
+    "title": "We must help Indians discover the local caste structure in *all* societies I'll begin",
+    "url": "https://x.com/teortaxesTex/status/2066242283956060601",
+    "summary": "We must help Indians discover the local caste structure in *all* societies I'll begin 🇪🇺 21st century Menocchian 🇪🇺: @teortaxesTex It would be funny if they made something like that for Europe",
+    "selected": false
+   },
+   {
+    "source": "x-teortaxesTex",
+    "layer": "model",
+    "title": "This is true. Xi Jinping comes from the ancient 'Xi' Shi clan of scholar-officials (it's like Brahmins but in China). This is why he's so smart. He th...",
+    "url": "https://x.com/teortaxesTex/status/2066240430132375709",
+    "summary": "This is true. Xi Jinping comes from the ancient 'Xi' Shi clan of scholar-officials (it's like Brahmins but in China). This is why he's so smart. He thinks a lot and wrote down his useful thoughts in the helpfully labeled collection \"Xi Jinp",
+    "selected": false
+   },
+   {
+    "source": "x-teortaxesTex",
+    "layer": "model",
+    "title": "Yes, Dragon Boat Festival makes sense Window 15-19 June, most likely 17 (Wednesday) or 18 I think it'll be *by far* the strongest open model",
+    "url": "https://x.com/teortaxesTex/status/2066238031153987713",
+    "summary": "Yes, Dragon Boat Festival makes sense Window 15-19 June, most likely 17 (Wednesday) or 18 I think it'll be *by far* the strongest open model AiBattle: Last month, The Information reported that DeepSeek V4.1 was scheduled to be released in J",
+    "selected": false
+   },
+   {
+    "source": "hn-frontpage",
+    "layer": "product",
+    "title": "Chaosnet (1981)",
+    "url": "https://tumbleweed.nu/r/lm-3/uv/amber.html",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "semianalysis",
+    "layer": "infra",
+    "title": "Is SMIC N+3’s Metal Pitch Smaller than Intel 18A’s?",
+    "url": "https://newsletter.semianalysis.com/p/steel-smic-n3-teardown",
+    "summary": "SMIC N+3 Node Deep Dive vs TSMC N6, TechInsights Private Equity Sale, SemiAnalysis Teardown Engineering & Evaluation Lab, HiSilicon Kirin 9030, Process Technology, Pattering, Cell Architecture",
+    "selected": false
+   },
+   {
+    "source": "hn-frontpage",
+    "layer": "devtool",
+    "title": "Yserver: A modern X11 server written in Rust",
+    "url": "https://github.com/joske/yserver",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "mcp-registry",
+    "layer": "agent",
+    "title": "MCP registry: ai.groundroute/web-search — Web search for AI agents — one tool across 6 engines, routed to the cheapest + cached.",
+    "url": "https://github.com/PROJECT-B-26/groundroute-mcp",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "x-teortaxesTex",
+    "layer": "safety",
+    "title": "Indian theory of victory:",
+    "url": "https://x.com/teortaxesTex/status/2066236122036892005",
+    "summary": "Indian theory of victory: ye yematra: @teortaxesTex My people finally found a thing the Chinese are so defensive about. It’s time to keep repeating it again and again; eventually, it’ll stick. Time to expand lore on Chinese caste system and",
+    "selected": false
+   },
+   {
+    "source": "x-teortaxesTex",
+    "layer": "post-training",
+    "title": "a kind of a metastable situation perhaps. If Trump focuses on \"ok, this was a disaster\", he may calibrate towards lesser belligerence if he just lashe...",
+    "url": "https://x.com/teortaxesTex/status/2066235776401027110",
+    "summary": "a kind of a metastable situation perhaps. If Trump focuses on \"ok, this was a disaster\", he may calibrate towards lesser belligerence if he just lashes out and purges people saying \"told you it'll be a disaster\", he may have a hawkish Hegse",
+    "selected": false
+   },
+   {
+    "source": "mcp-registry",
+    "layer": "agent",
+    "title": "MCP registry: ai.rise2/figlime — Read Figlime jobs, screening questions, and candidate responses; draft screening questions.",
+    "url": "https://github.com/rise2-ai/figlime",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "x-teortaxesTex",
+    "layer": "model",
+    "title": "Obviously this isn't a game, this isn't even a business the open weights consoomer isn't important for the State",
+    "url": "https://x.com/teortaxesTex/status/2066231002469470486",
+    "summary": "Obviously this isn't a game, this isn't even a business the open weights consoomer isn't important for the State Nathan Lambert: The only reasonable expectation if you're a fan of open weight models is that if there's a major step in chines",
+    "selected": false
+   },
+   {
+    "source": "x-teortaxesTex",
+    "layer": "safety",
+    "title": "it's fascinating to watch people entirely lacking in the concept of merit, trying to grasp with the issue. \"elevated into higher scholarly caste\". The...",
+    "url": "https://x.com/teortaxesTex/status/2066229609192935515",
+    "summary": "it's fascinating to watch people entirely lacking in the concept of merit, trying to grasp with the issue. \"elevated into higher scholarly caste\". They think of it as a lottery for hereditary entitlements and ask \"why such low odds\" Vyachev",
+    "selected": false
+   },
+   {
+    "source": "mcp-registry",
+    "layer": "agent",
+    "title": "MCP registry: ai.bowmark/bowmark — Pre-computed navigation recipes for public websites — skip explore-and-discover.",
+    "url": "https://github.com/bowmark-ai/skill",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "x-teortaxesTex",
+    "layer": "model",
+    "title": "I think as a (((Kaifeng))) I must be Shang (merchant) actually",
+    "url": "https://x.com/teortaxesTex/status/2066226762250428660",
+    "summary": "I think as a (((Kaifeng))) I must be Shang (merchant) actually Neal Grover: @teortaxesTex You sound like Nong or Gong caste, but you can never be equal to Shi in the Chinese caste system. The Shi are of Persian and Japanese origin, and cons",
+    "selected": false
+   },
+   {
+    "source": "hn-frontpage",
+    "layer": "product",
+    "title": "Show HN: Discover Wikipedia articles popular on Hacker News",
+    "url": "https://www.orangecrumbs.com/",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "interconnects",
+    "layer": "safety",
+    "title": "Welcome to the AGI era of AI governance",
+    "url": "https://www.interconnects.ai/p/welcome-to-the-agi-era-of-ai-governance",
+    "summary": "It's a one-way door and we weren't ready for it.",
+    "selected": false
+   },
+   {
+    "source": "x-swyx",
+    "layer": "model",
+    "title": "RT Zhengyao Jiang: We benchmarked 7 frontier models on 3 categories of autoresearch tasks: ML engineering, harness/prompt engineering, and algorithmic...",
+    "url": "https://x.com/swyx/status/2066233371689431427",
+    "summary": "RT Zhengyao Jiang We benchmarked 7 frontier models on 3 categories of autoresearch tasks: ML engineering, harness/prompt engineering, and algorithmic discovery. Fable-5 won overall even under cost constraint, but on ML engineering, the open",
+    "selected": false
+   },
+   {
+    "source": "hn-frontpage",
+    "layer": "devtool",
+    "title": "Show HN: Kage – Shadow any website to a single binary for offline viewing",
+    "url": "https://github.com/tamnd/kage",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "x-teortaxesTex",
+    "layer": "model",
+    "title": "This aged poorly In my defense, apparently the highest echelons of the Only Superpower had the same forecast. This war shit is actually kind of hard, ...",
+    "url": "https://x.com/teortaxesTex/status/2066210222549401964",
+    "summary": "This aged poorly In my defense, apparently the highest echelons of the Only Superpower had the same forecast. This war shit is actually kind of hard, huh Teortaxes▶️ (DeepSeek 推特🐋铁粉 2023 – ∞): @policytensor Are you for real man Iran is gett",
+    "selected": false
+   },
+   {
+    "source": "x-teortaxesTex",
+    "layer": "embodied",
+    "title": "In short, Europeans invented caste just like they invented racism: to preserve their izzat. Indeed, they've invented this very theory too.",
+    "url": "https://x.com/teortaxesTex/status/2066198991117677008",
+    "summary": "In short, Europeans invented caste just like they invented racism: to preserve their izzat. Indeed, they've invented this very theory too. Aki Aefhyzyr: Ironic, since the word caste doesn't originate in India in fact it was a European delus",
+    "selected": false
+   },
+   {
+    "source": "techcrunch-ai",
+    "layer": "business",
+    "title": "As AI companies race to go public, who else is along for the ride?",
+    "url": "https://techcrunch.com/2026/06/14/as-ai-companies-race-to-go-public-who-else-is-along-for-the-ride/",
+    "summary": "Startups are trying to \"ride that SpaceX IPO wave.\"",
+    "selected": false
+   },
+   {
+    "source": "x-teortaxesTex",
+    "layer": "embodied",
+    "title": "A friend told me that Indian \"Chinese caste\" thing makes them a страна-перефорс, and then we both failed to find an English equivalent. ...",
+    "url": "https://x.com/teortaxesTex/status/2066192373084828120",
+    "summary": "A friend told me that Indian \"Chinese caste\" thing makes them a страна-перефорс, and then we both failed to find an English equivalent. Do Westoids really not have the concept of a counterforce meme? so simple… so innocent. Yogmaya 🪷: 名来自中国",
+    "selected": false
+   },
+   {
+    "source": "hn-frontpage",
+    "layer": "business",
+    "title": "Ask HN: What are you working on? (June 2026)",
+    "url": "https://news.ycombinator.com/item?id=48528779",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "x-teortaxesTex",
+    "layer": "post-training",
+    "title": "It's too late to say that it has nothing special At the very least, they have *both* excellent pretraining and post-training (GDM has only the first p...",
+    "url": "https://x.com/teortaxesTex/status/2066190149633876465",
+    "summary": "It's too late to say that it has nothing special At the very least, they have *both* excellent pretraining and post-training (GDM has only the first part, probably). Again. OpenAI spends billions in compute. Were it just \"train a big\", they",
+    "selected": false
+   },
+   {
+    "source": "x-teortaxesTex",
+    "layer": "post-training",
+    "title": "RT Toven: Re @teortaxesTex okay yeah this should be fixed now, I used your same setup",
+    "url": "https://x.com/teortaxesTex/status/2066190311835992401",
+    "summary": "RT Toven Re @teortaxesTex okay yeah this should be fixed now, I used your same setup",
+    "selected": false
+   },
+   {
+    "source": "hn-frontpage",
+    "layer": "infra",
+    "title": "Linux 7.1",
+    "url": "https://lore.kernel.org/lkml/CAHk-=wi4BF4bMhZNZ1tqs+FFV4OuZRe3ZqdWB+LxRLmRweUzQw@mail.gmail.com/T/#u",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "x-teortaxesTex",
+    "layer": "model",
+    "title": "Deepseek is also known for having crappy hardware In theory, it's shameful that we have providers in the West who can't match DS' first party speed. T...",
+    "url": "https://x.com/teortaxesTex/status/2066186920040841350",
+    "summary": "Deepseek is also known for having crappy hardware In theory, it's shameful that we have providers in the West who can't match DS' first party speed. The GPUs are years ahead of what they've got. Zhu Liang: wow. fireworks has higher tps than",
+    "selected": false
+   },
+   {
+    "source": "x-teortaxesTex",
+    "layer": "post-training",
+    "title": "Re in practice professional warriors were very much a thing, but nominally they were also \"scholar-officials\". Obviously, someone like Zhang Xun was \"...",
+    "url": "https://x.com/teortaxesTex/status/2066184965524508890",
+    "summary": "Re in practice professional warriors were very much a thing, but nominally they were also \"scholar-officials\". Obviously, someone like Zhang Xun was \"kshatriya\" and probably didn't wear this silly getup into battle. I think his nails were s",
+    "selected": false
+   },
+   {
+    "source": "hn-frontpage",
+    "layer": "model",
+    "title": "Rio de Janeiro's \"homegrown\" LLM appears to be a merge of an existing model",
+    "url": "https://github.com/nex-agi/Nex-N2/issues/4",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "hn-frontpage",
+    "layer": "serving",
+    "title": "I indexed 669 GB of my GoPro videos using my M1 Max computer and local ML models",
+    "url": "https://news.ycombinator.com/item?id=48528029",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "hn-frontpage",
+    "layer": "business",
+    "title": "Perlisisms (1982)",
+    "url": "https://www.cs.yale.edu/homes/perlis-alan/quotes.html",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "hn-frontpage",
+    "layer": "product",
+    "title": "Not everyone is using AI for everything",
+    "url": "https://gabrielweinberg.com/p/people-are-consuming-ai-like-they",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "hn-frontpage",
+    "layer": "business",
+    "title": "FarOutCompany",
+    "url": "https://faroutcompany.com/",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "the-decoder",
+    "layer": "product",
+    "title": "Microsoft Research's Mirage gives video generation a persistent spatial memory that doesn't forget what's around the corner",
+    "url": "https://the-decoder.com/microsoft-researchs-mirage-gives-video-generation-a-persistent-spatial-memory-that-doesnt-forget-whats-around-the-corner/",
+    "summary": "Mirage, a video world model from Microsoft Research and several universities, stores scene information directly in latent space instead of pixel-based point clouds. That slashes compute time and graphics memory while keeping scenes spatiall",
+    "selected": false
+   },
+   {
+    "source": "hn-frontpage",
+    "layer": "serving",
+    "title": "Caddy compatibility for zeroserve: 3x throughput and 70% lower latency",
+    "url": "https://su3.io/posts/zeroserve-caddy-compat",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "the-decoder",
+    "layer": "product",
+    "title": "Google Cloud's Open Knowledge Format turns scattered docs into Markdown files for AI agents",
+    "url": "https://the-decoder.com/google-clouds-open-knowledge-format-turns-scattered-docs-into-markdown-files-for-ai-agents/",
+    "summary": "Google Cloud's new Open Knowledge Format (OKF) standardizes scattered organizational knowledge as Markdown files with YAML frontmatter, making it portable and usable for AI agents. The minimalist spec formalizes a pattern Andrej Karpathy re",
+    "selected": false
+   },
+   {
+    "source": "hn-frontpage",
+    "layer": "product",
+    "title": "How did Atari apply side art to Arcade Cabinets?",
+    "url": "https://arcadeblogger.com/2026/06/14/how-did-atari-apply-side-art-to-arcade-cabinets/",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "hn-frontpage",
+    "layer": "product",
+    "title": "The Birth and Death of JavaScript (2014)",
+    "url": "https://www.destroyallsoftware.com/talks/the-birth-and-death-of-javascript",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "hn-frontpage",
+    "layer": "devtool",
+    "title": "Formal methods and the future of programming",
+    "url": "https://blog.janestreet.com/formal-methods-at-jane-street-index/?from_theconsensus=1",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "hn-frontpage",
+    "layer": "business",
+    "title": "How to earn a billion dollars",
+    "url": "https://paulgraham.com/earn.html",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "the-decoder",
+    "layer": "product",
+    "title": "KPMG fabricated AI case studies in a report designed to sell clients on AI adoption",
+    "url": "https://the-decoder.com/kpmg-fabricated-ai-case-studies-in-a-report-designed-to-sell-clients-on-ai-adoption/",
+    "summary": "KPMG published a report on AI in business that contained fabricated case studies involving UBS, the NHS, and other organizations. GPTZero CEO Edward Tian, who helped uncover the errors, warns of \"secondary hallucinations,\" flawed claims fro",
+    "selected": false
+   },
+   {
+    "source": "the-decoder",
+    "layer": "agent",
+    "title": "AI coding agents find the right file but miss the exact lines that matter, study shows",
+    "url": "https://the-decoder.com/ai-coding-agents-find-the-right-file-but-miss-the-exact-lines-that-matter-study-shows/",
+    "summary": "AI coding agents like Claude Code or Codex reliably find the right file but miss most of the critical lines within it. The new SWE-Explore benchmark is the first to test code search separately from the actual repair, and it shows that witho",
+    "selected": false
+   },
+   {
+    "source": "the-decoder",
+    "layer": "product",
+    "title": "Amazon and five other companies reportedly triggered the government crackdown on Anthropic's Fable model",
+    "url": "https://the-decoder.com/amazon-and-five-other-companies-reportedly-triggered-the-government-crackdown-on-anthropics-fable-model/",
+    "summary": "Amazon CEO Andy Jassy and executives from other tech companies reportedly warned the Trump administration about security vulnerabilities in Anthropic's Fable model, even though Amazon is one of Anthropic's largest investors. Within hours, t",
+    "selected": true
+   },
+   {
+    "source": "x-_akhaliq",
+    "layer": "model",
+    "title": "RT Jingzi Zhao: The Build Small Hackathon @huggingface @Gradio diary — Day 6 🌱 Today, I want to take you inside the community : 👥2,000+ followe...",
+    "url": "https://x.com/_akhaliq/status/2066172990811750510",
+    "summary": "RT Jingzi Zhao The Build Small Hackathon @huggingface @Gradio diary — Day 6 🌱 Today, I want to take you inside the community : 👥2,000+ followers, 🔧1,800+ members, 🤗already 400+ Spaces. Every Space is different, but very concrete and persona",
+    "selected": false
+   },
+   {
+    "source": "reddit-machinelearning",
+    "layer": "eval",
+    "title": "Confused, where to start [D]",
+    "url": "https://www.reddit.com/r/MachineLearning/comments/1u5cimu/confused_where_to_start_d/",
+    "summary": "Hello community, I am a backend + big data dev. I want to learn about the llms that generate voices. I also read some articles but almost everyone of them starts from regression. There are so much resources available right now that I am now",
+    "selected": false
+   },
+   {
+    "source": "hn-frontpage",
+    "layer": "devtool",
+    "title": "Free SQL→ER diagram tool, runs in the browser, nothing uploaded",
+    "url": "https://sqltoerdiagram.com/",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "techcrunch-ai",
+    "layer": "product",
+    "title": "As Anthropic suspends access to new models, India debates its AI future",
+    "url": "https://techcrunch.com/2026/06/13/as-anthropic-suspends-access-to-new-models-india-debates-its-ai-future/",
+    "summary": "Tech leaders debate whether the Anthropic episode is a wake-up call for India’s AI ambitions.",
+    "selected": false
+   },
+   {
+    "source": "reddit-machinelearning",
+    "layer": "model",
+    "title": "The Verifier Tax: Horizon-Dependent Safety–Success Tradeoffs in Tool-Using LLM Agents [R]",
+    "url": "https://www.reddit.com/r/MachineLearning/comments/1u58mkq/the_verifier_tax_horizondependent_safetysuccess/",
+    "summary": "We recently presented a paper at ACM CAIS 2026 on safety evaluation for tool-using LLM agents. The core issue is that task completion alone can be misleading: an agent may complete a task while violating a safety or policy constraint. We se",
+    "selected": true
+   },
+   {
+    "source": "hn-frontpage",
+    "layer": "safety",
+    "title": "Honda Civics and the Evil Valet",
+    "url": "https://juniperspring.org/posts/honda-evil-valet/",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "techcrunch-ai",
+    "layer": "business",
+    "title": "Meta reportedly moves to unwind $2B Manus deal after Beijing’s demand",
+    "url": "https://techcrunch.com/2026/06/13/meta-reportedly-moves-to-unwind-2b-manus-deal-after-beijings-demand/",
+    "summary": "Meta starts dismantling its $2 billion Manus acquisition after Beijing ordered the deal reversed.",
+    "selected": false
+   },
+   {
+    "source": "simonwillison",
+    "layer": "devtool",
+    "title": "Publishing WASM wheels to PyPI for use with Pyodide",
+    "url": "https://simonwillison.net/2026/Jun/13/publishing-wasm-wheels/#atom-everything",
+    "summary": "The Pyodide 314.0 release announcement (via Hacker News ) includes news I've been looking forward to for a long time: You can now publish Python packages built for Pyodide (or any Python runtime compatible with the PyEmscripten platform def",
+    "selected": false
+   },
+   {
+    "source": "simonwillison",
+    "layer": "product",
+    "title": "luau-wasm 0.1a0",
+    "url": "https://simonwillison.net/2026/Jun/13/luau-wasm/#atom-everything",
+    "summary": "Release: luau-wasm 0.1a0 See Publishing WASM wheels to PyPI for use with Pyodide for details. Tags: lua , webassembly , pyodide",
+    "selected": false
+   },
+   {
+    "source": "simonwillison",
+    "layer": "data",
+    "title": "Mapping SQLite result columns back to their source `table.column`",
+    "url": "https://simonwillison.net/2026/Jun/13/sqlite-column-provenance/#atom-everything",
+    "summary": "Research: Mapping SQLite result columns back to their source `table.column` It would be neat if arbitrary SQL queries in Datasette could be rendered with additional information based on which columns from which tables were included in the r",
+    "selected": false
+   },
+   {
+    "source": "techcrunch-ai",
+    "layer": "product",
+    "title": "KPMG pulls report on AI usage due to apparent hallucinations",
+    "url": "https://techcrunch.com/2026/06/13/kpmg-pulls-report-on-ai-usage-due-to-apparent-hallucinations/",
+    "summary": "Once again, AI proves to be an unreliable source of information about AI.",
+    "selected": false
+   },
+   {
+    "source": "hn-frontpage",
+    "layer": "data",
+    "title": "Show HN: Trace – Offline Mac meeting transcripts you can flag mid-call",
+    "url": "https://traceapp.info",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "techcrunch-ai",
+    "layer": "business",
+    "title": "Amazon CEO reportedly raised Anthropic model concerns before government crackdown",
+    "url": "https://techcrunch.com/2026/06/13/amazon-ceo-reportedly-raised-anthropic-model-concerns-before-government-crackdown/",
+    "summary": "Amazon CEO Andy Jassy may have been the source of security concerns that led Anthropic to cut off worldwide access to two models on Friday.",
+    "selected": false
+   },
+   {
+    "source": "mcp-registry",
+    "layer": "agent",
+    "title": "MCP registry: ai.canaryusers/canaryusers — A flock of AI users tests your deployed app and reports where real people get stuck, with fixes.",
+    "url": "https://github.com/CanaryUsers-ai/canaryusers-mcp",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "x-swyx",
+    "layer": "agent",
+    "title": "RT Alex Atallah: We just announced our Fusion API: - Fable-level performance on deep research tasks, at half the cost - Better-than-SOTA performance u...",
+    "url": "https://x.com/swyx/status/2065893584528957877",
+    "summary": "RT Alex Atallah We just announced our Fusion API: - Fable-level performance on deep research tasks, at half the cost - Better-than-SOTA performance using panels The future of AI is neurodiversity, not single-model takeovers. OpenRouter: Int",
+    "selected": true
+   },
+   {
+    "source": "the-decoder",
+    "layer": "product",
+    "title": "New AI model called \"Count Anything\" does exactly what it says, and that's harder than it sounds",
+    "url": "https://the-decoder.com/new-ai-model-called-count-anything-does-exactly-what-it-says-and-thats-harder-than-it-sounds/",
+    "summary": "\"Count Anything\" is intended to be the first AI model capable of counting objects in any type of image, from crowds to cell samples under a microscope, using nothing more than a text prompt. In a comparative test, it cuts the error rate in ",
+    "selected": true
+   },
+   {
+    "source": "hn-frontpage",
+    "layer": "business",
+    "title": "Global density and biomass of arbuscular mycorrhizal fungal networks",
+    "url": "https://www.science.org/doi/10.1126/science.adu4373",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "techcrunch-ai",
+    "layer": "business",
+    "title": "OpenAI faces investigation from state attorneys general",
+    "url": "https://techcrunch.com/2026/06/13/openai-faces-investigation-from-state-attorneys-general/",
+    "summary": "It's not clear which states are involved, but they're asking about everything from OpenAI's ad policies to its handling of health data.",
+    "selected": false
+   },
+   {
+    "source": "alignment-forum",
+    "layer": "safety",
+    "title": "SFT Drives Gemini’s Safety Properties",
+    "url": "https://www.alignmentforum.org/posts/nLrrYweeFxgXACSmS/sft-drives-gemini-s-safety-properties-1",
+    "summary": "This is the third in a series of informal research updates from the Google DeepMind Language Model Interpretability team, in interpretability and adjacent areas. The second post can be found here . In this short post, we describe a surprisi",
+    "selected": false
+   },
+   {
+    "source": "x-_akhaliq",
+    "layer": "model",
+    "title": "RT Niels Rogge: Very cool work!! Modality Forcing gets SOTA on 4 out of 5 monocular depth estimation benchmarks. 🏆 Explore the paper and evals here...",
+    "url": "https://x.com/_akhaliq/status/2065924377720295745",
+    "summary": "RT Niels Rogge Very cool work!! Modality Forcing gets SOTA on 4 out of 5 monocular depth estimation benchmarks. 🏆 Explore the paper and evals here: https://paperswithcode.co/paper/2606.13676 Bardienus Duisterhof: Introducing Modality Forcin",
+    "selected": true
+   },
+   {
+    "source": "the-decoder",
+    "layer": "business",
+    "title": "Microsoft CEO Satya Nadella admits he's a token-maxer, too: \"It's addictive\"",
+    "url": "https://the-decoder.com/microsoft-ceo-satya-nadella-admits-hes-a-token-maxer-too-its-addictive/",
+    "summary": "Microsoft CEO Satya Nadella is warning against \"token-maxing,\" throwing the most powerful AI models at every problem. Frontier models shouldn't be wasted on everyday tasks, he says. The marginal cost of productivity gains has to match the t",
+    "selected": false
+   },
+   {
+    "source": "qbitai",
+    "layer": "model",
+    "title": "HuggingFace CEO力荐，Bengio团队也押注：这个1500美元训出的HRM模型，凭什么火了？",
+    "url": "https://www.qbitai.com/2026/06/435483.html",
+    "summary": "HuggingFace CEO力荐，Bengio团队也押注：这个1500美元训出的HRM模型，凭什么火了？ 鹭羽 2026-06-13 20:40:30 来源： 量子位 模型参数量只有1B 允中 发自 凹非寺 量子位 | 公众号 QbitAI 好家伙，这次不是模型圈自嗨。 一个训练成本约1500美元、参数量约1B、从零开始预训练的小模型，把 HRM 推到了下一代推理架构讨论的中心。 HuggingFace联合创始人兼CEO Clem Delangue亲自转发推荐。 图灵奖得主",
+    "selected": false
+   },
+   {
+    "source": "the-decoder",
+    "layer": "eval",
+    "title": "Google Research's Gemini-SQL2 tops text-to-SQL benchmarks by a wide margin",
+    "url": "https://the-decoder.com/google-researchs-gemini-sql2-tops-text-to-sql-benchmarks-by-a-wide-margin/",
+    "summary": "Google Research's Gemini-SQL2 turns natural language into executable SQL queries. Built on Gemini 3.1 Pro, it tops the BIRD benchmark at 80.04 percent accuracy, well ahead of OpenAI and Anthropic. Google says the technology could improve na",
+    "selected": false
+   },
+   {
+    "source": "the-decoder",
+    "layer": "model",
+    "title": "Microsoft's SkillOpt boosts GPT-5.5 by using nothing but a trained Markdown file",
+    "url": "https://the-decoder.com/microsofts-skillopt-boosts-gpt-5-5-by-using-nothing-but-a-trained-markdown-file/",
+    "summary": "Microsoft and three Chinese universities have developed SkillOpt, a method that optimizes instruction documents for AI agents using principles from traditional model training. A simple Markdown file is enough to boost GPT-5.5 by about 23 po",
+    "selected": false
+   },
+   {
+    "source": "the-decoder",
+    "layer": "model",
+    "title": "Claude Fable 5 outpaces GPT-5.5 by 13 points on FrontierMath's toughest problems",
+    "url": "https://the-decoder.com/claude-fable-5-outpaces-gpt-5-5-by-13-points-on-frontiermaths-toughest-problems/",
+    "summary": "Anthropic's Claude Fable 5 hits 88 percent accuracy on the hardest FrontierMath tier, a massive jump from Opus 4.5, which sat below 10 percent in early 2026. OpenAI's GPT-5.5 reaches about 75 percent on the same tier. The pace of improvemen",
+    "selected": false
+   },
+   {
+    "source": "oss-insight-trends",
+    "layer": "agent",
+    "title": "Egonex-AI/Understand-Anything — Graphs that teach > graphs that impress. Turn any code into an interactive knowledge graph you can explore, search, and ask questions about. Works with Claude Code, Codex, Cursor, Copilot, Gemini CLI, and more.",
+    "url": "https://github.com/Egonex-AI/Understand-Anything",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "oss-insight-trends",
+    "layer": "maas",
+    "title": "GoogleCloudPlatform/knowledge-catalog — Google Cloud Knowledge Catalog Tools and Samples",
+    "url": "https://github.com/GoogleCloudPlatform/knowledge-catalog",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "oss-insight-trends",
+    "layer": "serving",
+    "title": "supertone-inc/supertonic — Lightning-Fast, On-Device, Multilingual TTS — running natively via ONNX.",
+    "url": "https://github.com/supertone-inc/supertonic",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "oss-insight-trends",
+    "layer": "serving",
+    "title": "tw93/Kami — 👩‍🚒 Good content deserves good paper.",
+    "url": "https://github.com/tw93/Kami",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "oss-insight-trends",
+    "layer": "serving",
+    "title": "ZhuLinsen/daily_stock_analysis — LLM驱动的 A/H/美股智能分析：多数据源行情 + 实时新闻 + LLM决策仪表盘 + 多渠道推送，零成本定时运行，纯白嫖. LLM-powered stock analysis system for A/H/US markets.",
+    "url": "https://github.com/ZhuLinsen/daily_stock_analysis",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "oss-insight-trends",
+    "layer": "agent",
+    "title": "AIDC-AI/Pixelle-Video — 🚀 AI 全自动短视频引擎 | AI Fully Automated Short Video Engine",
+    "url": "https://github.com/AIDC-AI/Pixelle-Video",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "oss-insight-trends",
+    "layer": "serving",
+    "title": "Thysrael/Horizon — 📡 Your own AI-powered news radar. Generates daily briefings in English & Chinese. | 用 AI 构建你专属的新闻雷达",
+    "url": "https://github.com/Thysrael/Horizon",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "oss-insight-trends",
+    "layer": "serving",
+    "title": "sleep3r/mtproto.zig — High-performance Telegram proxy with DPI evasion",
+    "url": "https://github.com/sleep3r/mtproto.zig",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "oss-insight-trends",
+    "layer": "devtool",
+    "title": "heygen-com/hyperframes — Write HTML. Render video. Built for agents.",
+    "url": "https://github.com/heygen-com/hyperframes",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "oss-insight-trends",
+    "layer": "agent",
+    "title": "tt-a1i/archify — Any agent Skill: generate beautiful architecture diagrams with dark/light theme toggle and PNG/JPEG/WebP/SVG export",
+    "url": "https://github.com/tt-a1i/archify",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "oss-insight-trends",
+    "layer": "agent",
+    "title": "pbakaus/impeccable — The design language that makes your AI harness better at design.",
+    "url": "https://github.com/pbakaus/impeccable",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "oss-insight-trends",
+    "layer": "serving",
+    "title": "telemt/telemt — MTProxy for Telegram on Rust + Tokio",
+    "url": "https://github.com/telemt/telemt",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "oss-insight-trends",
+    "layer": "devtool",
+    "title": "alibaba/open-code-review — Open-source & free — Battle-tested at Alibaba's scale. Hybrid architecture code review tool: deterministic pipelines + LLM Agent, precise line-level comments, built-in fine-tuned ruleset (NPE, thread-safety, XSS, SQL injection), OpenAI & Anthropic compatible.",
+    "url": "https://github.com/alibaba/open-code-review",
+    "summary": "",
+    "selected": true
+   },
+   {
+    "source": "oss-insight-trends",
+    "layer": "agent",
+    "title": "KunAgent/Kun — AI agent workspace with Code and Write modes built into your application.",
+    "url": "https://github.com/KunAgent/Kun",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "oss-insight-trends",
+    "layer": "agent",
+    "title": "corsairdev/corsair — Your Agent's Integration Layer",
+    "url": "https://github.com/corsairdev/corsair",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "oss-insight-trends",
+    "layer": "agent",
+    "title": "can1357/oh-my-pi — ⌥ AI Coding agent for the terminal — hash-anchored edits, optimized tool harness, LSP, Python, browser, subagents, and more",
+    "url": "https://github.com/can1357/oh-my-pi",
+    "summary": "",
+    "selected": false
+   },
+   {
+    "source": "oss-insight-trends",
+    "layer": "serving",
+    "title": "QuantFunc/ComfyUI-QuantFunc —",
+    "url": "https://github.com/QuantFunc/ComfyUI-QuantFunc",
+    "summary": "",
+    "selected": false
+   }
+  ]
+ },
+ "perspectives": {
+  "technical": {
+   "lede": "技术看点在「少花钱办大事」的方法学：SkillOpt 不碰权重、只训一个 Markdown 就把 GPT-5.5 抬高约 23 分，HRM 用 1500 美元把潜空间递归推理推上桌；而 SWE-Explore 提醒，编程 agent 的瓶颈早从「找文件」转到了「抓准该改的行」。"
+  },
+  "product": {
+   "lede": "产品侧都在为 agent 落地补地基：Google 的 OKF 想把「喂给 agent 的知识」标准化成 Markdown+YAML，OpenRouter 用多模型小组拼出「组合模型」压成本，Count Anything 把「数数」做成通用能力。"
+  },
+  "business": {
+   "lede": "商业与信任面两记警钟：KPMG 卖 AI 的报告自己先栽在编造案例上，「二次幻觉」开始反噬咨询业公信力；亚马逊等被指触发对 Anthropic Fable 的监管叫停，投资与监管的立场错位浮上水面。"
+  },
+  "research": {
+   "lede": "研究面，评测在「拆解能力」：SWE-Explore 把代码定位从修复里单拎出来量化，Verifier Tax 把 agent 的「安全成功」与「不安全成功」分开记账——都在挑战「任务完成率」这个过粗的指标。"
+  },
+  "embodied": {
+   "lede": "具身相关信号不多，最贴边的是 Modality Forcing 把文生图模型后训练成单目深度估计器、5 个基准拿下 4 个 SOTA，给机器人感知的「深度从哪来」提供了一条更省的路径。"
+  }
+ },
+ "radar": [
+  {
+   "title": "用 M1 Max 在本地把 669GB GoPro 视频索引了一遍",
+   "url": "https://news.ycombinator.com/",
+   "layer": "serving",
+   "source": "Hacker News"
+  },
+  {
+   "title": "zeroserve 兼容 Caddy：吞吐 3×、延迟降 70%",
+   "url": "https://news.ycombinator.com/",
+   "layer": "serving",
+   "source": "Hacker News"
+  },
+  {
+   "title": "Vibe Coder vs. Software Engineer",
+   "url": "https://news.ycombinator.com/",
+   "layer": "devtool",
+   "source": "Hacker News"
+  }
+ ],
+ "gaps": [
+  "reddit r/LocalLLaMA 本期被限流未取到。",
+  "Anthropic / DeepSeek / MiniMax 等厂商发布页（html 一手源）本期未逐一深读。"
+ ],
+ "selected": [
+  {
+   "layer": "agent",
+   "source": "arXiv · 上海交大等",
+   "title": "SWE-Explore：AI 编程 agent 能找对文件，却抓不准该改的那几行",
+   "url": "https://arxiv.org/abs/2606.07297",
+   "links": {
+    "primary": "https://arxiv.org/abs/2606.07297",
+    "discussion": "https://the-decoder.com/ai-coding-agents-find-the-right-file-but-miss-the-exact-lines-that-matter-study-shows/"
+   },
+   "facts": [
+    "新基准 SWE-Explore 首次把「代码定位」从「修复」里单拆出来评测：848 个问题、203 个开源项目、10 种语言（Python 547 个为主，含 Go/JS/Rust）。",
+    "受测含通用 agent（Claude Code、Codex、OpenHands）与专用方案（CoSIL、AutoCodeRover、OrcaLoca 等），底座覆盖 GPT-5.4、Gemini 3 Pro、Claude Sonnet 4.6、Kimi K2.6。",
+    "文件级定位普遍准，但相关代码「行级」覆盖只有 14–19%；当核心代码区可见比例低于一半时，修复大多失败。",
+    "存在阈值效应：核心区覆盖率在 50%→75% 之间时，修复成功率出现明显跃升。"
+   ],
+   "take": "新基准 SWE-Explore 把编程 agent 的「找代码」和「改代码」分开评测，发现一个尴尬真相：Claude Code、Codex 这类 agent 能稳稳定位到正确文件，但对真正该改的代码行，覆盖率只有 14–19%——只要核心区露出不到一半，修复基本就会失败。",
+   "readable": "如果你用过 Claude Code、Codex 这类编程 agent，大概都有过这种体验：它能很快翻到出问题的那个文件，但改起来要么不到点子上、要么漏掉关键的几行。上海交大等团队的新基准 SWE-Explore 第一次把这件事量化了——它把「代码定位」从「代码修复」里单拎出来单独评测，给 agent 一段 bug 描述和整个项目，让它返回一份「相关代码段」的排名，再和真正成功的修复实际看过的代码比对。\n\n规模不小：848 个问题、203 个开源项目、10 种语言（Python 547 个为主，也有 Go、JS、Rust）；受测的既有通用 agent（Claude Code、Codex、OpenHands），也有 CoSIL、AutoCodeRover、OrcaLoca 这些专用方案，底座覆盖 GPT-5.4、Gemini 3 Pro、Claude Sonnet 4.6、Kimi K2.6。\n\n结论很扎心：文件级定位大家普遍都行，但落到「行级」，对真正相关代码行的覆盖只有 14–19%。论文给了一句很实在的判断——只要必要核心区露出不到一半，修复大多会失败；而且存在明显的阈值效应：核心区覆盖率从 50% 抬到 75% 这一段，修复成功率会突然跳上去。\n\n这对做 agent 工程的人是个有用的指向标：与其继续卷「能不能找到文件」，不如把力气花在「把对的上下文喂够」。它也解释了为什么很多失败不是模型不会改，而是压根没看全该看的地方。",
+   "rank": 1,
+   "score": 4.0
+  },
+  {
+   "layer": "model",
+   "source": "Microsoft Research",
+   "title": "微软 Mirage：把「空间记忆」塞进隐空间，长镜头视频世界模型提速 10 倍、省显存 55 倍",
+   "url": "https://arxiv.org/abs/2606.09828",
+   "links": {
+    "primary": "https://arxiv.org/abs/2606.09828",
+    "discussion": "https://the-decoder.com/microsoft-researchs-mirage-gives-video-generation-a-persistent-spatial-memory-that-doesnt-forget-whats-around-the-corner/"
+   },
+   "facts": [
+    "Mirage 是微软研究院联合多所高校的视频世界模型，基于阿里开源的 Wan2.2；把场景信息直接存进隐空间的「空间记忆」，而非基于像素的 3D 点云，省掉「渲染点云→再编码」的双重瓶颈。",
+    "每帧生成最高提速 10.57×，显存最高比同类色彩法少 55×；长距离镜头移动下保持结构与纹理稳定。",
+    "WorldScore 上优于 Spatia、Wan2.1；RealEstate10K 闭环测试（镜头回到起点、误差会累积）三项指标领先两项。",
+    "局限：运动物体在分段边界被刻意滤除（长期几何难追踪），繁忙场景收益小于安静室内。"
+   ],
+   "take": "微软 Mirage 给视频世界模型装了「空间记忆」：不再用费算力的像素点云，而把场景特征直接存进隐空间，长镜头转来转去也不「失忆」。代价端很漂亮——每帧最高提速 10.57×、显存最高省 55×，WorldScore 和 RealEstate10K 闭环测试上都领先同类。",
+   "readable": "视频生成模型有个老毛病：镜头转过去再转回来，刚才的桌子椅子可能就变样了——它「记不住」拐角后面有什么。微软研究院联合多所高校做的 Mirage 想治这个病，思路是给模型一份「空间记忆」。\n\n关键在怎么存这份记忆。以往不少做法用基于像素的 3D 点云，但点云要先渲染、再重新编码回模型，是个「双重瓶颈」，又慢又吃显存。Mirage 直接把图像特征存进模型内部的隐空间（latent space）里当空间记忆，绕过了这道关。它本身是在阿里开源的 Wan2.2 上搭起来的。\n\n省下来的代价很可观：每帧生成最高提速 10.57×，显存最高比同类基于色彩的方法少 55×，而且长距离镜头移动时场景结构和纹理能稳住不漂。基准上，WorldScore 优于 Spatia 和 Wan2.1；在 RealEstate10K 的闭环测试里（镜头绕一圈回到起点，误差会一路累积，是个硬场景）三项指标领先两项。\n\n要泼的冷水也写在脸上：运动物体在分段边界会被刻意滤掉，因为长期几何追不准；安静室内收益大，繁忙场景收益小。但「把空间一致性做进隐空间、还顺手把算力和显存砍下来」这个方向，对世界模型和可交互视频是实打实的一步。",
+   "rank": 2,
+   "score": 3.88
+  },
+  {
+   "layer": "post-training",
+   "source": "Microsoft Research",
+   "title": "微软 SkillOpt：不动权重，只「训练」一个 Markdown 技能文件，就把 GPT-5.5 拉高 23 分",
+   "url": "https://arxiv.org/abs/2605.23904",
+   "links": {
+    "primary": "https://arxiv.org/abs/2605.23904",
+    "discussion": "https://the-decoder.com/microsofts-skillopt-boosts-gpt-5-5-by-using-nothing-but-a-trained-markdown-file/"
+   },
+   "facts": [
+    "SkillOpt 把指令文档（「skill」）当成可训练的外部状态：一个独立的优化器模型对 Markdown 文件提增删改，只有在留出验证集上变好才接受，并引入编辑预算、拒绝缓冲、按 epoch 巩固——把深度学习那套搬到纯文本层面。",
+    "在 GPT-5.5、六个基准的直接对话设置下平均提升约 23 分；格式严格、需工具调用的任务（如表格编辑）增益最大。",
+    "可跨模型迁移：大模型上训出的 skill 能提升同族小模型；一个表格 skill 原样搬进 Claude Code，效果追平在 Claude Code 里直接训的版本。",
+    "共测七个目标模型（含 GPT-5.5、Qwen3.5-4B），六个基准覆盖搜索/表格/文档分析/数学/具身动作。"
+   ],
+   "take": "SkillOpt 把「写提示词」变成了「训练一份 Markdown」：一个优化器模型反复增删改技能文档，只保留在验证集上变好的改动，整套流程照搬深度学习的验证集、编辑预算、按 epoch 巩固。结果不碰权重就把 GPT-5.5 在六个基准上平均抬高约 23 分，且训好的技能能跨模型迁移。",
+   "readable": "提示词工程一直被当成「手艺活」，靠人反复试。微软联合三所中国高校做的 SkillOpt 想把它变成「可训练」的工程：把给模型的指令文档（他们叫 skill）当作一份可训练的外部状态，不动模型权重，只优化那份纯 Markdown 文件。\n\n做法很像把深度学习搬到文本层面：一个独立的「优化器模型」对技能文档提增、删、改，每个改动只有在留出的验证集上表现更好才被接受；还设了编辑预算、拒绝缓冲、按 epoch 巩固这些机制，防止越改越乱。\n\n效果不小。在 GPT-5.5、六个基准的直接对话设置下，平均提升约 23 分；增益最大的是格式要求严、需要工具调用的任务，比如表格编辑。更有意思的是迁移性：在大模型上训出的技能能提升同族的小模型；一个在别处训好的表格技能，原样搬进 Claude Code 就能把它的表现拉到「在 Claude Code 里直接训」的同一水平。实验共覆盖七个目标模型（含 GPT-5.5、Qwen3.5-4B）、六个基准（搜索、表格、文档分析、数学、具身动作）。\n\n这条路线的诱人之处在于便宜且可移植——不需要微调、不碰权重，产出的还是人能读、能改的 Markdown。对手上有一堆 agent、想榨出更多能力又不想动模型的人，这是个很现实的工具。",
+   "rank": 3,
+   "score": 3.76
+  },
+  {
+   "layer": "model",
+   "source": "Sapient Intelligence · 量子位",
+   "title": "1500 美元训出的 10 亿参数 HRM：把「潜空间递归推理」推上下一代架构的牌桌",
+   "url": "https://arxiv.org/abs/2605.20613",
+   "links": {
+    "primary": "https://arxiv.org/abs/2605.20613",
+    "discussion": "https://www.qbitai.com/2026/06/435483.html"
+   },
+   "facts": [
+    "HRM-Text 由 Sapient Intelligence 发布，约 1B 参数，训练成本约 1500 美元，16 张 H100 不到两天。",
+    "架构为「分层递归推理」：高层 H（慢，战略脑）+ 低层 L（快，执行脑），双时间尺度在隐空间内多轮内部推理，而非显式思维链。",
+    "成绩：MATH 56.2、GSM8K 84.5、ARC-Challenge 81.9、DROP 82.2。",
+    "HuggingFace CEO Clem Delangue 亲自转发；图灵奖得主 Bengio 参与的《Generative Recursive Reasoning》论文（GRAM 框架）高度复用 HRM 骨架。"
+   ],
+   "take": "一个约 1500 美元、10 亿参数、从零预训练的小模型 HRM，把「潜空间递归推理」顶到了下一代架构讨论的中心。它不靠显式思维链，而用高层慢、低层快的分层递归在隐空间里多轮内部推理；HuggingFace CEO 转发力荐，Bengio 参与的新论文也复用了它的骨架。",
+   "readable": "这次出圈的不是又一个大模型，而是个「小而巧」的反例。Sapient Intelligence 发布的 HRM-Text 只有约 10 亿参数、训练成本约 1500 美元（16 张 H100、不到两天），却把一种叫「潜空间递归推理」（latent recursive reasoning）的架构推到了下一代推理模型讨论的正中央。\n\n它的反常识之处在于：不靠把推理过程「说出来」的显式思维链，而是在模型内部做多轮递归。架构分两层——高层模块 H 慢、管战略，低层模块 L 快、管执行，两个时间尺度在隐空间里反复推演，等想清楚了再出结果。\n\n小归小，分数不寒碜：MATH 56.2、GSM8K 84.5、ARC-Challenge 81.9、DROP 82.2。更能说明热度的是背书——HuggingFace 联合创始人兼 CEO Clem Delangue 亲自转发推荐；图灵奖得主 Yoshua Bengio 作为共同作者的新论文《Generative Recursive Reasoning》（GRAM 框架）也高度复用了 HRM 的骨架，等于把这条「在隐空间里递归地想」的路线往学术主线上又推了一把。\n\n当然 1B 模型的绝对能力有限，几个数学/常识基准也不等于通用推理。但它给行业的提醒很清楚：把算力堆在参数上不是唯一解，「让模型在隐空间里多想几轮」可能是另一条更省的路。",
+   "rank": 4,
+   "score": 3.64
+  },
+  {
+   "layer": "business",
+   "source": "Financial Times",
+   "title": "KPMG 一份卖 AI 的报告，案例是编的：UBS、NHS 都否认，「二次幻觉」警报拉响",
+   "url": "https://www.ft.com/content/b3828e92-4961-4b39-84f0-c42f33be3c3f",
+   "links": {
+    "primary": "https://www.ft.com/content/b3828e92-4961-4b39-84f0-c42f33be3c3f",
+    "discussion": "https://gptzero.me/news/investigations-kpmg"
+   },
+   "facts": [
+    "KPMG 报告《Redefining excellence in the age of agentic AI》虚构了多家机构的 AI 落地案例，涉及 UBS、英国 NHS、瑞士联邦铁路、伦敦交通局——全部否认。",
+    "GPTZero 查出问题、金融时报独立核实；根因是草率的 AI 检索式写作：引用多为宽泛转述、缺 URL 与作者，部分根本查无原文，被称为「vibe citing」。",
+    "GPTZero CEO Edward Tian 警告「二次幻觉」：错误因出自可信咨询机构而被人和 AI 反复采信、扩散。",
+    "KPMG 已从多个网站撤下该报告。"
+   ],
+   "take": "KPMG 一份劝客户拥抱 AI 的报告，自己先栽在 AI 上：里面 UBS、NHS、瑞士联邦铁路、伦敦交通局的「落地案例」全是编的，当事方一律否认。GPTZero 查出根因是「vibe citing」——引用全靠宽泛转述、查无原文；CEO Edward Tian 警告这种出自大牌机构的错误会形成「二次幻觉」反复扩散。",
+   "readable": "这是个有点讽刺的故事：一家四大之一的 KPMG，发了份名为《Redefining excellence in the age of agentic AI》的报告，劝企业客户大胆上 AI，结果报告本身翻了车——里面列举的多个 AI 落地案例是编造的。\n\n被点名的机构分量不轻：UBS、英国 NHS、瑞士联邦铁路、伦敦交通局，全部出面否认有过报告所述的项目。问题由 AI 检测公司 GPTZero 查出，金融时报独立核实。根因被归为草率的「AI 检索式写作」：引用大多是宽泛转述，缺 URL、缺作者，有些干脆查无原文——GPTZero 给它起了个名字叫「vibe citing」（凭感觉引用）。\n\n比错误本身更值得警惕的是传播方式。GPTZero CEO Edward Tian 提出「二次幻觉」：这类错误因为出自受信任的咨询机构，会被人和 AI 系统反复采信、再加工、再扩散，公信力反而成了错误的加速器。目前 KPMG 已把报告从多个网站撤下。\n\n对正在用 AI 写报告、做尽调的团队，这是一记很实的警钟：模型敢「自信地编」，而越权威的出处，越容易让编出来的东西被当真。",
+   "rank": 5,
+   "score": 3.52
+  },
+  {
+   "layer": "product",
+   "source": "Google Cloud",
+   "title": "谷歌云 Open Knowledge Format：把散落的组织知识压成带 YAML 头的 Markdown，喂给 agent",
+   "url": "https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing/",
+   "links": {
+    "primary": "https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing/",
+    "discussion": "https://the-decoder.com/google-clouds-open-knowledge-format-turns-scattered-docs-into-markdown-files-for-ai-agents/"
+   },
+   "facts": [
+    "OKF 把知识表示成一目录的 Markdown 文件 + YAML frontmatter，跨系统可移植；只有一个必填字段 type，其余（title/description/resource/tags/时间戳）可选，概念间用标准 Markdown 链接连成知识图。",
+    "针对的痛点：知识散落在元数据目录、wiki、代码注释、notebook、工程师脑子里，agent 取上下文（如给特定数据集写 SQL）要四处拼。",
+    "把 Karpathy 近期带火的「LLM wiki」模式形式化为可互操作标准；bundle 任意编辑器可读、GitHub 直接渲染，不绑云厂商/数据库/agent 框架。",
+    "谷歌给了参考实现：BigQuery 数据集的富化 agent、静态 HTML 可视化器，及 GA4 电商/Stack Overflow/比特币数据集样例；规范与代码已在 GitHub 开放。"
+   ],
+   "take": "谷歌云推出 Open Knowledge Format（OKF），把组织里散落的知识统一成「Markdown + YAML 头」的可移植格式，专门喂给 AI agent。它只要求一个必填字段 type，用标准 Markdown 链接把概念连成知识图，等于把 Karpathy 带火的「LLM wiki」形式化为开放标准，不绑任何云厂商或框架。",
+   "readable": "AI agent 落地时常卡在一个不性感但要命的环节：它要干活，得先把分散在元数据目录、wiki、代码注释、notebook、甚至工程师脑子里的知识拼起来——比如给某个数据集写 SQL，得四处找口径。谷歌云的 Open Knowledge Format（OKF）想给这件事定个标准。\n\nOKF 的形态很克制：把知识表示成一个目录的 Markdown 文件，每个文件带 YAML frontmatter，只有一个必填字段 type，其余 title、description、resource、tags、时间戳都可选；概念之间用标准 Markdown 链接互连，自然连成一张知识图。它把 Andrej Karpathy 近期带火的「LLM wiki」模式，正式做成了一个可互操作的规范。\n\n卖点是「不绑定」：OKF bundle 任意编辑器能读、GitHub 直接渲染，也不挑云厂商、数据库或 agent 框架。谷歌还附了参考实现——给 BigQuery 数据集做富化的 agent、一个静态 HTML 可视化器，以及 GA4 电商、Stack Overflow、比特币数据集的样例；规范和代码都已在 GitHub 开放。\n\n值得看的不是技术多深，而是方向：当「给 agent 喂上下文」成为刚需，谁能把知识的「装箱格式」标准化，谁就卡住了一个关键接口。OKF 故意做得极简、可移植，正是冲着「被广泛采用」去的。",
+   "rank": 6,
+   "score": 3.4,
+   "image": {
+    "url": "https://storage.googleapis.com/gweb-cloudblog-publish/images/09_-_Data_Analytics_tFH57V6.max-2600x2600.jpg",
+    "credit": "cloud.google.com",
+    "source": "https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing/"
+   }
+  }
+ ],
+ "all_candidates": [
+  {
+   "source": "hf-new-datasets",
+   "layer": "model",
+   "title": "fosters/dzhordzh-oruel-ferma-jaska-haspadar-valer-budzevich_all",
+   "url": "https://huggingface.co/datasets/fosters/dzhordzh-oruel-ferma-jaska-haspadar-valer-budzevich_all",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "ArabicSpeech/ArA-DF-2026",
+   "url": "https://huggingface.co/datasets/ArabicSpeech/ArA-DF-2026",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "embodied",
+   "title": "zomi-language-corpora/zomi_syllabified_human",
+   "url": "https://huggingface.co/datasets/zomi-language-corpora/zomi_syllabified_human",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "adminns/test",
+   "url": "https://huggingface.co/datasets/adminns/test",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "physicl-test/je-veux-un-pack-de-computer-vision-pour-detecter-les-objets",
+   "url": "https://huggingface.co/datasets/physicl-test/je-veux-un-pack-de-computer-vision-pour-detecter-les-objets",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "eval",
+   "title": "isalgo/aldan3_test",
+   "url": "https://huggingface.co/datasets/isalgo/aldan3_test",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "MK0727/CleanedFineWeb2Edu-jp",
+   "url": "https://huggingface.co/datasets/MK0727/CleanedFineWeb2Edu-jp",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "model",
+   "title": "introvoyz041/open-h-embodiment",
+   "url": "https://huggingface.co/datasets/introvoyz041/open-h-embodiment",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "eval",
+   "title": "Jakub1210/eval_test_17",
+   "url": "https://huggingface.co/datasets/Jakub1210/eval_test_17",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "eval",
+   "title": "Jakub1210/eval_test_16",
+   "url": "https://huggingface.co/datasets/Jakub1210/eval_test_16",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "selenelindsay/rais-caged-bronze",
+   "url": "https://huggingface.co/datasets/selenelindsay/rais-caged-bronze",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "haowu89/moce-eval-code-lcbv6",
+   "url": "https://huggingface.co/datasets/haowu89/moce-eval-code-lcbv6",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "christopher/notable-people",
+   "url": "https://huggingface.co/datasets/christopher/notable-people",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "eval",
+   "title": "Jakub1210/eval_test_15",
+   "url": "https://huggingface.co/datasets/Jakub1210/eval_test_15",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "CompassioninMachineLearning/pretraining_research_documents_urbandensity_ideas",
+   "url": "https://huggingface.co/datasets/CompassioninMachineLearning/pretraining_research_documents_urbandensity_ideas",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "safety",
+   "title": "LUNALOVEFOOD/moe-clustering-pilots",
+   "url": "https://huggingface.co/datasets/LUNALOVEFOOD/moe-clustering-pilots",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "model",
+   "title": "LeoJiangOR/opentouch-vitra-cleaned-versions",
+   "url": "https://huggingface.co/datasets/LeoJiangOR/opentouch-vitra-cleaned-versions",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "product",
+   "title": "introvoyz041/SoFTA",
+   "url": "https://huggingface.co/datasets/introvoyz041/SoFTA",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "model",
+   "title": "danielkorth/sage-materialistic-val",
+   "url": "https://huggingface.co/datasets/danielkorth/sage-materialistic-val",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "safety",
+   "title": "mattpa/trolleygame",
+   "url": "https://huggingface.co/datasets/mattpa/trolleygame",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "Kiria-Nozan/Starling-bioavailability-direction",
+   "url": "https://huggingface.co/datasets/Kiria-Nozan/Starling-bioavailability-direction",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "Kiria-Nozan/Starling-bioavailability-transfer",
+   "url": "https://huggingface.co/datasets/Kiria-Nozan/Starling-bioavailability-transfer",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "infra",
+   "title": "Zinnia: A modular 64-bit Unix-like kernel written in Rust",
+   "url": "https://zinnia-os.org/",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "eval",
+   "title": "aievangelistash/med42_8B_GRPO_FineTunned",
+   "url": "https://huggingface.co/datasets/aievangelistash/med42_8B_GRPO_FineTunned",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "devtool",
+   "title": "introvoyz041/RE-Net",
+   "url": "https://huggingface.co/datasets/introvoyz041/RE-Net",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "embodied",
+   "title": "penguinnator/Valence",
+   "url": "https://huggingface.co/datasets/penguinnator/Valence",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "Beetle-Data/ar-28B",
+   "url": "https://huggingface.co/datasets/Beetle-Data/ar-28B",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "data",
+   "title": "aomocelin/palavras_pt_faber_10K_cadu_100",
+   "url": "https://huggingface.co/datasets/aomocelin/palavras_pt_faber_10K_cadu_100",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "devtool",
+   "title": "introvoyz041/ER-Net",
+   "url": "https://huggingface.co/datasets/introvoyz041/ER-Net",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "serving",
+   "title": "hbhjederew/dsadsdwqe23q2edwaa",
+   "url": "https://huggingface.co/datasets/hbhjederew/dsadsdwqe23q2edwaa",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "hf-new-datasets",
+   "layer": "model",
+   "title": "kfallah/world-model-pi-sft-formatted",
+   "url": "https://huggingface.co/datasets/kfallah/world-model-pi-sft-formatted",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "devtool",
+   "title": "Vibe Coder vs. Software Engineer",
+   "url": "https://yusufaytas.com/vibe-coder-vs-software-engineer",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "x-_akhaliq",
+   "layer": "agent",
+   "title": "RT Niels Rogge: This is what open AI acceleration looks like From DeepSeek v3.2 all the way to @MiniMax_AI M3 See https://paperswithcode.co/benchmark/...",
+   "url": "https://x.com/_akhaliq/status/2066265831068070376",
+   "summary": "RT Niels Rogge This is what open AI acceleration looks like From DeepSeek v3.2 all the way to @MiniMax_AI M3 See https://paperswithcode.co/benchmark/claw-eval",
+   "selected": false
+  },
+  {
+   "source": "mcp-registry",
+   "layer": "agent",
+   "title": "MCP registry: ai.inxy/seo-audit — Score any site or Shopify store for AEO/GEO/LLMO readiness — how likely AI search is to cite it.",
+   "url": "https://github.com/riverliu8/inxy-mcp",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "alignment-forum",
+   "layer": "safety",
+   "title": "Why Do Naive SFT Filters For Safety Properties Fail?",
+   "url": "https://www.alignmentforum.org/posts/wyZRNgpeiPeRXB6eT/why-do-naive-sft-filters-for-safety-properties-fail",
+   "summary": "This is the fourth in a series of informal research updates from the Google DeepMind Language Model Interpretability team, in interpretability and adjacent areas. The third post can be found here . Since SFT is the cause for many safety rel",
+   "selected": false
+  },
+  {
+   "source": "x-teortaxesTex",
+   "layer": "post-training",
+   "title": "We must help Indians discover the local caste structure in *all* societies I'll begin",
+   "url": "https://x.com/teortaxesTex/status/2066242283956060601",
+   "summary": "We must help Indians discover the local caste structure in *all* societies I'll begin 🇪🇺 21st century Menocchian 🇪🇺: @teortaxesTex It would be funny if they made something like that for Europe",
+   "selected": false
+  },
+  {
+   "source": "x-teortaxesTex",
+   "layer": "model",
+   "title": "This is true. Xi Jinping comes from the ancient 'Xi' Shi clan of scholar-officials (it's like Brahmins but in China). This is why he's so smart. He th...",
+   "url": "https://x.com/teortaxesTex/status/2066240430132375709",
+   "summary": "This is true. Xi Jinping comes from the ancient 'Xi' Shi clan of scholar-officials (it's like Brahmins but in China). This is why he's so smart. He thinks a lot and wrote down his useful thoughts in the helpfully labeled collection \"Xi Jinp",
+   "selected": false
+  },
+  {
+   "source": "x-teortaxesTex",
+   "layer": "model",
+   "title": "Yes, Dragon Boat Festival makes sense Window 15-19 June, most likely 17 (Wednesday) or 18 I think it'll be *by far* the strongest open model",
+   "url": "https://x.com/teortaxesTex/status/2066238031153987713",
+   "summary": "Yes, Dragon Boat Festival makes sense Window 15-19 June, most likely 17 (Wednesday) or 18 I think it'll be *by far* the strongest open model AiBattle: Last month, The Information reported that DeepSeek V4.1 was scheduled to be released in J",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "product",
+   "title": "Chaosnet (1981)",
+   "url": "https://tumbleweed.nu/r/lm-3/uv/amber.html",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "semianalysis",
+   "layer": "infra",
+   "title": "Is SMIC N+3’s Metal Pitch Smaller than Intel 18A’s?",
+   "url": "https://newsletter.semianalysis.com/p/steel-smic-n3-teardown",
+   "summary": "SMIC N+3 Node Deep Dive vs TSMC N6, TechInsights Private Equity Sale, SemiAnalysis Teardown Engineering & Evaluation Lab, HiSilicon Kirin 9030, Process Technology, Pattering, Cell Architecture",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "devtool",
+   "title": "Yserver: A modern X11 server written in Rust",
+   "url": "https://github.com/joske/yserver",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "mcp-registry",
+   "layer": "agent",
+   "title": "MCP registry: ai.groundroute/web-search — Web search for AI agents — one tool across 6 engines, routed to the cheapest + cached.",
+   "url": "https://github.com/PROJECT-B-26/groundroute-mcp",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "x-teortaxesTex",
+   "layer": "safety",
+   "title": "Indian theory of victory:",
+   "url": "https://x.com/teortaxesTex/status/2066236122036892005",
+   "summary": "Indian theory of victory: ye yematra: @teortaxesTex My people finally found a thing the Chinese are so defensive about. It’s time to keep repeating it again and again; eventually, it’ll stick. Time to expand lore on Chinese caste system and",
+   "selected": false
+  },
+  {
+   "source": "x-teortaxesTex",
+   "layer": "post-training",
+   "title": "a kind of a metastable situation perhaps. If Trump focuses on \"ok, this was a disaster\", he may calibrate towards lesser belligerence if he just lashe...",
+   "url": "https://x.com/teortaxesTex/status/2066235776401027110",
+   "summary": "a kind of a metastable situation perhaps. If Trump focuses on \"ok, this was a disaster\", he may calibrate towards lesser belligerence if he just lashes out and purges people saying \"told you it'll be a disaster\", he may have a hawkish Hegse",
+   "selected": false
+  },
+  {
+   "source": "mcp-registry",
+   "layer": "agent",
+   "title": "MCP registry: ai.rise2/figlime — Read Figlime jobs, screening questions, and candidate responses; draft screening questions.",
+   "url": "https://github.com/rise2-ai/figlime",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "x-teortaxesTex",
+   "layer": "model",
+   "title": "Obviously this isn't a game, this isn't even a business the open weights consoomer isn't important for the State",
+   "url": "https://x.com/teortaxesTex/status/2066231002469470486",
+   "summary": "Obviously this isn't a game, this isn't even a business the open weights consoomer isn't important for the State Nathan Lambert: The only reasonable expectation if you're a fan of open weight models is that if there's a major step in chines",
+   "selected": false
+  },
+  {
+   "source": "x-teortaxesTex",
+   "layer": "safety",
+   "title": "it's fascinating to watch people entirely lacking in the concept of merit, trying to grasp with the issue. \"elevated into higher scholarly caste\". The...",
+   "url": "https://x.com/teortaxesTex/status/2066229609192935515",
+   "summary": "it's fascinating to watch people entirely lacking in the concept of merit, trying to grasp with the issue. \"elevated into higher scholarly caste\". They think of it as a lottery for hereditary entitlements and ask \"why such low odds\" Vyachev",
+   "selected": false
+  },
+  {
+   "source": "mcp-registry",
+   "layer": "agent",
+   "title": "MCP registry: ai.bowmark/bowmark — Pre-computed navigation recipes for public websites — skip explore-and-discover.",
+   "url": "https://github.com/bowmark-ai/skill",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "x-teortaxesTex",
+   "layer": "model",
+   "title": "I think as a (((Kaifeng))) I must be Shang (merchant) actually",
+   "url": "https://x.com/teortaxesTex/status/2066226762250428660",
+   "summary": "I think as a (((Kaifeng))) I must be Shang (merchant) actually Neal Grover: @teortaxesTex You sound like Nong or Gong caste, but you can never be equal to Shi in the Chinese caste system. The Shi are of Persian and Japanese origin, and cons",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "product",
+   "title": "Show HN: Discover Wikipedia articles popular on Hacker News",
+   "url": "https://www.orangecrumbs.com/",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "interconnects",
+   "layer": "safety",
+   "title": "Welcome to the AGI era of AI governance",
+   "url": "https://www.interconnects.ai/p/welcome-to-the-agi-era-of-ai-governance",
+   "summary": "It's a one-way door and we weren't ready for it.",
+   "selected": false
+  },
+  {
+   "source": "x-swyx",
+   "layer": "model",
+   "title": "RT Zhengyao Jiang: We benchmarked 7 frontier models on 3 categories of autoresearch tasks: ML engineering, harness/prompt engineering, and algorithmic...",
+   "url": "https://x.com/swyx/status/2066233371689431427",
+   "summary": "RT Zhengyao Jiang We benchmarked 7 frontier models on 3 categories of autoresearch tasks: ML engineering, harness/prompt engineering, and algorithmic discovery. Fable-5 won overall even under cost constraint, but on ML engineering, the open",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "devtool",
+   "title": "Show HN: Kage – Shadow any website to a single binary for offline viewing",
+   "url": "https://github.com/tamnd/kage",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "x-teortaxesTex",
+   "layer": "model",
+   "title": "This aged poorly In my defense, apparently the highest echelons of the Only Superpower had the same forecast. This war shit is actually kind of hard, ...",
+   "url": "https://x.com/teortaxesTex/status/2066210222549401964",
+   "summary": "This aged poorly In my defense, apparently the highest echelons of the Only Superpower had the same forecast. This war shit is actually kind of hard, huh Teortaxes▶️ (DeepSeek 推特🐋铁粉 2023 – ∞): @policytensor Are you for real man Iran is gett",
+   "selected": false
+  },
+  {
+   "source": "x-teortaxesTex",
+   "layer": "embodied",
+   "title": "In short, Europeans invented caste just like they invented racism: to preserve their izzat. Indeed, they've invented this very theory too.",
+   "url": "https://x.com/teortaxesTex/status/2066198991117677008",
+   "summary": "In short, Europeans invented caste just like they invented racism: to preserve their izzat. Indeed, they've invented this very theory too. Aki Aefhyzyr: Ironic, since the word caste doesn't originate in India in fact it was a European delus",
+   "selected": false
+  },
+  {
+   "source": "techcrunch-ai",
+   "layer": "business",
+   "title": "As AI companies race to go public, who else is along for the ride?",
+   "url": "https://techcrunch.com/2026/06/14/as-ai-companies-race-to-go-public-who-else-is-along-for-the-ride/",
+   "summary": "Startups are trying to \"ride that SpaceX IPO wave.\"",
+   "selected": false
+  },
+  {
+   "source": "x-teortaxesTex",
+   "layer": "embodied",
+   "title": "A friend told me that Indian \"Chinese caste\" thing makes them a страна-перефорс, and then we both failed to find an English equivalent. ...",
+   "url": "https://x.com/teortaxesTex/status/2066192373084828120",
+   "summary": "A friend told me that Indian \"Chinese caste\" thing makes them a страна-перефорс, and then we both failed to find an English equivalent. Do Westoids really not have the concept of a counterforce meme? so simple… so innocent. Yogmaya 🪷: 名来自中国",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "business",
+   "title": "Ask HN: What are you working on? (June 2026)",
+   "url": "https://news.ycombinator.com/item?id=48528779",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "x-teortaxesTex",
+   "layer": "post-training",
+   "title": "It's too late to say that it has nothing special At the very least, they have *both* excellent pretraining and post-training (GDM has only the first p...",
+   "url": "https://x.com/teortaxesTex/status/2066190149633876465",
+   "summary": "It's too late to say that it has nothing special At the very least, they have *both* excellent pretraining and post-training (GDM has only the first part, probably). Again. OpenAI spends billions in compute. Were it just \"train a big\", they",
+   "selected": false
+  },
+  {
+   "source": "x-teortaxesTex",
+   "layer": "post-training",
+   "title": "RT Toven: Re @teortaxesTex okay yeah this should be fixed now, I used your same setup",
+   "url": "https://x.com/teortaxesTex/status/2066190311835992401",
+   "summary": "RT Toven Re @teortaxesTex okay yeah this should be fixed now, I used your same setup",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "infra",
+   "title": "Linux 7.1",
+   "url": "https://lore.kernel.org/lkml/CAHk-=wi4BF4bMhZNZ1tqs+FFV4OuZRe3ZqdWB+LxRLmRweUzQw@mail.gmail.com/T/#u",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "x-teortaxesTex",
+   "layer": "model",
+   "title": "Deepseek is also known for having crappy hardware In theory, it's shameful that we have providers in the West who can't match DS' first party speed. T...",
+   "url": "https://x.com/teortaxesTex/status/2066186920040841350",
+   "summary": "Deepseek is also known for having crappy hardware In theory, it's shameful that we have providers in the West who can't match DS' first party speed. The GPUs are years ahead of what they've got. Zhu Liang: wow. fireworks has higher tps than",
+   "selected": false
+  },
+  {
+   "source": "x-teortaxesTex",
+   "layer": "post-training",
+   "title": "Re in practice professional warriors were very much a thing, but nominally they were also \"scholar-officials\". Obviously, someone like Zhang Xun was \"...",
+   "url": "https://x.com/teortaxesTex/status/2066184965524508890",
+   "summary": "Re in practice professional warriors were very much a thing, but nominally they were also \"scholar-officials\". Obviously, someone like Zhang Xun was \"kshatriya\" and probably didn't wear this silly getup into battle. I think his nails were s",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "model",
+   "title": "Rio de Janeiro's \"homegrown\" LLM appears to be a merge of an existing model",
+   "url": "https://github.com/nex-agi/Nex-N2/issues/4",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "serving",
+   "title": "I indexed 669 GB of my GoPro videos using my M1 Max computer and local ML models",
+   "url": "https://news.ycombinator.com/item?id=48528029",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "business",
+   "title": "Perlisisms (1982)",
+   "url": "https://www.cs.yale.edu/homes/perlis-alan/quotes.html",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "product",
+   "title": "Not everyone is using AI for everything",
+   "url": "https://gabrielweinberg.com/p/people-are-consuming-ai-like-they",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "business",
+   "title": "FarOutCompany",
+   "url": "https://faroutcompany.com/",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "the-decoder",
+   "layer": "product",
+   "title": "Microsoft Research's Mirage gives video generation a persistent spatial memory that doesn't forget what's around the corner",
+   "url": "https://the-decoder.com/microsoft-researchs-mirage-gives-video-generation-a-persistent-spatial-memory-that-doesnt-forget-whats-around-the-corner/",
+   "summary": "Mirage, a video world model from Microsoft Research and several universities, stores scene information directly in latent space instead of pixel-based point clouds. That slashes compute time and graphics memory while keeping scenes spatiall",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "serving",
+   "title": "Caddy compatibility for zeroserve: 3x throughput and 70% lower latency",
+   "url": "https://su3.io/posts/zeroserve-caddy-compat",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "the-decoder",
+   "layer": "product",
+   "title": "Google Cloud's Open Knowledge Format turns scattered docs into Markdown files for AI agents",
+   "url": "https://the-decoder.com/google-clouds-open-knowledge-format-turns-scattered-docs-into-markdown-files-for-ai-agents/",
+   "summary": "Google Cloud's new Open Knowledge Format (OKF) standardizes scattered organizational knowledge as Markdown files with YAML frontmatter, making it portable and usable for AI agents. The minimalist spec formalizes a pattern Andrej Karpathy re",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "product",
+   "title": "How did Atari apply side art to Arcade Cabinets?",
+   "url": "https://arcadeblogger.com/2026/06/14/how-did-atari-apply-side-art-to-arcade-cabinets/",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "product",
+   "title": "The Birth and Death of JavaScript (2014)",
+   "url": "https://www.destroyallsoftware.com/talks/the-birth-and-death-of-javascript",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "devtool",
+   "title": "Formal methods and the future of programming",
+   "url": "https://blog.janestreet.com/formal-methods-at-jane-street-index/?from_theconsensus=1",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "business",
+   "title": "How to earn a billion dollars",
+   "url": "https://paulgraham.com/earn.html",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "the-decoder",
+   "layer": "product",
+   "title": "KPMG fabricated AI case studies in a report designed to sell clients on AI adoption",
+   "url": "https://the-decoder.com/kpmg-fabricated-ai-case-studies-in-a-report-designed-to-sell-clients-on-ai-adoption/",
+   "summary": "KPMG published a report on AI in business that contained fabricated case studies involving UBS, the NHS, and other organizations. GPTZero CEO Edward Tian, who helped uncover the errors, warns of \"secondary hallucinations,\" flawed claims fro",
+   "selected": false
+  },
+  {
+   "source": "the-decoder",
+   "layer": "agent",
+   "title": "AI coding agents find the right file but miss the exact lines that matter, study shows",
+   "url": "https://the-decoder.com/ai-coding-agents-find-the-right-file-but-miss-the-exact-lines-that-matter-study-shows/",
+   "summary": "AI coding agents like Claude Code or Codex reliably find the right file but miss most of the critical lines within it. The new SWE-Explore benchmark is the first to test code search separately from the actual repair, and it shows that witho",
+   "selected": false
+  },
+  {
+   "source": "the-decoder",
+   "layer": "product",
+   "title": "Amazon and five other companies reportedly triggered the government crackdown on Anthropic's Fable model",
+   "url": "https://the-decoder.com/amazon-and-five-other-companies-reportedly-triggered-the-government-crackdown-on-anthropics-fable-model/",
+   "summary": "Amazon CEO Andy Jassy and executives from other tech companies reportedly warned the Trump administration about security vulnerabilities in Anthropic's Fable model, even though Amazon is one of Anthropic's largest investors. Within hours, t",
+   "selected": true
+  },
+  {
+   "source": "x-_akhaliq",
+   "layer": "model",
+   "title": "RT Jingzi Zhao: The Build Small Hackathon @huggingface @Gradio diary — Day 6 🌱 Today, I want to take you inside the community : 👥2,000+ followe...",
+   "url": "https://x.com/_akhaliq/status/2066172990811750510",
+   "summary": "RT Jingzi Zhao The Build Small Hackathon @huggingface @Gradio diary — Day 6 🌱 Today, I want to take you inside the community : 👥2,000+ followers, 🔧1,800+ members, 🤗already 400+ Spaces. Every Space is different, but very concrete and persona",
+   "selected": false
+  },
+  {
+   "source": "reddit-machinelearning",
+   "layer": "eval",
+   "title": "Confused, where to start [D]",
+   "url": "https://www.reddit.com/r/MachineLearning/comments/1u5cimu/confused_where_to_start_d/",
+   "summary": "Hello community, I am a backend + big data dev. I want to learn about the llms that generate voices. I also read some articles but almost everyone of them starts from regression. There are so much resources available right now that I am now",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "devtool",
+   "title": "Free SQL→ER diagram tool, runs in the browser, nothing uploaded",
+   "url": "https://sqltoerdiagram.com/",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "techcrunch-ai",
+   "layer": "product",
+   "title": "As Anthropic suspends access to new models, India debates its AI future",
+   "url": "https://techcrunch.com/2026/06/13/as-anthropic-suspends-access-to-new-models-india-debates-its-ai-future/",
+   "summary": "Tech leaders debate whether the Anthropic episode is a wake-up call for India’s AI ambitions.",
+   "selected": false
+  },
+  {
+   "source": "reddit-machinelearning",
+   "layer": "model",
+   "title": "The Verifier Tax: Horizon-Dependent Safety–Success Tradeoffs in Tool-Using LLM Agents [R]",
+   "url": "https://www.reddit.com/r/MachineLearning/comments/1u58mkq/the_verifier_tax_horizondependent_safetysuccess/",
+   "summary": "We recently presented a paper at ACM CAIS 2026 on safety evaluation for tool-using LLM agents. The core issue is that task completion alone can be misleading: an agent may complete a task while violating a safety or policy constraint. We se",
+   "selected": true
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "safety",
+   "title": "Honda Civics and the Evil Valet",
+   "url": "https://juniperspring.org/posts/honda-evil-valet/",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "techcrunch-ai",
+   "layer": "business",
+   "title": "Meta reportedly moves to unwind $2B Manus deal after Beijing’s demand",
+   "url": "https://techcrunch.com/2026/06/13/meta-reportedly-moves-to-unwind-2b-manus-deal-after-beijings-demand/",
+   "summary": "Meta starts dismantling its $2 billion Manus acquisition after Beijing ordered the deal reversed.",
+   "selected": false
+  },
+  {
+   "source": "simonwillison",
+   "layer": "devtool",
+   "title": "Publishing WASM wheels to PyPI for use with Pyodide",
+   "url": "https://simonwillison.net/2026/Jun/13/publishing-wasm-wheels/#atom-everything",
+   "summary": "The Pyodide 314.0 release announcement (via Hacker News ) includes news I've been looking forward to for a long time: You can now publish Python packages built for Pyodide (or any Python runtime compatible with the PyEmscripten platform def",
+   "selected": false
+  },
+  {
+   "source": "simonwillison",
+   "layer": "product",
+   "title": "luau-wasm 0.1a0",
+   "url": "https://simonwillison.net/2026/Jun/13/luau-wasm/#atom-everything",
+   "summary": "Release: luau-wasm 0.1a0 See Publishing WASM wheels to PyPI for use with Pyodide for details. Tags: lua , webassembly , pyodide",
+   "selected": false
+  },
+  {
+   "source": "simonwillison",
+   "layer": "data",
+   "title": "Mapping SQLite result columns back to their source `table.column`",
+   "url": "https://simonwillison.net/2026/Jun/13/sqlite-column-provenance/#atom-everything",
+   "summary": "Research: Mapping SQLite result columns back to their source `table.column` It would be neat if arbitrary SQL queries in Datasette could be rendered with additional information based on which columns from which tables were included in the r",
+   "selected": false
+  },
+  {
+   "source": "techcrunch-ai",
+   "layer": "product",
+   "title": "KPMG pulls report on AI usage due to apparent hallucinations",
+   "url": "https://techcrunch.com/2026/06/13/kpmg-pulls-report-on-ai-usage-due-to-apparent-hallucinations/",
+   "summary": "Once again, AI proves to be an unreliable source of information about AI.",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "data",
+   "title": "Show HN: Trace – Offline Mac meeting transcripts you can flag mid-call",
+   "url": "https://traceapp.info",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "techcrunch-ai",
+   "layer": "business",
+   "title": "Amazon CEO reportedly raised Anthropic model concerns before government crackdown",
+   "url": "https://techcrunch.com/2026/06/13/amazon-ceo-reportedly-raised-anthropic-model-concerns-before-government-crackdown/",
+   "summary": "Amazon CEO Andy Jassy may have been the source of security concerns that led Anthropic to cut off worldwide access to two models on Friday.",
+   "selected": false
+  },
+  {
+   "source": "mcp-registry",
+   "layer": "agent",
+   "title": "MCP registry: ai.canaryusers/canaryusers — A flock of AI users tests your deployed app and reports where real people get stuck, with fixes.",
+   "url": "https://github.com/CanaryUsers-ai/canaryusers-mcp",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "x-swyx",
+   "layer": "agent",
+   "title": "RT Alex Atallah: We just announced our Fusion API: - Fable-level performance on deep research tasks, at half the cost - Better-than-SOTA performance u...",
+   "url": "https://x.com/swyx/status/2065893584528957877",
+   "summary": "RT Alex Atallah We just announced our Fusion API: - Fable-level performance on deep research tasks, at half the cost - Better-than-SOTA performance using panels The future of AI is neurodiversity, not single-model takeovers. OpenRouter: Int",
+   "selected": true
+  },
+  {
+   "source": "the-decoder",
+   "layer": "product",
+   "title": "New AI model called \"Count Anything\" does exactly what it says, and that's harder than it sounds",
+   "url": "https://the-decoder.com/new-ai-model-called-count-anything-does-exactly-what-it-says-and-thats-harder-than-it-sounds/",
+   "summary": "\"Count Anything\" is intended to be the first AI model capable of counting objects in any type of image, from crowds to cell samples under a microscope, using nothing more than a text prompt. In a comparative test, it cuts the error rate in ",
+   "selected": true
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "business",
+   "title": "Global density and biomass of arbuscular mycorrhizal fungal networks",
+   "url": "https://www.science.org/doi/10.1126/science.adu4373",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "techcrunch-ai",
+   "layer": "business",
+   "title": "OpenAI faces investigation from state attorneys general",
+   "url": "https://techcrunch.com/2026/06/13/openai-faces-investigation-from-state-attorneys-general/",
+   "summary": "It's not clear which states are involved, but they're asking about everything from OpenAI's ad policies to its handling of health data.",
+   "selected": false
+  },
+  {
+   "source": "alignment-forum",
+   "layer": "safety",
+   "title": "SFT Drives Gemini’s Safety Properties",
+   "url": "https://www.alignmentforum.org/posts/nLrrYweeFxgXACSmS/sft-drives-gemini-s-safety-properties-1",
+   "summary": "This is the third in a series of informal research updates from the Google DeepMind Language Model Interpretability team, in interpretability and adjacent areas. The second post can be found here . In this short post, we describe a surprisi",
+   "selected": false
+  },
+  {
+   "source": "x-_akhaliq",
+   "layer": "model",
+   "title": "RT Niels Rogge: Very cool work!! Modality Forcing gets SOTA on 4 out of 5 monocular depth estimation benchmarks. 🏆 Explore the paper and evals here...",
+   "url": "https://x.com/_akhaliq/status/2065924377720295745",
+   "summary": "RT Niels Rogge Very cool work!! Modality Forcing gets SOTA on 4 out of 5 monocular depth estimation benchmarks. 🏆 Explore the paper and evals here: https://paperswithcode.co/paper/2606.13676 Bardienus Duisterhof: Introducing Modality Forcin",
+   "selected": true
+  },
+  {
+   "source": "the-decoder",
+   "layer": "business",
+   "title": "Microsoft CEO Satya Nadella admits he's a token-maxer, too: \"It's addictive\"",
+   "url": "https://the-decoder.com/microsoft-ceo-satya-nadella-admits-hes-a-token-maxer-too-its-addictive/",
+   "summary": "Microsoft CEO Satya Nadella is warning against \"token-maxing,\" throwing the most powerful AI models at every problem. Frontier models shouldn't be wasted on everyday tasks, he says. The marginal cost of productivity gains has to match the t",
+   "selected": false
+  },
+  {
+   "source": "qbitai",
+   "layer": "model",
+   "title": "HuggingFace CEO力荐，Bengio团队也押注：这个1500美元训出的HRM模型，凭什么火了？",
+   "url": "https://www.qbitai.com/2026/06/435483.html",
+   "summary": "HuggingFace CEO力荐，Bengio团队也押注：这个1500美元训出的HRM模型，凭什么火了？ 鹭羽 2026-06-13 20:40:30 来源： 量子位 模型参数量只有1B 允中 发自 凹非寺 量子位 | 公众号 QbitAI 好家伙，这次不是模型圈自嗨。 一个训练成本约1500美元、参数量约1B、从零开始预训练的小模型，把 HRM 推到了下一代推理架构讨论的中心。 HuggingFace联合创始人兼CEO Clem Delangue亲自转发推荐。 图灵奖得主",
+   "selected": false
+  },
+  {
+   "source": "the-decoder",
+   "layer": "eval",
+   "title": "Google Research's Gemini-SQL2 tops text-to-SQL benchmarks by a wide margin",
+   "url": "https://the-decoder.com/google-researchs-gemini-sql2-tops-text-to-sql-benchmarks-by-a-wide-margin/",
+   "summary": "Google Research's Gemini-SQL2 turns natural language into executable SQL queries. Built on Gemini 3.1 Pro, it tops the BIRD benchmark at 80.04 percent accuracy, well ahead of OpenAI and Anthropic. Google says the technology could improve na",
+   "selected": false
+  },
+  {
+   "source": "the-decoder",
+   "layer": "model",
+   "title": "Microsoft's SkillOpt boosts GPT-5.5 by using nothing but a trained Markdown file",
+   "url": "https://the-decoder.com/microsofts-skillopt-boosts-gpt-5-5-by-using-nothing-but-a-trained-markdown-file/",
+   "summary": "Microsoft and three Chinese universities have developed SkillOpt, a method that optimizes instruction documents for AI agents using principles from traditional model training. A simple Markdown file is enough to boost GPT-5.5 by about 23 po",
+   "selected": false
+  },
+  {
+   "source": "the-decoder",
+   "layer": "model",
+   "title": "Claude Fable 5 outpaces GPT-5.5 by 13 points on FrontierMath's toughest problems",
+   "url": "https://the-decoder.com/claude-fable-5-outpaces-gpt-5-5-by-13-points-on-frontiermaths-toughest-problems/",
+   "summary": "Anthropic's Claude Fable 5 hits 88 percent accuracy on the hardest FrontierMath tier, a massive jump from Opus 4.5, which sat below 10 percent in early 2026. OpenAI's GPT-5.5 reaches about 75 percent on the same tier. The pace of improvemen",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "agent",
+   "title": "Egonex-AI/Understand-Anything — Graphs that teach > graphs that impress. Turn any code into an interactive knowledge graph you can explore, search, and ask questions about. Works with Claude Code, Codex, Cursor, Copilot, Gemini CLI, and more.",
+   "url": "https://github.com/Egonex-AI/Understand-Anything",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "maas",
+   "title": "GoogleCloudPlatform/knowledge-catalog — Google Cloud Knowledge Catalog Tools and Samples",
+   "url": "https://github.com/GoogleCloudPlatform/knowledge-catalog",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "serving",
+   "title": "supertone-inc/supertonic — Lightning-Fast, On-Device, Multilingual TTS — running natively via ONNX.",
+   "url": "https://github.com/supertone-inc/supertonic",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "serving",
+   "title": "tw93/Kami — 👩‍🚒 Good content deserves good paper.",
+   "url": "https://github.com/tw93/Kami",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "serving",
+   "title": "ZhuLinsen/daily_stock_analysis — LLM驱动的 A/H/美股智能分析：多数据源行情 + 实时新闻 + LLM决策仪表盘 + 多渠道推送，零成本定时运行，纯白嫖. LLM-powered stock analysis system for A/H/US markets.",
+   "url": "https://github.com/ZhuLinsen/daily_stock_analysis",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "agent",
+   "title": "AIDC-AI/Pixelle-Video — 🚀 AI 全自动短视频引擎 | AI Fully Automated Short Video Engine",
+   "url": "https://github.com/AIDC-AI/Pixelle-Video",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "serving",
+   "title": "Thysrael/Horizon — 📡 Your own AI-powered news radar. Generates daily briefings in English & Chinese. | 用 AI 构建你专属的新闻雷达",
+   "url": "https://github.com/Thysrael/Horizon",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "serving",
+   "title": "sleep3r/mtproto.zig — High-performance Telegram proxy with DPI evasion",
+   "url": "https://github.com/sleep3r/mtproto.zig",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "devtool",
+   "title": "heygen-com/hyperframes — Write HTML. Render video. Built for agents.",
+   "url": "https://github.com/heygen-com/hyperframes",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "agent",
+   "title": "tt-a1i/archify — Any agent Skill: generate beautiful architecture diagrams with dark/light theme toggle and PNG/JPEG/WebP/SVG export",
+   "url": "https://github.com/tt-a1i/archify",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "agent",
+   "title": "pbakaus/impeccable — The design language that makes your AI harness better at design.",
+   "url": "https://github.com/pbakaus/impeccable",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "serving",
+   "title": "telemt/telemt — MTProxy for Telegram on Rust + Tokio",
+   "url": "https://github.com/telemt/telemt",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "devtool",
+   "title": "alibaba/open-code-review — Open-source & free — Battle-tested at Alibaba's scale. Hybrid architecture code review tool: deterministic pipelines + LLM Agent, precise line-level comments, built-in fine-tuned ruleset (NPE, thread-safety, XSS, SQL injection), OpenAI & Anthropic compatible.",
+   "url": "https://github.com/alibaba/open-code-review",
+   "summary": "",
+   "selected": true
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "agent",
+   "title": "KunAgent/Kun — AI agent workspace with Code and Write modes built into your application.",
+   "url": "https://github.com/KunAgent/Kun",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "agent",
+   "title": "corsairdev/corsair — Your Agent's Integration Layer",
+   "url": "https://github.com/corsairdev/corsair",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "agent",
+   "title": "can1357/oh-my-pi — ⌥ AI Coding agent for the terminal — hash-anchored edits, optimized tool harness, LSP, Python, browser, subagents, and more",
+   "url": "https://github.com/can1357/oh-my-pi",
+   "summary": "",
+   "selected": false
+  },
+  {
+   "source": "oss-insight-trends",
+   "layer": "serving",
+   "title": "QuantFunc/ComfyUI-QuantFunc —",
+   "url": "https://github.com/QuantFunc/ComfyUI-QuantFunc",
+   "summary": "",
+   "selected": false
+  }
+ ]
+}
