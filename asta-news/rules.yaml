@@ -18,7 +18,7 @@ scoring:
     leading_edge: 0.30    # 领先性：推进 SOTA / 首次公开的做法 / 行业第一家
     impact: 0.25          # 影响面：多少从业者的工作会因此改变
     cross_stack: 0.10     # 跨层性：牵动多个 stack layer
-  window_hours: 36        # 候选新鲜度窗口（覆盖时差与周末积压）
+  window_hours: 36        # 新鲜窗口的【回退】值（首跑/本地无历史期时用）。正常运行窗口=「上一期→现在」(fetch --since-from $OUT/data)，漏跑的日子自动覆盖、不漏不重；超长 gap 由 fetch 的 --max-window-hours(默认120) 兜底
   prefer_primary_source: true   # 同一事件多源报道时，只取官方一手源，社区链接作补充
 
 dedup:

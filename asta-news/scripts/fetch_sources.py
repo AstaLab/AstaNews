@@ -99,6 +99,42 @@ def within(published: str | None, cutoff: datetime) -> bool:
         return True
 
 
+def last_edition_date(site_data: Path) -> datetime | None:
+    """读 $OUT/data 里最新一期的日期（UTC 当天 00:00）。新鲜窗口的"上次跑"锚点：
+    窗口 = [上一期日期, 现在]，天然覆盖被跳过的日子（如漏跑一天），重复由 dedup(仓库即状态)挡。"""
+    if not site_data or not site_data.exists():
+        return None
+    dates = sorted(p.stem for p in site_data.glob("20*.json")
+                   if re.fullmatch(r"20\d\d-\d\d-\d\d", p.stem))
+    if not dates:
+        return None
+    return datetime.strptime(dates[-1], "%Y-%m-%d").replace(tzinfo=timezone.utc)
+
+
+def resolve_cutoff(now: datetime, since: str | None, since_from: Path | None,
+                   window_hours: int, max_window_hours: int) -> tuple[datetime, str]:
+    """新鲜窗口起点：优先"上次出期"（--since / --since-from），回退固定 window_hours（首跑/本地）。
+    超长 gap 用 max_window_hours 兜底，避免补跑一周时把陈年条目全捞出。返回 (cutoff, 说明)。"""
+    base, why = None, f"固定 {window_hours}h"
+    if since:
+        try:
+            base = datetime.fromisoformat(since.replace("Z", "+00:00"))
+            if base.tzinfo is None:
+                base = base.replace(tzinfo=timezone.utc)
+            why = f"自 --since {since}"
+        except ValueError:
+            base = None
+    elif since_from:
+        base = last_edition_date(since_from)
+        why = f"自上一期 {base.date()}" if base else f"无历史期→固定 {window_hours}h"
+    if base is None:
+        return now - timedelta(hours=window_hours), why
+    floor = now - timedelta(hours=max_window_hours)
+    if base < floor:
+        return floor, f"{why}（gap 超 {max_window_hours}h，截到上限）"
+    return base, why
+
+
 # 只认 ASTA_PROXY：环境可能注入不可靠的 HTTP(S)_PROXY（如 IDE 内部代理），必须忽略
 SESSION = requests.Session()
 SESSION.trust_env = False
@@ -398,7 +434,10 @@ def main() -> int:
     ap.add_argument("--layers", help="逗号分隔 layer 过滤")
     ap.add_argument("--priority", default="P0,P1", help="默认 P0,P1；填 P0,P1,P2 取全部")
     ap.add_argument("--include-disabled", action="store_true")
-    ap.add_argument("--window-hours", type=int, default=36)
+    ap.add_argument("--window-hours", type=int, default=36, help="固定回退窗口（首跑/本地，或无 --since* 时）")
+    ap.add_argument("--since", help="新鲜窗口起点 ISO/日期；优先于 --window-hours")
+    ap.add_argument("--since-from", help="从该目录(如 $OUT/data)最新一期日期取窗口起点=「上次出期→现在」，天然覆盖跳过的日子")
+    ap.add_argument("--max-window-hours", type=int, default=120, help="窗口上限：补跑长 gap 时兜底，防把陈年条目全捞出（默认 5 天）")
     ap.add_argument("--out", help="输出 jsonl 路径；默认 data_dir/runs/<date>/candidates.jsonl")
     ap.add_argument("--manifest", help="抓取结果清单 json（含 agent_read 源）；默认同目录 manifest.json")
     args = ap.parse_args()
@@ -426,7 +465,10 @@ def main() -> int:
         print("配置错误：筛选后无源", file=sys.stderr)
         return 2
 
-    cutoff = datetime.now(timezone.utc) - timedelta(hours=args.window_hours)
+    now = datetime.now(timezone.utc)
+    cutoff, cutoff_why = resolve_cutoff(
+        now, args.since, Path(args.since_from) if args.since_from else None,
+        args.window_hours, args.max_window_hours)
     run_dir = data_dir() / "runs" / datetime.now().strftime("%Y-%m-%d")
     run_dir.mkdir(parents=True, exist_ok=True)
     out_path = Path(args.out) if args.out else run_dir / "candidates.jsonl"
@@ -457,8 +499,10 @@ def main() -> int:
         for it in deduped:
             f.write(json.dumps(it, ensure_ascii=False) + "\n")
     manifest_path.write_text(json.dumps({
-        "generated": datetime.now(timezone.utc).isoformat(),
-        "window_hours": args.window_hours, "candidates": len(deduped),
+        "generated": now.isoformat(),
+        "window_start": cutoff.isoformat(), "window_basis": cutoff_why,
+        "window_hours_effective": round((now - cutoff).total_seconds() / 3600, 1),
+        "candidates": len(deduped),
         "sources": results,
     }, ensure_ascii=False, indent=1))
 
@@ -466,7 +510,8 @@ def main() -> int:
     err = {k: r for k, r in results.items() if r["status"] == "error"}
     skipped = {k: r["detail"] for k, r in results.items() if r["status"] == "skipped"}
     agent_read = [k for k, r in results.items() if r["status"] == "agent_read"]
-    print(f"== fetch 完成: {len(deduped)} 候选 | {ok}/{len(selected)} 源成功 ==", file=sys.stderr)
+    print(f"== fetch 完成: {len(deduped)} 候选 | {ok}/{len(selected)} 源成功 | 窗口 {cutoff_why}"
+          f"（起 {cutoff.strftime('%m-%d %H:%M')}Z, {round((now-cutoff).total_seconds()/3600,1)}h）==", file=sys.stderr)
     for k, r in sorted(results.items(), key=lambda kv: -kv[1]["count"]):
         if r["status"] == "ok" and r["count"]:
             print(f"  {k:28s} {r['count']:4d}  {r['detail']}", file=sys.stderr)
