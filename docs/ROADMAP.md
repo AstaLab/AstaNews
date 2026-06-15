@@ -134,7 +134,8 @@ group  : 目标 5（上限 8），最严，微信群发
   - **下次从这继续**：用户确认 A → writing-plans 出接线计划 → 改 SKILL + dedup/fetch 字段 → 端到端跑一期验证。
 - ✅ **P0-DOC** 写本 ROADMAP（PO 总纲）
 - ✅ **生产** 2026-06-13 首次端到端 v2 digest 跑通并上线；publish_site 加 facts/links 归一容错。**2026-06-15** 第三期上线（精选 6/日报 13/全候选 120/8 层；主题「方法学抢镜 + agent 去魅」：SWE-Explore/Mirage/SkillOpt/HRM/KPMG/谷歌 OKF），走确定性漏斗 + WebFetch 核实事实 + editor 改写，已 commit+push 触发 Pages、curl 实测 index 含 06-15。
-  - **下次循环从这继续**：①若当日无 digest 先产出（同上流程：fetch→dedup→classify→prerank→editor 选+WebFetch 核实+改写→enrich_images→publish_site→embed→commit/push→curl 验证）；②backlog 取高价值非破坏项。注意：06-14 缺一期（未补发旧闻，符合不补发原则）。
+  - **2026-06-16 生产**：第五期上线（group 6/daily 8/6 层）。主线「智能体安全」：护栏被 DoS(token 13–63×/延迟 148×)、agentic 浏览器补同源策略 SOPGuard、WorkBench 两年回访(任务 43%→89%、闯祸 26%→2.5%、能力与安全同向)+ AudioX-Turbo 开源音频(4 步/0.24s) + 世航海洋机器人最大单轮 + ORCA 灵巧操作开源。严格本体日窗口[6/15 01:00Z→now]，WebFetch 核实剔除 GLM-5.2(6/13)/智源 Matrix-Game(6/12-13)/Anthropic 容器博文(5/25)/Flash-KMeans(arXiv 3月) 等窗口外/旧工作转载；freshness 审计通过；已 commit+push、curl 实测 astalab index 含 06-16。**注**：本期 embed 因模型损坏未跑（见上「本地 embedding 模型损坏」）。
+  - **下次循环从这继续**：①若当日无 digest 先产出（同上流程：fetch→dedup→classify→prerank→editor 选+WebFetch 核实+改写→enrich_images→publish_site→embed→commit/push→curl 验证）；②修本地 embedding 模型并补建 6/16 索引；③backlog 取高价值非破坏项。注意：06-14 缺一期（未补发旧闻，符合不补发原则）。
 - ✅ **P0-CRON** 5am 北京定时任务已设（durable cron），进入持续迭代循环
 - ✅ **P1-EMBED** 本地 embedding（fastembed multilingual-MiniLM，hf-mirror，离线 CPU）+ 向量索引 + 跨语言检索，`scripts/embed.py` 自测通过
 - ✅ **P1-CONFIG** `asta-news/config/` 已建：tiers/perspectives/sharpness/site/search.yaml
@@ -158,7 +159,8 @@ group  : 目标 5（上限 8），最严，微信群发
 - ✅ **健壮** 云端 daily-digest 无 ANTHROPIC_API_KEY 时优雅跳过(不再每日失败,设了即每日自动跑)
 - ✅ **新鲜窗口·按出期**（2026-06-15，按用户反馈）fetch 新鲜窗口从固定 36h 改为「上一期→现在」：`fetch_sources.py --since-from $OUT/data` 读最新一期日期作起点，漏跑的日子自动覆盖、不漏不重（重复仍由 dedup 仓库即状态挡）；`--max-window-hours`(默认120) 兜底长 gap；首跑/本地无历史期回退 window_hours。修掉「06-13 的报道在 06-15 那期以今天出现」的固定窗口边界泄漏。实测 last=06-15 时旧条目正确排除。SKILL 第1步与 rules.yaml 已同步。
 - ✅ **严格本体日窗口 + 清档重跑**（2026-06-15，ultracode）用户要"一手源不在窗口内的一律不收、宁缺毋滥"。① 清掉全部历史期重跑一期；② 窗口严格 [6/14 9am, 6/15 9am]，按【本体发生日】判（论文=提交日/发布=release/事件=发生日），媒体转载旧工作一律剔除；③ **ultracode 工作流 10 agent 并发逐条核验**候选真实日期(195→确定性剔 121→74 待核→保留 10/丢 64→去重 8)，揪出 Mirage(arXiv 06-08)/gh-vllm(feed 时间戳假象,真实 06-12)/anthropic 博文(05-25) 等转载/陈旧；④ durable 防复发：hf_daily_papers 改用真实公布日(让严格窗口能筛旧论文上榜)、publish_site 写 `generated_at`、fetch `--since-from` 读它实现精确"上次9am→这次9am"接续、check_freshness arXiv 月级兜底。8 条真·窗口内事件成刊(治理/SMIC/IPO/模型溯源/注入安全/EAGLE3/Partner Network/SFT 对齐)。
-- ⬜ **域名不一致(待修)**：线上实际是 **astalab.github.io/AstaNews/**(200)，而 ylxmf2005.github.io 已 404；但 web/lib/config.js 的 `SITE.repo` 与 layout.jsx 的 `SITE_URL` 仍指 ylxmf2005 → OG/canonical/RSS 链接指向 404 域名，需改为 astalab。
+- ✅ **域名一致(2026-06-16 已修)**：仓库已迁 **AstaLab/AstaNews**、线上 astalab.github.io/AstaNews(200)、ylxmf2005 已 404。修掉三处写死 ylxmf2005：`web/app/layout.jsx` `SITE_URL`(metadataBase/OG/canonical)、`web/lib/config.js` `SITE.repo`、`web/scripts/prepare-data.mjs` `SITE`(feed.xml/sitemap.xml/robots.txt)。README 用户已先改。build 55/55 通过、feed/sitemap/robots 实测全指 astalab。本地 git remote 也已更新为 AstaLab。
+- ⬜ **本地 embedding 模型损坏(待修)**：fastembed 的 multilingual-MiniLM onnx 在本机缓存损坏/下载不全（`model_optimized.onnx` 缺失，代理下载不稳），2026-06-16 跑 digest 时 classify 退化为源先验、`embed.py` 失败 → **6/16 期未进向量/搜索/相关索引**（线上正常渲染+归档，仅搜索/相关缺该期）。修法：清 `~/.cache/uv` 内 embed env + `/tmp/fastembed_cache` 重下，或换自托管 onnx；CI runner(墙外)大概率正常——可考虑把 `embed.py --build` 挪到 daily-digest 的 Actions 步骤跑，避免本机网络依赖。下次跑通后补建一次索引即覆盖 6/16。
 
 ## 5. 循环工作准则（5am 起的自我迭代）
 
