@@ -29,15 +29,6 @@ export const TIERS = [
   { key: "group", label: "精选", desc: "每日最重要的几条" },
 ];
 
-export const PERSPECTIVES = [
-  { key: "all", label: "全栈", boost: {} },
-  { key: "technical", label: "技术", boost: { model: 1.5, "post-training": 1.5, infra: 1.2, serving: 1.2, eval: 1.0 } },
-  { key: "product", label: "产品", boost: { product: 1.5, agent: 1.4, devtool: 1.3, maas: 1.2, model: 0.6 } },
-  { key: "business", label: "商业", boost: { business: 1.8, product: 1.0, maas: 0.8, model: 0.5 } },
-  { key: "research", label: "研究", boost: { eval: 1.4, model: 1.2, "post-training": 1.2, safety: 1.1, data: 1.1 } },
-  { key: "embodied", label: "具身", boost: { embodied: 2.0, model: 0.6 } },
-];
-
 // 犀利度档位（对齐 config/sharpness.yaml）。中性恒在；锐评/深读按数据存在与否门控显示。
 export const SHARPNESS = [
   { key: "neutral", label: "中性", field: "readable" },

@@ -4,7 +4,7 @@ import Nav from "../components/Nav";
 import { SITE } from "../lib/config";
 
 const SITE_URL = "https://ylxmf2005.github.io/AstaNews/";
-const DESC = "AI 全栈每日情报：论文、模型发布、评测、infra、agent、具身、安全、产品商业、devtool。每天精选，多级筛选，多视角。";
+const DESC = "AI 全栈每日情报：论文、模型发布、评测、infra、agent、具身、安全、产品商业、devtool。每天精选，按级别与领域筛选。";
 export const metadata = {
   metadataBase: new URL(SITE_URL),
   title: "AstaNews · AI 全栈每日情报",
@@ -27,7 +27,7 @@ export default function RootLayout({ children }) {
               <div className="tele">
                 <span>{SITE.lab} · 全栈情报站</span>
                 <span className="seal-txt">AI FULL-STACK INTELLIGENCE</span>
-                <span>每日 · 全栈 · 多视角</span>
+                <span>每日 · 全栈 · 精选</span>
               </div>
               <div className="nameplate">
                 <svg className="emblem" viewBox="0 0 64 64" fill="none" stroke="#b23a23" strokeWidth="2">

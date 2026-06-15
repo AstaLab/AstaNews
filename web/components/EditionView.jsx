@@ -1,24 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { LAYERS, lz, layerName, layerEmoji, layerColor, TIERS, PERSPECTIVES, SHARPNESS, BASE, slug } from "../lib/config";
-
-function baseScore(it, i) {
-  if (typeof it.score === "number") return it.score;
-  if (it.scores) {
-    const w = { novelty: 0.35, leading_edge: 0.3, impact: 0.25, cross_stack: 0.1 };
-    return Object.entries(w).reduce((s, [k, v]) => s + (it.scores[k] || 0) * v, 0);
-  }
-  return Math.max(0, 10 - (it.rank ?? i));
-}
-
-function applyPerspective(items, persp) {
-  if (!persp || persp.key === "all") return items;
-  return [...items]
-    .map((it, i) => ({ it, s: baseScore(it, i) + (persp.boost[lz(it.layer)] || 0) * 1.6 }))
-    .sort((a, b) => b.s - a.s)
-    .map((x) => x.it);
-}
+import { LAYERS, lz, layerName, layerEmoji, layerColor, TIERS, SHARPNESS, BASE, slug } from "../lib/config";
 
 function Story({ it, n, related, lead, level }) {
   const body = (level === "deep" && it.deep) || (level === "sharp" && it.sharp) || it.readable || it.take || "";
@@ -54,15 +37,13 @@ function Story({ it, n, related, lead, level }) {
 
 export default function EditionView({ edition }) {
   const [tier, setTier] = useState("daily");
-  const [persp, setPersp] = useState("all");   // 视角（大）：重排+框定
-  const [cat, setCat] = useState("all");        // 类别（小）：按 layer 硬筛
+  const [cat, setCat] = useState("all");        // 类别：按 layer 硬筛
   const [level, setLevel] = useState("neutral");  // 犀利度：中性 / 锐评 / 深读（按数据门控）
   const [related, setRelated] = useState(null); // 预计算的相关新闻（向量近邻）
   useEffect(() => {
     fetch(`${BASE}/data/related.json`).then((r) => r.json()).then(setRelated).catch(() => setRelated({}));
   }, []);
   const tiers = edition.tiers || { group: edition.selected || [], daily: edition.selected || [] };
-  const perspObj = PERSPECTIVES.find((p) => p.key === persp) || PERSPECTIVES[0];
 
   // 当前 tier 里出现的类别（只展示有内容的，按数量排序）
   const cats = useMemo(() => {
@@ -72,10 +53,10 @@ export default function EditionView({ edition }) {
   }, [tier, edition.date]);
 
   const items = useMemo(() => {
-    let raw = applyPerspective(tiers[tier] || [], perspObj);
+    let raw = tiers[tier] || [];
     if (cat !== "all") raw = raw.filter((it) => lz(it.layer) === cat);
     return raw;
-  }, [tier, persp, cat, edition.date]);
+  }, [tier, cat, edition.date]);
 
   // 当前 tier 有哪些犀利度档可选：中性恒在，锐评/深读需有对应数据（it.sharp / it.deep）
   const levels = useMemo(
@@ -83,8 +64,6 @@ export default function EditionView({ edition }) {
     [tier, edition.date]
   );
   const activeLevel = levels.some((l) => l.key === level) ? level : "neutral"; // 切 tier 后档位不可用则回退
-
-  const perspLede = edition.perspectives?.[persp]?.lede;
 
   return (
     <div>
@@ -96,14 +75,6 @@ export default function EditionView({ edition }) {
               <button key={t.key} className={tier === t.key ? "on" : ""} onClick={() => setTier(t.key)} title={t.desc}>
                 {t.label}<span style={{ opacity: .6, marginLeft: 5, fontSize: 11 }}>{(tiers[t.key] || []).length}</span>
               </button>
-            ))}
-          </div>
-        </div>
-        <div className="ctl-group">
-          <span className="ctl-label">视角</span>
-          <div className="seg">
-            {PERSPECTIVES.map((p) => (
-              <button key={p.key} className={persp === p.key ? "on" : ""} onClick={() => setPersp(p.key)}>{p.label}</button>
             ))}
           </div>
         </div>
@@ -131,13 +102,8 @@ export default function EditionView({ edition }) {
         ))}
       </div>
 
-      {persp !== "all" && (
-        <p className="persp-lede">{perspLede || `${perspObj.label}视角`}</p>
-      )}
-
       <div className="sec">
         {TIERS.find((t) => t.key === tier)?.label}
-        {persp !== "all" ? ` · ${perspObj.label}视角` : ""}
         {cat !== "all" ? ` · ${layerName(cat)}` : ""}
         <span style={{ fontFamily: "var(--mono)", color: "var(--faint)", marginLeft: 8 }}>{items.length}</span>
       </div>
