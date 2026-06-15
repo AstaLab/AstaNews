@@ -27,3 +27,4 @@ jobs:
           uv run asta-news/scripts/llm.py --self-test
           uv run asta-news/scripts/prerank.py --self-test
           uv run asta-news/scripts/extract.py --self-test
+          uv run asta-news/scripts/check_freshness.py --self-test

@@ -2,8 +2,8 @@
  "date": "2026-06-15",
  "weekday": "周一",
  "schema_version": 2,
- "headline": "本周开篇：方法学比参数更抢镜，agent 的「真本事」被逐条拆开看",
- "overview": "周一不靠大模型发布撑场，亮点几乎都在「巧劲」：微软 SkillOpt 不动权重、只「训练」一个 Markdown 技能文件就把 GPT-5.5 抬高约 23 分，1500 美元训出的 10 亿参数 HRM 把潜空间递归推理推上下一代架构的讨论，微软 Mirage 用隐空间「空间记忆」把长镜头视频世界模型提速 10 倍、省显存 55 倍。与此同时，评测在给 agent 去魅——SWE-Explore 发现编程 agent 能找对文件、却只覆盖 14–19% 该改的行；信任面则有 KPMG 卖 AI 的报告自曝编造案例。",
+ "headline": "本周开篇：给 agent 去魅，给落地补地基",
+ "overview": "周一不靠大模型发布撑场，几条硬料都在「给 agent 去魅」和「给落地补地基」：SWE-Explore 发现编程 agent 能找对文件、却只覆盖 14–19% 该改的行；微软 Mirage 用隐空间「空间记忆」把长镜头视频世界模型提速 10 倍、省显存 55 倍；谷歌云 OKF 想把「喂给 agent 的知识」标准化成 Markdown+YAML。信任面则有 KPMG 卖 AI 的报告自曝编造案例，「二次幻觉」警报拉响。",
  "stats": {
   "candidates": 120,
   "sources_ok": 61,
@@ -14,7 +14,6 @@
    "devtool",
    "maas",
    "model",
-   "post-training",
    "product",
    "safety"
   ]
@@ -72,51 +71,6 @@
     }
    },
    {
-    "layer": "post-training",
-    "source": "Microsoft Research",
-    "title": "微软 SkillOpt：不动权重，只「训练」一个 Markdown 技能文件，就把 GPT-5.5 拉高 23 分",
-    "url": "https://arxiv.org/abs/2605.23904",
-    "links": {
-     "primary": "https://arxiv.org/abs/2605.23904",
-     "discussion": "https://the-decoder.com/microsofts-skillopt-boosts-gpt-5-5-by-using-nothing-but-a-trained-markdown-file/"
-    },
-    "facts": [
-     "SkillOpt 把指令文档（「skill」）当成可训练的外部状态：一个独立的优化器模型对 Markdown 文件提增删改，只有在留出验证集上变好才接受，并引入编辑预算、拒绝缓冲、按 epoch 巩固——把深度学习那套搬到纯文本层面。",
-     "在 GPT-5.5、六个基准的直接对话设置下平均提升约 23 分；格式严格、需工具调用的任务（如表格编辑）增益最大。",
-     "可跨模型迁移：大模型上训出的 skill 能提升同族小模型；一个表格 skill 原样搬进 Claude Code，效果追平在 Claude Code 里直接训的版本。",
-     "共测七个目标模型（含 GPT-5.5、Qwen3.5-4B），六个基准覆盖搜索/表格/文档分析/数学/具身动作。"
-    ],
-    "take": "SkillOpt 把「写提示词」变成了「训练一份 Markdown」：一个优化器模型反复增删改技能文档，只保留在验证集上变好的改动，整套流程照搬深度学习的验证集、编辑预算、按 epoch 巩固。结果不碰权重就把 GPT-5.5 在六个基准上平均抬高约 23 分，且训好的技能能跨模型迁移。",
-    "readable": "提示词工程一直被当成「手艺活」，靠人反复试。微软联合三所中国高校做的 SkillOpt 想把它变成「可训练」的工程：把给模型的指令文档（他们叫 skill）当作一份可训练的外部状态，不动模型权重，只优化那份纯 Markdown 文件。\n\n做法很像把深度学习搬到文本层面：一个独立的「优化器模型」对技能文档提增、删、改，每个改动只有在留出的验证集上表现更好才被接受；还设了编辑预算、拒绝缓冲、按 epoch 巩固这些机制，防止越改越乱。\n\n效果不小。在 GPT-5.5、六个基准的直接对话设置下，平均提升约 23 分；增益最大的是格式要求严、需要工具调用的任务，比如表格编辑。更有意思的是迁移性：在大模型上训出的技能能提升同族的小模型；一个在别处训好的表格技能，原样搬进 Claude Code 就能把它的表现拉到「在 Claude Code 里直接训」的同一水平。实验共覆盖七个目标模型（含 GPT-5.5、Qwen3.5-4B）、六个基准（搜索、表格、文档分析、数学、具身动作）。\n\n这条路线的诱人之处在于便宜且可移植——不需要微调、不碰权重，产出的还是人能读、能改的 Markdown。对手上有一堆 agent、想榨出更多能力又不想动模型的人，这是个很现实的工具。",
-    "rank": 3,
-    "score": 3.76,
-    "image": {
-     "url": "https://the-decoder.com/wp-content/uploads/2026/06/skillopt-markdown-neural-training-nano-banana-pro.jpg",
-     "credit": "the-decoder.com",
-     "source": "https://the-decoder.com/microsofts-skillopt-boosts-gpt-5-5-by-using-nothing-but-a-trained-markdown-file/"
-    }
-   },
-   {
-    "layer": "model",
-    "source": "Sapient Intelligence · 量子位",
-    "title": "1500 美元训出的 10 亿参数 HRM：把「潜空间递归推理」推上下一代架构的牌桌",
-    "url": "https://arxiv.org/abs/2605.20613",
-    "links": {
-     "primary": "https://arxiv.org/abs/2605.20613",
-     "discussion": "https://www.qbitai.com/2026/06/435483.html"
-    },
-    "facts": [
-     "HRM-Text 由 Sapient Intelligence 发布，约 1B 参数，训练成本约 1500 美元，16 张 H100 不到两天。",
-     "架构为「分层递归推理」：高层 H（慢，战略脑）+ 低层 L（快，执行脑），双时间尺度在隐空间内多轮内部推理，而非显式思维链。",
-     "成绩：MATH 56.2、GSM8K 84.5、ARC-Challenge 81.9、DROP 82.2。",
-     "HuggingFace CEO Clem Delangue 亲自转发；图灵奖得主 Bengio 参与的《Generative Recursive Reasoning》论文（GRAM 框架）高度复用 HRM 骨架。"
-    ],
-    "take": "一个约 1500 美元、10 亿参数、从零预训练的小模型 HRM，把「潜空间递归推理」顶到了下一代架构讨论的中心。它不靠显式思维链，而用高层慢、低层快的分层递归在隐空间里多轮内部推理；HuggingFace CEO 转发力荐，Bengio 参与的新论文也复用了它的骨架。",
-    "readable": "这次出圈的不是又一个大模型，而是个「小而巧」的反例。Sapient Intelligence 发布的 HRM-Text 只有约 10 亿参数、训练成本约 1500 美元（16 张 H100、不到两天），却把一种叫「潜空间递归推理」（latent recursive reasoning）的架构推到了下一代推理模型讨论的正中央。\n\n它的反常识之处在于：不靠把推理过程「说出来」的显式思维链，而是在模型内部做多轮递归。架构分两层——高层模块 H 慢、管战略，低层模块 L 快、管执行，两个时间尺度在隐空间里反复推演，等想清楚了再出结果。\n\n小归小，分数不寒碜：MATH 56.2、GSM8K 84.5、ARC-Challenge 81.9、DROP 82.2。更能说明热度的是背书——HuggingFace 联合创始人兼 CEO Clem Delangue 亲自转发推荐；图灵奖得主 Yoshua Bengio 作为共同作者的新论文《Generative Recursive Reasoning》（GRAM 框架）也高度复用了 HRM 的骨架，等于把这条「在隐空间里递归地想」的路线往学术主线上又推了一把。\n\n当然 1B 模型的绝对能力有限，几个数学/常识基准也不等于通用推理。但它给行业的提醒很清楚：把算力堆在参数上不是唯一解，「让模型在隐空间里多想几轮」可能是另一条更省的路。",
-    "rank": 4,
-    "score": 3.64
-   },
-   {
     "layer": "business",
     "source": "Financial Times",
     "title": "KPMG 一份卖 AI 的报告，案例是编的：UBS、NHS 都否认，「二次幻觉」警报拉响",
@@ -133,7 +87,7 @@
     ],
     "take": "KPMG 一份劝客户拥抱 AI 的报告，自己先栽在 AI 上：里面 UBS、NHS、瑞士联邦铁路、伦敦交通局的「落地案例」全是编的，当事方一律否认。GPTZero 查出根因是「vibe citing」——引用全靠宽泛转述、查无原文；CEO Edward Tian 警告这种出自大牌机构的错误会形成「二次幻觉」反复扩散。",
     "readable": "这是个有点讽刺的故事：一家四大之一的 KPMG，发了份名为《Redefining excellence in the age of agentic AI》的报告，劝企业客户大胆上 AI，结果报告本身翻了车——里面列举的多个 AI 落地案例是编造的。\n\n被点名的机构分量不轻：UBS、英国 NHS、瑞士联邦铁路、伦敦交通局，全部出面否认有过报告所述的项目。问题由 AI 检测公司 GPTZero 查出，金融时报独立核实。根因被归为草率的「AI 检索式写作」：引用大多是宽泛转述，缺 URL、缺作者，有些干脆查无原文——GPTZero 给它起了个名字叫「vibe citing」（凭感觉引用）。\n\n比错误本身更值得警惕的是传播方式。GPTZero CEO Edward Tian 提出「二次幻觉」：这类错误因为出自受信任的咨询机构，会被人和 AI 系统反复采信、再加工、再扩散，公信力反而成了错误的加速器。目前 KPMG 已把报告从多个网站撤下。\n\n对正在用 AI 写报告、做尽调的团队，这是一记很实的警钟：模型敢「自信地编」，而越权威的出处，越容易让编出来的东西被当真。",
-    "rank": 5,
+    "rank": 3,
     "score": 3.52,
     "image": {
      "url": "https://storage.ghost.io/c/93/d8/93d84efe-2017-4168-9591-b749ab8330d5/content/images/size/w1200/2026/06/Printable-KPMG-Report-3-1.png",
@@ -158,7 +112,7 @@
     ],
     "take": "谷歌云推出 Open Knowledge Format（OKF），把组织里散落的知识统一成「Markdown + YAML 头」的可移植格式，专门喂给 AI agent。它只要求一个必填字段 type，用标准 Markdown 链接把概念连成知识图，等于把 Karpathy 带火的「LLM wiki」形式化为开放标准，不绑任何云厂商或框架。",
     "readable": "AI agent 落地时常卡在一个不性感但要命的环节：它要干活，得先把分散在元数据目录、wiki、代码注释、notebook、甚至工程师脑子里的知识拼起来——比如给某个数据集写 SQL，得四处找口径。谷歌云的 Open Knowledge Format（OKF）想给这件事定个标准。\n\nOKF 的形态很克制：把知识表示成一个目录的 Markdown 文件，每个文件带 YAML frontmatter，只有一个必填字段 type，其余 title、description、resource、tags、时间戳都可选；概念之间用标准 Markdown 链接互连，自然连成一张知识图。它把 Andrej Karpathy 近期带火的「LLM wiki」模式，正式做成了一个可互操作的规范。\n\n卖点是「不绑定」：OKF bundle 任意编辑器能读、GitHub 直接渲染，也不挑云厂商、数据库或 agent 框架。谷歌还附了参考实现——给 BigQuery 数据集做富化的 agent、一个静态 HTML 可视化器，以及 GA4 电商、Stack Overflow、比特币数据集的样例；规范和代码都已在 GitHub 开放。\n\n值得看的不是技术多深，而是方向：当「给 agent 喂上下文」成为刚需，谁能把知识的「装箱格式」标准化，谁就卡住了一个关键接口。OKF 故意做得极简、可移植，正是冲着「被广泛采用」去的。",
-    "rank": 6,
+    "rank": 4,
     "score": 3.4,
     "image": {
      "url": "https://storage.googleapis.com/gweb-cloudblog-publish/images/09_-_Data_Analytics_tFH57V6.max-2600x2600.jpg",
@@ -219,51 +173,6 @@
     }
    },
    {
-    "layer": "post-training",
-    "source": "Microsoft Research",
-    "title": "微软 SkillOpt：不动权重，只「训练」一个 Markdown 技能文件，就把 GPT-5.5 拉高 23 分",
-    "url": "https://arxiv.org/abs/2605.23904",
-    "links": {
-     "primary": "https://arxiv.org/abs/2605.23904",
-     "discussion": "https://the-decoder.com/microsofts-skillopt-boosts-gpt-5-5-by-using-nothing-but-a-trained-markdown-file/"
-    },
-    "facts": [
-     "SkillOpt 把指令文档（「skill」）当成可训练的外部状态：一个独立的优化器模型对 Markdown 文件提增删改，只有在留出验证集上变好才接受，并引入编辑预算、拒绝缓冲、按 epoch 巩固——把深度学习那套搬到纯文本层面。",
-     "在 GPT-5.5、六个基准的直接对话设置下平均提升约 23 分；格式严格、需工具调用的任务（如表格编辑）增益最大。",
-     "可跨模型迁移：大模型上训出的 skill 能提升同族小模型；一个表格 skill 原样搬进 Claude Code，效果追平在 Claude Code 里直接训的版本。",
-     "共测七个目标模型（含 GPT-5.5、Qwen3.5-4B），六个基准覆盖搜索/表格/文档分析/数学/具身动作。"
-    ],
-    "take": "SkillOpt 把「写提示词」变成了「训练一份 Markdown」：一个优化器模型反复增删改技能文档，只保留在验证集上变好的改动，整套流程照搬深度学习的验证集、编辑预算、按 epoch 巩固。结果不碰权重就把 GPT-5.5 在六个基准上平均抬高约 23 分，且训好的技能能跨模型迁移。",
-    "readable": "提示词工程一直被当成「手艺活」，靠人反复试。微软联合三所中国高校做的 SkillOpt 想把它变成「可训练」的工程：把给模型的指令文档（他们叫 skill）当作一份可训练的外部状态，不动模型权重，只优化那份纯 Markdown 文件。\n\n做法很像把深度学习搬到文本层面：一个独立的「优化器模型」对技能文档提增、删、改，每个改动只有在留出的验证集上表现更好才被接受；还设了编辑预算、拒绝缓冲、按 epoch 巩固这些机制，防止越改越乱。\n\n效果不小。在 GPT-5.5、六个基准的直接对话设置下，平均提升约 23 分；增益最大的是格式要求严、需要工具调用的任务，比如表格编辑。更有意思的是迁移性：在大模型上训出的技能能提升同族的小模型；一个在别处训好的表格技能，原样搬进 Claude Code 就能把它的表现拉到「在 Claude Code 里直接训」的同一水平。实验共覆盖七个目标模型（含 GPT-5.5、Qwen3.5-4B）、六个基准（搜索、表格、文档分析、数学、具身动作）。\n\n这条路线的诱人之处在于便宜且可移植——不需要微调、不碰权重，产出的还是人能读、能改的 Markdown。对手上有一堆 agent、想榨出更多能力又不想动模型的人，这是个很现实的工具。",
-    "rank": 3,
-    "score": 3.76,
-    "image": {
-     "url": "https://the-decoder.com/wp-content/uploads/2026/06/skillopt-markdown-neural-training-nano-banana-pro.jpg",
-     "credit": "the-decoder.com",
-     "source": "https://the-decoder.com/microsofts-skillopt-boosts-gpt-5-5-by-using-nothing-but-a-trained-markdown-file/"
-    }
-   },
-   {
-    "layer": "model",
-    "source": "Sapient Intelligence · 量子位",
-    "title": "1500 美元训出的 10 亿参数 HRM：把「潜空间递归推理」推上下一代架构的牌桌",
-    "url": "https://arxiv.org/abs/2605.20613",
-    "links": {
-     "primary": "https://arxiv.org/abs/2605.20613",
-     "discussion": "https://www.qbitai.com/2026/06/435483.html"
-    },
-    "facts": [
-     "HRM-Text 由 Sapient Intelligence 发布，约 1B 参数，训练成本约 1500 美元，16 张 H100 不到两天。",
-     "架构为「分层递归推理」：高层 H（慢，战略脑）+ 低层 L（快，执行脑），双时间尺度在隐空间内多轮内部推理，而非显式思维链。",
-     "成绩：MATH 56.2、GSM8K 84.5、ARC-Challenge 81.9、DROP 82.2。",
-     "HuggingFace CEO Clem Delangue 亲自转发；图灵奖得主 Bengio 参与的《Generative Recursive Reasoning》论文（GRAM 框架）高度复用 HRM 骨架。"
-    ],
-    "take": "一个约 1500 美元、10 亿参数、从零预训练的小模型 HRM，把「潜空间递归推理」顶到了下一代架构讨论的中心。它不靠显式思维链，而用高层慢、低层快的分层递归在隐空间里多轮内部推理；HuggingFace CEO 转发力荐，Bengio 参与的新论文也复用了它的骨架。",
-    "readable": "这次出圈的不是又一个大模型，而是个「小而巧」的反例。Sapient Intelligence 发布的 HRM-Text 只有约 10 亿参数、训练成本约 1500 美元（16 张 H100、不到两天），却把一种叫「潜空间递归推理」（latent recursive reasoning）的架构推到了下一代推理模型讨论的正中央。\n\n它的反常识之处在于：不靠把推理过程「说出来」的显式思维链，而是在模型内部做多轮递归。架构分两层——高层模块 H 慢、管战略，低层模块 L 快、管执行，两个时间尺度在隐空间里反复推演，等想清楚了再出结果。\n\n小归小，分数不寒碜：MATH 56.2、GSM8K 84.5、ARC-Challenge 81.9、DROP 82.2。更能说明热度的是背书——HuggingFace 联合创始人兼 CEO Clem Delangue 亲自转发推荐；图灵奖得主 Yoshua Bengio 作为共同作者的新论文《Generative Recursive Reasoning》（GRAM 框架）也高度复用了 HRM 的骨架，等于把这条「在隐空间里递归地想」的路线往学术主线上又推了一把。\n\n当然 1B 模型的绝对能力有限，几个数学/常识基准也不等于通用推理。但它给行业的提醒很清楚：把算力堆在参数上不是唯一解，「让模型在隐空间里多想几轮」可能是另一条更省的路。",
-    "rank": 4,
-    "score": 3.64
-   },
-   {
     "layer": "business",
     "source": "Financial Times",
     "title": "KPMG 一份卖 AI 的报告，案例是编的：UBS、NHS 都否认，「二次幻觉」警报拉响",
@@ -280,7 +189,7 @@
     ],
     "take": "KPMG 一份劝客户拥抱 AI 的报告，自己先栽在 AI 上：里面 UBS、NHS、瑞士联邦铁路、伦敦交通局的「落地案例」全是编的，当事方一律否认。GPTZero 查出根因是「vibe citing」——引用全靠宽泛转述、查无原文；CEO Edward Tian 警告这种出自大牌机构的错误会形成「二次幻觉」反复扩散。",
     "readable": "这是个有点讽刺的故事：一家四大之一的 KPMG，发了份名为《Redefining excellence in the age of agentic AI》的报告，劝企业客户大胆上 AI，结果报告本身翻了车——里面列举的多个 AI 落地案例是编造的。\n\n被点名的机构分量不轻：UBS、英国 NHS、瑞士联邦铁路、伦敦交通局，全部出面否认有过报告所述的项目。问题由 AI 检测公司 GPTZero 查出，金融时报独立核实。根因被归为草率的「AI 检索式写作」：引用大多是宽泛转述，缺 URL、缺作者，有些干脆查无原文——GPTZero 给它起了个名字叫「vibe citing」（凭感觉引用）。\n\n比错误本身更值得警惕的是传播方式。GPTZero CEO Edward Tian 提出「二次幻觉」：这类错误因为出自受信任的咨询机构，会被人和 AI 系统反复采信、再加工、再扩散，公信力反而成了错误的加速器。目前 KPMG 已把报告从多个网站撤下。\n\n对正在用 AI 写报告、做尽调的团队，这是一记很实的警钟：模型敢「自信地编」，而越权威的出处，越容易让编出来的东西被当真。",
-    "rank": 5,
+    "rank": 3,
     "score": 3.52,
     "image": {
      "url": "https://storage.ghost.io/c/93/d8/93d84efe-2017-4168-9591-b749ab8330d5/content/images/size/w1200/2026/06/Printable-KPMG-Report-3-1.png",
@@ -305,7 +214,7 @@
     ],
     "take": "谷歌云推出 Open Knowledge Format（OKF），把组织里散落的知识统一成「Markdown + YAML 头」的可移植格式，专门喂给 AI agent。它只要求一个必填字段 type，用标准 Markdown 链接把概念连成知识图，等于把 Karpathy 带火的「LLM wiki」形式化为开放标准，不绑任何云厂商或框架。",
     "readable": "AI agent 落地时常卡在一个不性感但要命的环节：它要干活，得先把分散在元数据目录、wiki、代码注释、notebook、甚至工程师脑子里的知识拼起来——比如给某个数据集写 SQL，得四处找口径。谷歌云的 Open Knowledge Format（OKF）想给这件事定个标准。\n\nOKF 的形态很克制：把知识表示成一个目录的 Markdown 文件，每个文件带 YAML frontmatter，只有一个必填字段 type，其余 title、description、resource、tags、时间戳都可选；概念之间用标准 Markdown 链接互连，自然连成一张知识图。它把 Andrej Karpathy 近期带火的「LLM wiki」模式，正式做成了一个可互操作的规范。\n\n卖点是「不绑定」：OKF bundle 任意编辑器能读、GitHub 直接渲染，也不挑云厂商、数据库或 agent 框架。谷歌还附了参考实现——给 BigQuery 数据集做富化的 agent、一个静态 HTML 可视化器，以及 GA4 电商、Stack Overflow、比特币数据集的样例；规范和代码都已在 GitHub 开放。\n\n值得看的不是技术多深，而是方向：当「给 agent 喂上下文」成为刚需，谁能把知识的「装箱格式」标准化，谁就卡住了一个关键接口。OKF 故意做得极简、可移植，正是冲着「被广泛采用」去的。",
-    "rank": 6,
+    "rank": 4,
     "score": 3.4,
     "image": {
      "url": "https://storage.googleapis.com/gweb-cloudblog-publish/images/09_-_Data_Analytics_tFH57V6.max-2600x2600.jpg",
@@ -326,7 +235,7 @@
      "厂商发布口径：深度研究任务上达到 Fable 级表现、成本约减半，部分任务用「专家小组（panels）」超过单模型 SOTA。"
     ],
     "take": "OpenRouter 发布 Fusion API，主打「组合模型」：让多模型小组（panels）协作而非单模型独大，宣称在深度研究任务上达到 Fable 级表现、成本减半，部分任务超过单模型 SOTA，口号是「AI 的未来是神经多样性」。属厂商发布口径，独立评测待补。",
-    "rank": 7,
+    "rank": 5,
     "score": 3.2,
     "image": {
      "url": "https://openrouter.ai/dynamic-og?pathname=default&amp;title=OpenRouter&amp;description=The+unified+interface+for+LLMs.+Find+the+best+models+%26+prices+for+your+prompts",
@@ -347,7 +256,7 @@
      "核心论点：任务时间跨度越长，安全与成功之间的代价（验证税）越大。"
     ],
     "take": "一篇 ACM CAIS 2026 论文指出，只看「任务完成」会误导——agent 可能一边完成任务一边违反安全/合规约束，应把结果分成「安全成功 / 不安全成功 / 失败」三类。作者称之为「验证税」：任务时间跨度越长，安全与成功之间的代价越大。",
-    "rank": 8,
+    "rank": 6,
     "score": 3.14
    },
    {
@@ -363,7 +272,7 @@
      "对比测试中把错误率砍掉一半，但方法仍有局限。"
     ],
     "take": "「Count Anything」号称首个能对任意图像计数的模型——从人群到显微镜下的细胞样本，只需一句文字提示。对比测试中把错误率砍掉一半，作者也坦承方法仍有局限。「数数」听着简单，对视觉模型其实是老大难。",
-    "rank": 9,
+    "rank": 7,
     "score": 3.08,
     "image": {
      "url": "https://the-decoder.com/wp-content/uploads/2026/06/count-anything-generated-image-nano-banana-pro.jpg",
@@ -384,7 +293,7 @@
      "数小时内白宫以出口管制令其下线——而亚马逊是 Anthropic 最大投资方之一。"
     ],
     "take": "据报道，亚马逊 CEO Andy Jassy 等六家公司高管向政府示警 Anthropic Fable 模型的安全漏洞，数小时内白宫以一纸出口管制令其下线——耐人寻味的是，亚马逊本身是 Anthropic 最大投资方之一。投资与监管立场的错位是看点。消息源为媒体报道。",
-    "rank": 10,
+    "rank": 8,
     "score": 3.02,
     "image": {
      "url": "https://the-decoder.com/wp-content/uploads/2026/06/white_house_claude-2.png",
@@ -405,7 +314,7 @@
      "在单目深度估计的 5 个基准里拿下 4 个 SOTA；Niels Rogge 转发力荐。"
     ],
     "take": "Modality Forcing 提出一种把文生图（T2I）模型后训练成 RGB-深度生成器的配方，在单目深度估计的 5 个基准里拿下 4 个 SOTA。给机器人/具身感知的「深度从哪来」提供了一条更省的路；Niels Rogge 转发力荐。",
-    "rank": 11,
+    "rank": 9,
     "score": 2.96,
     "image": {
      "url": "https://pbs.twimg.com/profile_images/1451191636810092553/kpM5Fe12_200x200.jpg",
@@ -425,7 +334,7 @@
      "混合架构：确定性流水线 + 模型；称在阿里规模下经过实战检验，开源免费。"
     ],
     "take": "阿里开源 open-code-review，一个「确定性流水线 + 模型」混合架构的代码审查工具，称在阿里内部规模下经过实战检验、免费可用，本周登上 OSS 趋势榜。又一个把 LLM 接进研发流水线的务实工具。",
-    "rank": 12,
+    "rank": 10,
     "score": 2.9,
     "image": {
      "url": "https://opengraph.githubassets.com/1/alibaba/open-code-review",
@@ -445,7 +354,7 @@
      "有分析指出，里约热内卢对外宣称「自研」的 LLM，实为对一个既有模型做的 merge。"
     ],
     "take": "有分析指出，里约热内卢对外宣称「自研」的 LLM，实为对一个既有开源模型做的 merge。又一例提醒：「自研大模型」的说法得看权重与训练证据，而不是发布稿上的措辞。",
-    "rank": 13,
+    "rank": 11,
     "score": 2.84
    }
   ],
@@ -1414,7 +1323,7 @@
  },
  "perspectives": {
   "technical": {
-   "lede": "技术看点在「少花钱办大事」的方法学：SkillOpt 不碰权重、只训一个 Markdown 就把 GPT-5.5 抬高约 23 分，HRM 用 1500 美元把潜空间递归推理推上桌；而 SWE-Explore 提醒，编程 agent 的瓶颈早从「找文件」转到了「抓准该改的行」。"
+   "lede": "技术看点在评测与系统：SWE-Explore 把编程 agent 的瓶颈从「找文件」拽到「抓准该改的行」（行级覆盖仅 14–19%）；微软 Mirage 把长镜头视频世界模型的空间一致性做进隐空间，顺手把算力与显存砍下来（提速 10×、省显存 55×）。"
   },
   "product": {
    "lede": "产品侧都在为 agent 落地补地基：Google 的 OKF 想把「喂给 agent 的知识」标准化成 Markdown+YAML，OpenRouter 用多模型小组拼出「组合模型」压成本，Count Anything 把「数数」做成通用能力。"
@@ -1505,51 +1414,6 @@
    }
   },
   {
-   "layer": "post-training",
-   "source": "Microsoft Research",
-   "title": "微软 SkillOpt：不动权重，只「训练」一个 Markdown 技能文件，就把 GPT-5.5 拉高 23 分",
-   "url": "https://arxiv.org/abs/2605.23904",
-   "links": {
-    "primary": "https://arxiv.org/abs/2605.23904",
-    "discussion": "https://the-decoder.com/microsofts-skillopt-boosts-gpt-5-5-by-using-nothing-but-a-trained-markdown-file/"
-   },
-   "facts": [
-    "SkillOpt 把指令文档（「skill」）当成可训练的外部状态：一个独立的优化器模型对 Markdown 文件提增删改，只有在留出验证集上变好才接受，并引入编辑预算、拒绝缓冲、按 epoch 巩固——把深度学习那套搬到纯文本层面。",
-    "在 GPT-5.5、六个基准的直接对话设置下平均提升约 23 分；格式严格、需工具调用的任务（如表格编辑）增益最大。",
-    "可跨模型迁移：大模型上训出的 skill 能提升同族小模型；一个表格 skill 原样搬进 Claude Code，效果追平在 Claude Code 里直接训的版本。",
-    "共测七个目标模型（含 GPT-5.5、Qwen3.5-4B），六个基准覆盖搜索/表格/文档分析/数学/具身动作。"
-   ],
-   "take": "SkillOpt 把「写提示词」变成了「训练一份 Markdown」：一个优化器模型反复增删改技能文档，只保留在验证集上变好的改动，整套流程照搬深度学习的验证集、编辑预算、按 epoch 巩固。结果不碰权重就把 GPT-5.5 在六个基准上平均抬高约 23 分，且训好的技能能跨模型迁移。",
-   "readable": "提示词工程一直被当成「手艺活」，靠人反复试。微软联合三所中国高校做的 SkillOpt 想把它变成「可训练」的工程：把给模型的指令文档（他们叫 skill）当作一份可训练的外部状态，不动模型权重，只优化那份纯 Markdown 文件。\n\n做法很像把深度学习搬到文本层面：一个独立的「优化器模型」对技能文档提增、删、改，每个改动只有在留出的验证集上表现更好才被接受；还设了编辑预算、拒绝缓冲、按 epoch 巩固这些机制，防止越改越乱。\n\n效果不小。在 GPT-5.5、六个基准的直接对话设置下，平均提升约 23 分；增益最大的是格式要求严、需要工具调用的任务，比如表格编辑。更有意思的是迁移性：在大模型上训出的技能能提升同族的小模型；一个在别处训好的表格技能，原样搬进 Claude Code 就能把它的表现拉到「在 Claude Code 里直接训」的同一水平。实验共覆盖七个目标模型（含 GPT-5.5、Qwen3.5-4B）、六个基准（搜索、表格、文档分析、数学、具身动作）。\n\n这条路线的诱人之处在于便宜且可移植——不需要微调、不碰权重，产出的还是人能读、能改的 Markdown。对手上有一堆 agent、想榨出更多能力又不想动模型的人，这是个很现实的工具。",
-   "rank": 3,
-   "score": 3.76,
-   "image": {
-    "url": "https://the-decoder.com/wp-content/uploads/2026/06/skillopt-markdown-neural-training-nano-banana-pro.jpg",
-    "credit": "the-decoder.com",
-    "source": "https://the-decoder.com/microsofts-skillopt-boosts-gpt-5-5-by-using-nothing-but-a-trained-markdown-file/"
-   }
-  },
-  {
-   "layer": "model",
-   "source": "Sapient Intelligence · 量子位",
-   "title": "1500 美元训出的 10 亿参数 HRM：把「潜空间递归推理」推上下一代架构的牌桌",
-   "url": "https://arxiv.org/abs/2605.20613",
-   "links": {
-    "primary": "https://arxiv.org/abs/2605.20613",
-    "discussion": "https://www.qbitai.com/2026/06/435483.html"
-   },
-   "facts": [
-    "HRM-Text 由 Sapient Intelligence 发布，约 1B 参数，训练成本约 1500 美元，16 张 H100 不到两天。",
-    "架构为「分层递归推理」：高层 H（慢，战略脑）+ 低层 L（快，执行脑），双时间尺度在隐空间内多轮内部推理，而非显式思维链。",
-    "成绩：MATH 56.2、GSM8K 84.5、ARC-Challenge 81.9、DROP 82.2。",
-    "HuggingFace CEO Clem Delangue 亲自转发；图灵奖得主 Bengio 参与的《Generative Recursive Reasoning》论文（GRAM 框架）高度复用 HRM 骨架。"
-   ],
-   "take": "一个约 1500 美元、10 亿参数、从零预训练的小模型 HRM，把「潜空间递归推理」顶到了下一代架构讨论的中心。它不靠显式思维链，而用高层慢、低层快的分层递归在隐空间里多轮内部推理；HuggingFace CEO 转发力荐，Bengio 参与的新论文也复用了它的骨架。",
-   "readable": "这次出圈的不是又一个大模型，而是个「小而巧」的反例。Sapient Intelligence 发布的 HRM-Text 只有约 10 亿参数、训练成本约 1500 美元（16 张 H100、不到两天），却把一种叫「潜空间递归推理」（latent recursive reasoning）的架构推到了下一代推理模型讨论的正中央。\n\n它的反常识之处在于：不靠把推理过程「说出来」的显式思维链，而是在模型内部做多轮递归。架构分两层——高层模块 H 慢、管战略，低层模块 L 快、管执行，两个时间尺度在隐空间里反复推演，等想清楚了再出结果。\n\n小归小，分数不寒碜：MATH 56.2、GSM8K 84.5、ARC-Challenge 81.9、DROP 82.2。更能说明热度的是背书——HuggingFace 联合创始人兼 CEO Clem Delangue 亲自转发推荐；图灵奖得主 Yoshua Bengio 作为共同作者的新论文《Generative Recursive Reasoning》（GRAM 框架）也高度复用了 HRM 的骨架，等于把这条「在隐空间里递归地想」的路线往学术主线上又推了一把。\n\n当然 1B 模型的绝对能力有限，几个数学/常识基准也不等于通用推理。但它给行业的提醒很清楚：把算力堆在参数上不是唯一解，「让模型在隐空间里多想几轮」可能是另一条更省的路。",
-   "rank": 4,
-   "score": 3.64
-  },
-  {
    "layer": "business",
    "source": "Financial Times",
    "title": "KPMG 一份卖 AI 的报告，案例是编的：UBS、NHS 都否认，「二次幻觉」警报拉响",
@@ -1566,7 +1430,7 @@
    ],
    "take": "KPMG 一份劝客户拥抱 AI 的报告，自己先栽在 AI 上：里面 UBS、NHS、瑞士联邦铁路、伦敦交通局的「落地案例」全是编的，当事方一律否认。GPTZero 查出根因是「vibe citing」——引用全靠宽泛转述、查无原文；CEO Edward Tian 警告这种出自大牌机构的错误会形成「二次幻觉」反复扩散。",
    "readable": "这是个有点讽刺的故事：一家四大之一的 KPMG，发了份名为《Redefining excellence in the age of agentic AI》的报告，劝企业客户大胆上 AI，结果报告本身翻了车——里面列举的多个 AI 落地案例是编造的。\n\n被点名的机构分量不轻：UBS、英国 NHS、瑞士联邦铁路、伦敦交通局，全部出面否认有过报告所述的项目。问题由 AI 检测公司 GPTZero 查出，金融时报独立核实。根因被归为草率的「AI 检索式写作」：引用大多是宽泛转述，缺 URL、缺作者，有些干脆查无原文——GPTZero 给它起了个名字叫「vibe citing」（凭感觉引用）。\n\n比错误本身更值得警惕的是传播方式。GPTZero CEO Edward Tian 提出「二次幻觉」：这类错误因为出自受信任的咨询机构，会被人和 AI 系统反复采信、再加工、再扩散，公信力反而成了错误的加速器。目前 KPMG 已把报告从多个网站撤下。\n\n对正在用 AI 写报告、做尽调的团队，这是一记很实的警钟：模型敢「自信地编」，而越权威的出处，越容易让编出来的东西被当真。",
-   "rank": 5,
+   "rank": 3,
    "score": 3.52,
    "image": {
     "url": "https://storage.ghost.io/c/93/d8/93d84efe-2017-4168-9591-b749ab8330d5/content/images/size/w1200/2026/06/Printable-KPMG-Report-3-1.png",
@@ -1591,7 +1455,7 @@
    ],
    "take": "谷歌云推出 Open Knowledge Format（OKF），把组织里散落的知识统一成「Markdown + YAML 头」的可移植格式，专门喂给 AI agent。它只要求一个必填字段 type，用标准 Markdown 链接把概念连成知识图，等于把 Karpathy 带火的「LLM wiki」形式化为开放标准，不绑任何云厂商或框架。",
    "readable": "AI agent 落地时常卡在一个不性感但要命的环节：它要干活，得先把分散在元数据目录、wiki、代码注释、notebook、甚至工程师脑子里的知识拼起来——比如给某个数据集写 SQL，得四处找口径。谷歌云的 Open Knowledge Format（OKF）想给这件事定个标准。\n\nOKF 的形态很克制：把知识表示成一个目录的 Markdown 文件，每个文件带 YAML frontmatter，只有一个必填字段 type，其余 title、description、resource、tags、时间戳都可选；概念之间用标准 Markdown 链接互连，自然连成一张知识图。它把 Andrej Karpathy 近期带火的「LLM wiki」模式，正式做成了一个可互操作的规范。\n\n卖点是「不绑定」：OKF bundle 任意编辑器能读、GitHub 直接渲染，也不挑云厂商、数据库或 agent 框架。谷歌还附了参考实现——给 BigQuery 数据集做富化的 agent、一个静态 HTML 可视化器，以及 GA4 电商、Stack Overflow、比特币数据集的样例；规范和代码都已在 GitHub 开放。\n\n值得看的不是技术多深，而是方向：当「给 agent 喂上下文」成为刚需，谁能把知识的「装箱格式」标准化，谁就卡住了一个关键接口。OKF 故意做得极简、可移植，正是冲着「被广泛采用」去的。",
-   "rank": 6,
+   "rank": 4,
    "score": 3.4,
    "image": {
     "url": "https://storage.googleapis.com/gweb-cloudblog-publish/images/09_-_Data_Analytics_tFH57V6.max-2600x2600.jpg",

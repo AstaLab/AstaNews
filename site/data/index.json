@@ -2,15 +2,14 @@
  "editions": [
   {
    "date": "2026-06-15",
-   "overview": "周一不靠大模型发布撑场，亮点几乎都在「巧劲」：微软 SkillOpt 不动权重、只「训练」一个 Markdown 技能文件就把 GPT-5.5 抬高约 23 分，1500 美元训出的 10 亿参数 HRM 把潜空间递归推理推上下一代架构的讨论，微软 Mirage 用隐空间「空间记忆」把长镜头视频世界模型提速 10 倍、省显存 55 倍。与此同时，评测在给 agent 去魅——SWE-Explore 发现编程 agent 能找对文件、却只覆盖 14–19% 该改的行；信任面则有 KPMG 卖 AI 的报告自曝编造案例。",
-   "selected": 6,
+   "overview": "周一不靠大模型发布撑场，几条硬料都在「给 agent 去魅」和「给落地补地基」：SWE-Explore 发现编程 agent 能找对文件、却只覆盖 14–19% 该改的行；微软 Mirage 用隐空间「空间记忆」把长镜头视频世界模型提速 10 倍、省显存 55 倍；谷歌云 OKF 想把「喂给 agent 的知识」标准化成 Markdown+YAML。信任面则有 KPMG 卖 AI 的报告自曝编造案例，「二次幻觉」警报拉响。",
+   "selected": 4,
    "layers": [
     "agent",
     "business",
     "devtool",
     "maas",
     "model",
-    "post-training",
     "product",
     "safety"
    ],

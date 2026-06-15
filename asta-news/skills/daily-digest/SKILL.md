@@ -68,6 +68,7 @@ uv run ${CLAUDE_PLUGIN_ROOT}/scripts/dedup.py --filter <candidates 路径>
 汇总各组推荐，按 `references/curation.md` 的 editor 准则做最终选择：
 
 1. 负向兴趣（profile.md）一票否决。
+1.5. **本体新鲜度一票否决**：一手源是论文/模型/发布时，看**本体**日期而非转载日期（arXiv ID 前缀=提交年月）。本体早于本期新鲜窗口、又无当日实质新进展的，不选——别被"今天才转载"骗。第 6 步的 check_freshness 会兜底审计。
 2. 同一事件多条 → 合并为一条，链接用官方一手源，社区讨论（HN/HF）作附注。
 3. 按 `scoring.weights` 加权分排序，选 `edition.default_items` 条（质量不足可更少；硬上限 `max_items`）。
 4. 校验约束：覆盖 ≥ `min_layers` 层、单层 ≤ `max_per_layer`、单源 ≤ `max_per_source`。不满足就用次优候选替换补足；补不足层数时减条数也要保住多样性。
@@ -97,7 +98,13 @@ uv run ${CLAUDE_PLUGIN_ROOT}/scripts/dedup.py --filter <candidates 路径>
 - `perspectives`: `{technical:{lede},product:{lede},business:{lede},research:{lede},embodied:{lede}}`（视角重排在前端按 perspectives.yaml 权重做，这里只给导语）。
 - 顶层 `selected` = tiers.group、`all_candidates` = tiers.full（向后兼容旧消费者）。
 - `schema_version: 2`。
-写到 run 目录后，先配图再发布：
+写到 run 目录后，先**审新鲜度**，再配图发布：
+
+```bash
+# 新鲜度审计：按 arXiv ID 判"本体"年龄，揪出"别人今天才转载的陈年论文"（退出码 3=有陈旧）
+uv run ${CLAUDE_PLUGIN_ROOT}/scripts/check_freshness.py --edition $DATA/runs/<today>/digest.json
+```
+若报 STALE：回到第 4 步把那几条**剔除或改挂更新的进展/一手源**（一篇三周前的论文不该当今日头条），重组 digest 后再过一遍审计为 0 才继续。然后配图发布：
 
 ```bash
 # 配图（橘鸦式"用图说话"：og:image / GitHub 社交预览 / HF 卡图；抓不到则前端用 layer 色兜底）
