@@ -1,0 +1,1049 @@
+{
+ "date": "2026-06-14",
+ "weekday": "周日",
+ "schema_version": 2,
+ "generated_at": "2026-06-14T01:00:00Z",
+ "headline": "下架令落地：Claude Fable 被实际关停，问责同日引爆",
+ "overview": "据报是亚马逊 CEO Andy Jassy 先把「Fable 可被越狱用于网络攻击」的隐患捅到白宫，才有了商务部周五 5 点后那纸出口管制指令，而 Anthropic 公开反驳称同样的能力其他公开模型也有。同一天，OpenAI 收到纽约等多州总检察长的传票，监管压力一并压向另一家前沿实验室。地缘层面，Meta 在北京勒令下开始拆解 20 亿美元收购的 Manus；KPMG 因报告里的 AI 幻觉被迫撤稿，再添一例「AI 写 AI 反被坑」。模型侧也有硬货：Epoch AI 实测 Fable 5 在 FrontierMath 最难档拿到 88 分、领先 GPT-5.5 十三分；一个 1500 美元训出的 1B 小模型 HRM-Text 把「分层递归推理」推到了讨论中心。",
+ "stats": {
+  "candidates": 32,
+  "sources_ok": 18,
+  "sources_failed": 0,
+  "layers_covered": [
+   "safety",
+   "business",
+   "model"
+  ],
+  "window": "[2026-06-13T01:00:00Z, 2026-06-14T01:00:00Z]",
+  "verified_fresh": 7
+ },
+ "tiers": {
+  "group": [
+   {
+    "layer": "safety",
+    "source": "Don't Worry About the Vase · Zvi Mowshowitz",
+    "title": "政府下架令实际落地：Anthropic 被迫全球关停 Claude Fable 5 与 Mythos 5",
+    "url": "https://thezvi.substack.com/p/american-government-takes-down-claude",
+    "links": {
+     "primary": "https://thezvi.substack.com/p/american-government-takes-down-claude"
+    },
+    "facts": [
+     "美国商务部以出口管制为由，发出指令禁止任何外国国民（含身处美国境内者、含 Anthropic 的外籍员工）访问 Fable 5 与 Mythos 5，实际效果是 Anthropic 必须对全部用户关停这两个模型。",
+     "指令在某个周五下午 5:21（ET）下达，Zvi 引用业内说法「下午 5 点后才宣布的政策没有好政策」。",
+     "导火索据称是亚马逊发现了绕过 Fable 护栏的越狱方法并上报白宫；政府要求 Anthropic 修复，Anthropic 认为该漏洞轻微、与竞品同类问题相当而未照办。",
+     "署名涉及商务部长 Howard Lutnick（发出指令）、David Sacks（代表政府表态）、Anthropic CEO Dario Amodei。其余 Anthropic 模型（含 Opus 4.8）不受影响。",
+     "Zvi 的判断：此次行动既缺乏对越狱与纵深防御的技术理解，又开了「国家直接控制 AI 模型上下线」的危险先例。"
+    ],
+    "readable": "如果说这个周六只有一条新闻绕不开，那就是政府下架令从「指令」变成了「现实」——Anthropic 已经被迫对全球用户关停了它最强的两个模型 Fable 5 和 Mythos 5。Zvi Mowshowitz 这篇复盘，把这件事的来龙去脉和荒诞之处拆得最清楚。\n\n指令本身的措辞很硬：美国商务部以出口管制为由，禁止任何外国国民——包括身处美国境内的人，甚至包括 Anthropic 自己的外籍员工——访问这两个模型。这条「禁止外国人用」的红线，实际效果是 Anthropic 不得不对所有客户一刀切关停，否则无法合规。指令在一个周五下午 5:21（美东时间）才下达，Zvi 借业内的老话调侃：「下午 5 点之后才宣布的政策，没有一条是好政策。」\n\n导火索同样耐人寻味。据称是亚马逊发现了一种能绕过 Fable 护栏的越狱（jailbreak）手法，并把它捅到了白宫；政府随即要求 Anthropic 修复，而 Anthropic 认为这个漏洞相当轻微、和竞品的同类问题没什么两样，没有照单全收。一边是最大投资方，一边推动监管把旗舰模型摁下线，立场错位本身就够戏剧性。署名其中的有商务部长 Howard Lutnick、代表政府发声的 David Sacks，以及 Anthropic CEO Dario Amodei；好在 Opus 4.8 等其它模型不受影响。\n\nZvi 的态度很明确：他认为这次行动既没真正理解越狱和纵深防御是怎么回事，又开了一个危险的先例——国家可以直接决定一个商业模型的上下线。对做前沿模型、也对做开源权重的人，这条信号很冷峻：当能力强到被当成战略资产，「发不发、对谁发」就不再只是实验室自己的事，而要先过政治这一关。",
+    "rank": 1,
+    "score": 4.12,
+    "scores": {
+     "novelty": 4,
+     "leading_edge": 4,
+     "impact": 5,
+     "cross_stack": 3
+    },
+    "image": {
+     "url": "https://substackcdn.com/image/fetch/$s_!zUeW!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F3eddfcdb-f90b-4176-bca6-8d5190c88342_1015x662.png",
+     "credit": "thezvi.substack.com",
+     "source": "https://thezvi.substack.com/p/american-government-takes-down-claude"
+    }
+   },
+   {
+    "layer": "business",
+    "source": "TechCrunch",
+    "title": "是谁按下了开关：亚马逊 CEO Jassy 据报先向政府示警 Fable 5 的越狱隐患",
+    "url": "https://techcrunch.com/2026/06/13/amazon-ceo-reportedly-raised-anthropic-model-concerns-before-government-crackdown/",
+    "links": {
+     "primary": "https://techcrunch.com/2026/06/13/amazon-ceo-reportedly-raised-anthropic-model-concerns-before-government-crackdown/"
+    },
+    "facts": [
+     "据 TechCrunch，亚马逊 CEO Andy Jassy 向财政部长 Scott Bessent 等政府官员通报：亚马逊研究人员发现 Claude Fable 5 可被利用来获取用于网络攻击的信息。",
+     "随后政府以出口管制为由，对 Fable 5 和 Mythos 5 下了全球访问禁令。",
+     "David Sacks（特朗普前任 AI 事务负责人）称「一个同时受 Anthropic 和美国政府高度信任的合作伙伴」拿出了越狱演示；政府要求 Anthropic 修复或下线，CEO Dario Amodei 据称拒绝。",
+     "亚马逊是 Anthropic 的主要投资方，投资承诺被报道为约 50 亿美元——示警方与最大金主是同一家。",
+     "Anthropic 回应称被指出的能力「在其它可公开访问的模型里也已经存在」。"
+    ],
+    "readable": "下架令落地后，最关键的追问是：到底是谁按下了那个开关？TechCrunch 的这篇报道给出了一个很有分量的指向——亚马逊 CEO Andy Jassy。\n\n报道称，Jassy 向财政部长 Scott Bessent 等政府官员通报，说亚马逊的研究人员发现 Claude Fable 5 可以被利用来获取用于发动网络攻击的信息。正是这条来自「自己人」的隐患示警，成了政府随后对 Fable 5、Mythos 5 下全球访问禁令的引线。David Sacks（特朗普政府前任 AI 事务负责人）的说法可以对上：他称「一个同时受 Anthropic 和美国政府高度信任的合作伙伴」拿出了越狱演示，政府据此要求 Anthropic 要么修复、要么下线，而 CEO Dario Amodei 据称拒绝了。\n\n这件事的微妙之处在于身份的错位。亚马逊不是旁观者，而是 Anthropic 的最大投资方之一——投资承诺被报道为约 50 亿美元。换句话说，把被投公司旗舰模型推下线的隐患示警，恰恰来自它最重要的金主。这种「投了钱又递了刀」的关系，让整件事远不止是一次普通的安全合规。\n\nAnthropic 的回应则是反驳口径：它表示被点名的那些能力「在其它可以公开访问的模型里也早已存在」，暗示单拿 Fable 开刀缺乏依据。无论最终事实如何，这条新闻把「政府为何突然出手」从猜测推进到了一个具体的触发链，也让人看清：在前沿模型这张桌子上，投资方、监管方和实验室的利益并不总是站在一边。",
+    "rank": 2,
+    "score": 3.8,
+    "scores": {
+     "novelty": 4,
+     "leading_edge": 3,
+     "impact": 4,
+     "cross_stack": 3
+    },
+    "image": {
+     "url": "https://techcrunch.com/wp-content/uploads/2022/07/GettyImages-1348139958.jpg?resize=1200,767",
+     "credit": "techcrunch.com",
+     "source": "https://techcrunch.com/2026/06/13/amazon-ceo-reportedly-raised-anthropic-model-concerns-before-government-crackdown/"
+    }
+   },
+   {
+    "layer": "model",
+    "source": "The Decoder",
+    "title": "Epoch AI 实测：Claude Fable 5 在 FrontierMath 最难档拿 88 分，领先 GPT-5.5 十三分",
+    "url": "https://the-decoder.com/claude-fable-5-outpaces-gpt-5-5-by-13-points-on-frontiermaths-toughest-problems/",
+    "links": {
+     "primary": "https://the-decoder.com/claude-fable-5-outpaces-gpt-5-5-by-13-points-on-frontiermaths-toughest-problems/"
+    },
+    "facts": [
+     "Claude Fable 5 在 FrontierMath 最难的 tier 4（v2）拿到 88% 准确率，在 tier 1-3 拿到 87%。",
+     "OpenAI 的 GPT-5.5 在同一 tier 4 约为 75%，Fable 5 领先约 13 分。",
+     "作为对照，Anthropic 上一代 Opus 4.5 在 2026 年初于 tier 4 的得分「低于 10%」。",
+     "评测由 Epoch AI 完成，使用其标准 scaffold 并开到最大推理强度（maximum reasoning effort）。",
+     "FrontierMath 是面向研究级数学难题、设计上极难被刷分的基准；tier 4 是其中最硬的一档。"
+    ],
+    "readable": "在治理风暴之外，模型能力本身也给了周六一条硬货：被政府下架的 Claude Fable 5，在数学推理上刚刚交出一份相当惊人的成绩单。对做评测和做推理模型的人，这条值得看——它落在 FrontierMath 这个公认最难刷分的研究级数学基准上。\n\nEpoch AI 用自家标准的 scaffold、开到最大推理强度跑出的结果是：Fable 5 在 FrontierMath 最难的 tier 4（v2 版）拿到 88% 准确率，在相对容易的 tier 1-3 拿到 87%；同档位上，OpenAI 的 GPT-5.5 大约是 75%，被 Fable 5 甩开约 13 分。FrontierMath 是专门用研究级难题设计、刻意难被数据污染刷高的基准，tier 4 又是其中最硬的一档，能上 80 分段本身就不寻常。\n\n更能说明速度的是纵向对比：就在 2026 年初，Anthropic 上一代旗舰 Opus 4.5 在同一个 tier 4 的得分还「低于 10%」。也就是说，不到半年，同门模型在最难数学档上的准确率从个位数跳到了接近 90%——这个曲线的陡峭程度，比单纯的「谁领先谁」更值得停下来想。\n\n当然要留一句保留：这是第三方 Epoch AI 的评测、用的是特定 scaffold 和最大推理预算，和日常调用的体感不能直接画等号；而且 Fable 5 此刻正被关停，普通用户暂时也用不上。但作为一个数据点，它说明前沿数学推理的进步并没有放缓——哪怕模型本身正卷在一场监管风暴里。",
+    "rank": 3,
+    "score": 3.64,
+    "scores": {
+     "novelty": 4,
+     "leading_edge": 4,
+     "impact": 3,
+     "cross_stack": 0
+    },
+    "image": {
+     "url": "https://the-decoder.com/wp-content/uploads/2025/12/ai_in_science_math.jpeg",
+     "credit": "the-decoder.com",
+     "source": "https://the-decoder.com/claude-fable-5-outpaces-gpt-5-5-by-13-points-on-frontiermaths-toughest-problems/"
+    }
+   },
+   {
+    "layer": "business",
+    "source": "TechCrunch",
+    "title": "北京勒令下，Meta 开始拆解 20 亿美元收购的 AI 公司 Manus",
+    "url": "https://techcrunch.com/2026/06/13/meta-reportedly-moves-to-unwind-2b-manus-deal-after-beijings-demand/",
+    "links": {
+     "primary": "https://techcrunch.com/2026/06/13/meta-reportedly-moves-to-unwind-2b-manus-deal-after-beijings-demand/"
+    },
+    "facts": [
+     "据 TechCrunch，Meta 已开始拆解其对 AI 创业公司 Manus 的 20 亿美元收购，起因是约两个月前（2026 年 4 月）北京监管方下令撤销该交易。",
+     "Manus 是一家凭病毒式 agent 演示走红的智能体公司，母公司 Butterfly Effect 有中国背景，团队曾于 2025 年中迁往新加坡；Meta 的收购于 2025 年 12 月宣布。",
+     "中国监管方援引「可能违反技术出口管制与外资规则」、以国家安全为由叫停交易。",
+     "Meta 已在操作层面切断内部系统访问、停止两家之间的数据共享，员工不能再用 Manus 工具做内部项目。",
+     "Manus 联创据报正在进行约 10 亿美元的初步融资洽谈，意图把公司买回来。"
+    ],
+    "readable": "AI 的地缘裂痕又添一例实锤：Meta 正在亲手拆掉自己 20 亿美元买下的 AI 公司 Manus，原因不在商业，而在北京的一纸命令。对关注跨境 AI 投资和 agent 赛道的人，这条很能说明当下的环境。\n\nManus 不是无名之辈——它凭一连串病毒式的 agent（智能体）演示走红，是过去一年最出圈的通用智能体创业公司之一。它的母公司 Butterfly Effect 有中国背景，团队曾在 2025 年中把人迁往新加坡，随后 Meta 在 2025 年 12 月宣布收购。但好景不长：大约两个月前（2026 年 4 月），中国监管方援引「可能违反技术出口管制与外资规则」、以国家安全为由，直接下令撤销这笔交易。\n\n如今 Meta 的「拆解」已经落到操作层面：切断 Manus 对内部系统的访问、停止两家公司之间的数据共享，员工也不能再用 Manus 的工具做内部项目。一桩高调收购，就这样被一步步往回拧。\n\n戏剧性的尾声是，Manus 的联合创始人据报正在洽谈约 10 亿美元的融资，想把公司从 Meta 手里买回来——绕一圈又回到原点。这件事的分量不在金额，而在它再次确认：在中美科技博弈下，一笔 AI 收购能不能成、能不能保住，越来越取决于两国监管而非买卖双方的意愿。对任何做跨境 AI 资本运作的人，这是必须算进去的变量。",
+    "rank": 4,
+    "score": 3.52,
+    "scores": {
+     "novelty": 4,
+     "leading_edge": 2,
+     "impact": 4,
+     "cross_stack": 3
+    },
+    "image": {
+     "url": "https://techcrunch.com/wp-content/uploads/2026/06/Meta-image.jpg?w=1024",
+     "credit": "techcrunch.com",
+     "source": "https://techcrunch.com/2026/06/13/meta-reportedly-moves-to-unwind-2b-manus-deal-after-beijings-demand/"
+    }
+   }
+  ],
+  "daily": [
+   {
+    "layer": "safety",
+    "source": "Don't Worry About the Vase · Zvi Mowshowitz",
+    "title": "政府下架令实际落地：Anthropic 被迫全球关停 Claude Fable 5 与 Mythos 5",
+    "url": "https://thezvi.substack.com/p/american-government-takes-down-claude",
+    "links": {
+     "primary": "https://thezvi.substack.com/p/american-government-takes-down-claude"
+    },
+    "facts": [
+     "美国商务部以出口管制为由，发出指令禁止任何外国国民（含身处美国境内者、含 Anthropic 的外籍员工）访问 Fable 5 与 Mythos 5，实际效果是 Anthropic 必须对全部用户关停这两个模型。",
+     "指令在某个周五下午 5:21（ET）下达，Zvi 引用业内说法「下午 5 点后才宣布的政策没有好政策」。",
+     "导火索据称是亚马逊发现了绕过 Fable 护栏的越狱方法并上报白宫；政府要求 Anthropic 修复，Anthropic 认为该漏洞轻微、与竞品同类问题相当而未照办。",
+     "署名涉及商务部长 Howard Lutnick（发出指令）、David Sacks（代表政府表态）、Anthropic CEO Dario Amodei。其余 Anthropic 模型（含 Opus 4.8）不受影响。",
+     "Zvi 的判断：此次行动既缺乏对越狱与纵深防御的技术理解，又开了「国家直接控制 AI 模型上下线」的危险先例。"
+    ],
+    "readable": "如果说这个周六只有一条新闻绕不开，那就是政府下架令从「指令」变成了「现实」——Anthropic 已经被迫对全球用户关停了它最强的两个模型 Fable 5 和 Mythos 5。Zvi Mowshowitz 这篇复盘，把这件事的来龙去脉和荒诞之处拆得最清楚。\n\n指令本身的措辞很硬：美国商务部以出口管制为由，禁止任何外国国民——包括身处美国境内的人，甚至包括 Anthropic 自己的外籍员工——访问这两个模型。这条「禁止外国人用」的红线，实际效果是 Anthropic 不得不对所有客户一刀切关停，否则无法合规。指令在一个周五下午 5:21（美东时间）才下达，Zvi 借业内的老话调侃：「下午 5 点之后才宣布的政策，没有一条是好政策。」\n\n导火索同样耐人寻味。据称是亚马逊发现了一种能绕过 Fable 护栏的越狱（jailbreak）手法，并把它捅到了白宫；政府随即要求 Anthropic 修复，而 Anthropic 认为这个漏洞相当轻微、和竞品的同类问题没什么两样，没有照单全收。一边是最大投资方，一边推动监管把旗舰模型摁下线，立场错位本身就够戏剧性。署名其中的有商务部长 Howard Lutnick、代表政府发声的 David Sacks，以及 Anthropic CEO Dario Amodei；好在 Opus 4.8 等其它模型不受影响。\n\nZvi 的态度很明确：他认为这次行动既没真正理解越狱和纵深防御是怎么回事，又开了一个危险的先例——国家可以直接决定一个商业模型的上下线。对做前沿模型、也对做开源权重的人，这条信号很冷峻：当能力强到被当成战略资产，「发不发、对谁发」就不再只是实验室自己的事，而要先过政治这一关。",
+    "rank": 1,
+    "score": 4.12,
+    "scores": {
+     "novelty": 4,
+     "leading_edge": 4,
+     "impact": 5,
+     "cross_stack": 3
+    },
+    "image": {
+     "url": "https://substackcdn.com/image/fetch/$s_!zUeW!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F3eddfcdb-f90b-4176-bca6-8d5190c88342_1015x662.png",
+     "credit": "thezvi.substack.com",
+     "source": "https://thezvi.substack.com/p/american-government-takes-down-claude"
+    }
+   },
+   {
+    "layer": "business",
+    "source": "TechCrunch",
+    "title": "是谁按下了开关：亚马逊 CEO Jassy 据报先向政府示警 Fable 5 的越狱隐患",
+    "url": "https://techcrunch.com/2026/06/13/amazon-ceo-reportedly-raised-anthropic-model-concerns-before-government-crackdown/",
+    "links": {
+     "primary": "https://techcrunch.com/2026/06/13/amazon-ceo-reportedly-raised-anthropic-model-concerns-before-government-crackdown/"
+    },
+    "facts": [
+     "据 TechCrunch，亚马逊 CEO Andy Jassy 向财政部长 Scott Bessent 等政府官员通报：亚马逊研究人员发现 Claude Fable 5 可被利用来获取用于网络攻击的信息。",
+     "随后政府以出口管制为由，对 Fable 5 和 Mythos 5 下了全球访问禁令。",
+     "David Sacks（特朗普前任 AI 事务负责人）称「一个同时受 Anthropic 和美国政府高度信任的合作伙伴」拿出了越狱演示；政府要求 Anthropic 修复或下线，CEO Dario Amodei 据称拒绝。",
+     "亚马逊是 Anthropic 的主要投资方，投资承诺被报道为约 50 亿美元——示警方与最大金主是同一家。",
+     "Anthropic 回应称被指出的能力「在其它可公开访问的模型里也已经存在」。"
+    ],
+    "readable": "下架令落地后，最关键的追问是：到底是谁按下了那个开关？TechCrunch 的这篇报道给出了一个很有分量的指向——亚马逊 CEO Andy Jassy。\n\n报道称，Jassy 向财政部长 Scott Bessent 等政府官员通报，说亚马逊的研究人员发现 Claude Fable 5 可以被利用来获取用于发动网络攻击的信息。正是这条来自「自己人」的隐患示警，成了政府随后对 Fable 5、Mythos 5 下全球访问禁令的引线。David Sacks（特朗普政府前任 AI 事务负责人）的说法可以对上：他称「一个同时受 Anthropic 和美国政府高度信任的合作伙伴」拿出了越狱演示，政府据此要求 Anthropic 要么修复、要么下线，而 CEO Dario Amodei 据称拒绝了。\n\n这件事的微妙之处在于身份的错位。亚马逊不是旁观者，而是 Anthropic 的最大投资方之一——投资承诺被报道为约 50 亿美元。换句话说，把被投公司旗舰模型推下线的隐患示警，恰恰来自它最重要的金主。这种「投了钱又递了刀」的关系，让整件事远不止是一次普通的安全合规。\n\nAnthropic 的回应则是反驳口径：它表示被点名的那些能力「在其它可以公开访问的模型里也早已存在」，暗示单拿 Fable 开刀缺乏依据。无论最终事实如何，这条新闻把「政府为何突然出手」从猜测推进到了一个具体的触发链，也让人看清：在前沿模型这张桌子上，投资方、监管方和实验室的利益并不总是站在一边。",
+    "rank": 2,
+    "score": 3.8,
+    "scores": {
+     "novelty": 4,
+     "leading_edge": 3,
+     "impact": 4,
+     "cross_stack": 3
+    },
+    "image": {
+     "url": "https://techcrunch.com/wp-content/uploads/2022/07/GettyImages-1348139958.jpg?resize=1200,767",
+     "credit": "techcrunch.com",
+     "source": "https://techcrunch.com/2026/06/13/amazon-ceo-reportedly-raised-anthropic-model-concerns-before-government-crackdown/"
+    }
+   },
+   {
+    "layer": "model",
+    "source": "The Decoder",
+    "title": "Epoch AI 实测：Claude Fable 5 在 FrontierMath 最难档拿 88 分，领先 GPT-5.5 十三分",
+    "url": "https://the-decoder.com/claude-fable-5-outpaces-gpt-5-5-by-13-points-on-frontiermaths-toughest-problems/",
+    "links": {
+     "primary": "https://the-decoder.com/claude-fable-5-outpaces-gpt-5-5-by-13-points-on-frontiermaths-toughest-problems/"
+    },
+    "facts": [
+     "Claude Fable 5 在 FrontierMath 最难的 tier 4（v2）拿到 88% 准确率，在 tier 1-3 拿到 87%。",
+     "OpenAI 的 GPT-5.5 在同一 tier 4 约为 75%，Fable 5 领先约 13 分。",
+     "作为对照，Anthropic 上一代 Opus 4.5 在 2026 年初于 tier 4 的得分「低于 10%」。",
+     "评测由 Epoch AI 完成，使用其标准 scaffold 并开到最大推理强度（maximum reasoning effort）。",
+     "FrontierMath 是面向研究级数学难题、设计上极难被刷分的基准；tier 4 是其中最硬的一档。"
+    ],
+    "readable": "在治理风暴之外，模型能力本身也给了周六一条硬货：被政府下架的 Claude Fable 5，在数学推理上刚刚交出一份相当惊人的成绩单。对做评测和做推理模型的人，这条值得看——它落在 FrontierMath 这个公认最难刷分的研究级数学基准上。\n\nEpoch AI 用自家标准的 scaffold、开到最大推理强度跑出的结果是：Fable 5 在 FrontierMath 最难的 tier 4（v2 版）拿到 88% 准确率，在相对容易的 tier 1-3 拿到 87%；同档位上，OpenAI 的 GPT-5.5 大约是 75%，被 Fable 5 甩开约 13 分。FrontierMath 是专门用研究级难题设计、刻意难被数据污染刷高的基准，tier 4 又是其中最硬的一档，能上 80 分段本身就不寻常。\n\n更能说明速度的是纵向对比：就在 2026 年初，Anthropic 上一代旗舰 Opus 4.5 在同一个 tier 4 的得分还「低于 10%」。也就是说，不到半年，同门模型在最难数学档上的准确率从个位数跳到了接近 90%——这个曲线的陡峭程度，比单纯的「谁领先谁」更值得停下来想。\n\n当然要留一句保留：这是第三方 Epoch AI 的评测、用的是特定 scaffold 和最大推理预算，和日常调用的体感不能直接画等号；而且 Fable 5 此刻正被关停，普通用户暂时也用不上。但作为一个数据点，它说明前沿数学推理的进步并没有放缓——哪怕模型本身正卷在一场监管风暴里。",
+    "rank": 3,
+    "score": 3.64,
+    "scores": {
+     "novelty": 4,
+     "leading_edge": 4,
+     "impact": 3,
+     "cross_stack": 0
+    },
+    "image": {
+     "url": "https://the-decoder.com/wp-content/uploads/2025/12/ai_in_science_math.jpeg",
+     "credit": "the-decoder.com",
+     "source": "https://the-decoder.com/claude-fable-5-outpaces-gpt-5-5-by-13-points-on-frontiermaths-toughest-problems/"
+    }
+   },
+   {
+    "layer": "business",
+    "source": "TechCrunch",
+    "title": "北京勒令下，Meta 开始拆解 20 亿美元收购的 AI 公司 Manus",
+    "url": "https://techcrunch.com/2026/06/13/meta-reportedly-moves-to-unwind-2b-manus-deal-after-beijings-demand/",
+    "links": {
+     "primary": "https://techcrunch.com/2026/06/13/meta-reportedly-moves-to-unwind-2b-manus-deal-after-beijings-demand/"
+    },
+    "facts": [
+     "据 TechCrunch，Meta 已开始拆解其对 AI 创业公司 Manus 的 20 亿美元收购，起因是约两个月前（2026 年 4 月）北京监管方下令撤销该交易。",
+     "Manus 是一家凭病毒式 agent 演示走红的智能体公司，母公司 Butterfly Effect 有中国背景，团队曾于 2025 年中迁往新加坡；Meta 的收购于 2025 年 12 月宣布。",
+     "中国监管方援引「可能违反技术出口管制与外资规则」、以国家安全为由叫停交易。",
+     "Meta 已在操作层面切断内部系统访问、停止两家之间的数据共享，员工不能再用 Manus 工具做内部项目。",
+     "Manus 联创据报正在进行约 10 亿美元的初步融资洽谈，意图把公司买回来。"
+    ],
+    "readable": "AI 的地缘裂痕又添一例实锤：Meta 正在亲手拆掉自己 20 亿美元买下的 AI 公司 Manus，原因不在商业，而在北京的一纸命令。对关注跨境 AI 投资和 agent 赛道的人，这条很能说明当下的环境。\n\nManus 不是无名之辈——它凭一连串病毒式的 agent（智能体）演示走红，是过去一年最出圈的通用智能体创业公司之一。它的母公司 Butterfly Effect 有中国背景，团队曾在 2025 年中把人迁往新加坡，随后 Meta 在 2025 年 12 月宣布收购。但好景不长：大约两个月前（2026 年 4 月），中国监管方援引「可能违反技术出口管制与外资规则」、以国家安全为由，直接下令撤销这笔交易。\n\n如今 Meta 的「拆解」已经落到操作层面：切断 Manus 对内部系统的访问、停止两家公司之间的数据共享，员工也不能再用 Manus 的工具做内部项目。一桩高调收购，就这样被一步步往回拧。\n\n戏剧性的尾声是，Manus 的联合创始人据报正在洽谈约 10 亿美元的融资，想把公司从 Meta 手里买回来——绕一圈又回到原点。这件事的分量不在金额，而在它再次确认：在中美科技博弈下，一笔 AI 收购能不能成、能不能保住，越来越取决于两国监管而非买卖双方的意愿。对任何做跨境 AI 资本运作的人，这是必须算进去的变量。",
+    "rank": 4,
+    "score": 3.52,
+    "scores": {
+     "novelty": 4,
+     "leading_edge": 2,
+     "impact": 4,
+     "cross_stack": 3
+    },
+    "image": {
+     "url": "https://techcrunch.com/wp-content/uploads/2026/06/Meta-image.jpg?w=1024",
+     "credit": "techcrunch.com",
+     "source": "https://techcrunch.com/2026/06/13/meta-reportedly-moves-to-unwind-2b-manus-deal-after-beijings-demand/"
+    }
+   },
+   {
+    "layer": "business",
+    "source": "TechCrunch",
+    "title": "监管压力扩散：OpenAI 收到纽约等多州总检察长传票",
+    "url": "https://techcrunch.com/2026/06/13/openai-faces-investigation-from-state-attorneys-general/",
+    "links": {
+     "primary": "https://techcrunch.com/2026/06/13/openai-faces-investigation-from-state-attorneys-general/"
+    },
+    "facts": [
+     "OpenAI 于周五（6/13）收到由纽约州总检察长送达、多州联合的传票（具体哪些州未披露）。",
+     "调查范围涵盖：广告政策、用户参与与留存、模型谄媚（sycophancy）、消费者与健康数据处理、对未成年人和老年人的对待方式。",
+     "OpenAI 发言人回应强调其年龄保护功能和面向 ChatGPT 的家长管控工具。",
+     "此前 6 月 1 日佛州总检察长 James Uthmeier 已对 OpenAI 及 CEO Sam Altman 提起诉讼，另有版权与 ChatGPT 相关诉讼在进行。"
+    ],
+    "take": "同一天里被监管盯上的不止 Anthropic。TechCrunch 报道，OpenAI 在 6/13 周五收到了由纽约州总检察长牵头、多州联合的传票，调查面铺得很广：广告政策、用户参与与留存、模型谄媚、消费者与健康数据处理，以及对未成年人和老年人的对待方式。OpenAI 的回应主打它的年龄保护和家长管控功能。把它和 6 月 1 日佛州对 OpenAI 及 Sam Altman 的诉讼放在一起看，信号很清楚：在 Anthropic 被联邦政府下架的同时，监管对前沿实验室的合规审视正从单点变成多线并进——产品怎么投放、数据怎么用、对脆弱用户怎么保护，都开始要面对州一级的问责。",
+    "rank": 5,
+    "score": 3.3,
+    "scores": {
+     "novelty": 3,
+     "leading_edge": 2,
+     "impact": 4,
+     "cross_stack": 2
+    }
+   },
+   {
+    "layer": "model",
+    "source": "量子位",
+    "title": "1500 美元训出的 1B 小模型 HRM-Text，把「分层递归推理」推到讨论中心",
+    "url": "https://www.qbitai.com/2026/06/435483.html",
+    "links": {
+     "primary": "https://www.qbitai.com/2026/06/435483.html"
+    },
+    "facts": [
+     "Sapient Intelligence 发布 HRM-Text：参数量约 1B，从零预训练，训练成本约 1500 美元（16 块 H100 跑不到两天）。",
+     "自报基准：MATH 56.2、GSM8K 84.5、ARC-Challenge 81.9、DROP 82.2；训练数据约 40B 去重 token（含采样约 60B），无 post-training、无 RLHF、不依赖显式思维链数据。",
+     "团队同步开放了论文、模型权重和预训练代码。",
+     "HuggingFace 联合创始人兼 CEO Clem Delangue 亲自转发推荐。",
+     "图灵奖得主 Yoshua Bengio 作为共同作者参与的新论文 GRAM（Generative Recursive Reasoning）在核心计算结构上复用了 HRM 的分层递归骨架（高层/低层状态、双时间尺度、多轮递归更新）。"
+    ],
+    "take": "在大模型「堆参数、堆数据」的默认叙事之外，量子位这篇报道把一个反常的小模型推到了台前。Sapient Intelligence 的 HRM-Text 只有约 1B 参数、从零预训练、成本约 1500 美元（16 块 H100 跑了不到两天），却拿出一组扎眼的自报成绩：MATH 56.2、GSM8K 84.5、ARC-Challenge 81.9、DROP 82.2，且无 post-training、无 RLHF、不依赖显式思维链，论文/权重/代码全开。看点不在「小」和「便宜」，而在那套分层递归推理架构——让模型开口前先在「脑子里」多轮递归想完，而非输出更长的思维链。这条路线已有背书：HuggingFace CEO Clem Delangue 转发，Bengio 共同参与的 GRAM 论文也复用了同样的分层递归骨架。要客观看，这些都是自报基准、需第三方未污染评测验证；但作为基础预训练阶段的架构探索，它问的是个更底层的问题：模型该背下整个世界，还是学会怎么思考与验证。",
+    "rank": 6,
+    "score": 3.24,
+    "scores": {
+     "novelty": 4,
+     "leading_edge": 3,
+     "impact": 3,
+     "cross_stack": 2
+    }
+   },
+   {
+    "layer": "business",
+    "source": "TechCrunch",
+    "title": "KPMG 因报告中的 AI 幻觉撤稿：又一例「用 AI 写 AI」反被坑",
+    "url": "https://techcrunch.com/2026/06/13/kpmg-pulls-report-on-ai-usage-due-to-apparent-hallucinations/",
+    "links": {
+     "primary": "https://techcrunch.com/2026/06/13/kpmg-pulls-report-on-ai-usage-due-to-apparent-hallucinations/"
+    },
+    "facts": [
+     "KPMG 撤回了 2025 年 10 月发布的报告《Redefining excellence in the age of agentic AI》，因其包含关于各机构 AI 使用情况的失实陈述。",
+     "研究机构 GPTZero 指出这些失实源于「AI 幻觉」——疑似 KPMG 用 AI 撰写了这份关于 AI 的报告。",
+     "被错误描述 AI 使用情况的机构包括 UBS、英国 NHS、瑞士联邦铁路、伦敦交通局，它们均称报告中相关说法不实或具误导性。",
+     "KPMG 回应称要求员工遵守负责任使用 AI 的准则，包括以人工审核校验内容、核实独立来源；原文未给出被伪造引用的具体数量。",
+     "文章提到近期 EY 也曾因一份含假脚注、AI 幻觉的报告撤稿，构成类似模式。"
+    ],
+    "take": "一条带点黑色幽默的合规事故：KPMG 撤回了它 2025 年 10 月发布的报告《Redefining excellence in the age of agentic AI》，因为里面对多家机构 AI 使用情况的描述是错的。研究机构 GPTZero 指出，这些失实来自「AI 幻觉」——也就是说，KPMG 疑似用 AI 写了这份「关于 AI」的报告，结果被 AI 编造的内容反咬一口。被错误点名的包括 UBS、英国 NHS、瑞士联邦铁路、伦敦交通局，它们都表示相关说法不实或误导。KPMG 的回应是重申「负责任使用 AI」的准则、强调要人工校验。原文没有给出被伪造引用的具体数量，但配上不久前 EY 因假脚注撤稿的先例，这条提醒很实在：在把生成式 AI 接进正式产出（报告、研报、对外材料）的流程里，最后那道人工核查不是可选项。",
+    "rank": 7,
+    "score": 3.0,
+    "scores": {
+     "novelty": 3,
+     "leading_edge": 1,
+     "impact": 3,
+     "cross_stack": 2
+    },
+    "image": {
+     "url": "https://techcrunch.com/wp-content/uploads/2026/06/GettyImages-2276519058.jpg?w=1024",
+     "credit": "techcrunch.com",
+     "source": "https://techcrunch.com/2026/06/13/kpmg-pulls-report-on-ai-usage-due-to-apparent-hallucinations/"
+    }
+   },
+   {
+    "layer": "safety",
+    "source": "AlignmentForum · Google DeepMind",
+    "title": "DeepMind 发现：Gemini 的安全属性主要来自预训练 + SFT，而非 RL",
+    "url": "https://www.alignmentforum.org/posts/nLrrYweeFxgXACSmS/sft-drives-gemini-s-safety-properties-1",
+    "links": {
+     "primary": "https://www.alignmentforum.org/posts/nLrrYweeFxgXACSmS/sft-drives-gemini-s-safety-properties-1"
+    },
+    "facts": [
+     "Google DeepMind 语言模型可解释性团队的研究更新（系列第三篇），作者含 Josh Engels、Arthur Conmy、bilalchughtai、Neel Nanda。",
+     "核心发现：Gemini 中大多数安全相关属性，似乎来自预训练 + SFT 的组合，而非 RL 等其它训练阶段。",
+     "实验：在仅经预训练的 Gemini 3.1 Pro 与 Gemini 3 Flash 上用 Gemini mixture 做 SFT，再与生产版本在多个安全基准上对比；SFT-only 与生产版本的结果「在各项评测上惊人地相似」。",
+     "涉及评测包括 ODCV、基于 Petri 的对齐评测、安全评测、reward hacking 环境，以及来自 AI Studio 的约 5 万条匿名免费层用户提示。",
+     "团队强调该结论未必推广到其它模型族，未来 Gemini 版本也可能变化。"
+    ],
+    "take": "DeepMind 可解释性团队这篇研究更新（系列第三篇，作者含 Josh Engels、Neel Nanda）抛出一个反直觉的发现：Gemini 里大多数与安全相关的属性，似乎主要来自预训练 + SFT 的组合，而不是 RL 这类后续训练阶段。他们的做法是，在仅经预训练的 Gemini 3.1 Pro、Gemini 3 Flash 上用 Gemini mixture 做 SFT，再拿这些 SFT-only 模型和生产版本在 ODCV、基于 Petri 的对齐评测、安全评测、reward hacking 环境等一批基准上比，结果两者「惊人地相似」——意味着 RL 阶段对这些安全属性的贡献没想象中大。团队很克制地强调这未必能推广到别的模型族、未来版本也可能变。但对做对齐和后训练的人，这个发现挑战了「安全主要靠 RLHF/RL 调出来」的直觉，提示该把更多注意力放回预训练与 SFT 这两步。",
+    "rank": 8,
+    "score": 3.0,
+    "scores": {
+     "novelty": 3,
+     "leading_edge": 3,
+     "impact": 3,
+     "cross_stack": 0
+    },
+    "image": {
+     "url": "https://res.cloudinary.com/lesswrong-2-0/image/upload/f_auto,q_auto/v1/mirroredImages/nLrrYweeFxgXACSmS/sdpb2cwxvmp49ky1tsnf",
+     "credit": "alignmentforum.org",
+     "source": "https://www.alignmentforum.org/posts/nLrrYweeFxgXACSmS/sft-drives-gemini-s-safety-properties-1"
+    }
+   }
+  ],
+  "full": [
+   {
+    "source": "Don't Worry About the Vase · Zvi Mowshowitz",
+    "layer": "safety",
+    "title": "政府下架令实际落地：Anthropic 被迫全球关停 Claude Fable 5 与 Mythos 5",
+    "url": "https://thezvi.substack.com/p/american-government-takes-down-claude",
+    "summary": "美国商务部以出口管制为由，禁止任何外国国民访问 Fable 5、Mythos 5，实际效果是 Anthropic 必须对全部用户关停这两个模型；指令在周五 5:21pm（ET）下达。导火索据称是亚马逊发现越狱手法并上报白宫，政府要求修复、Anthropic 认为漏洞轻微未照办。Zvi 认为此举既缺乏技术理解，又开了国家直接控制模型上下线的危险先例。其它模型（含 Opus 4.8）不受影响。",
+    "selected": true
+   },
+   {
+    "source": "TechCrunch",
+    "layer": "business",
+    "title": "是谁按下了开关：亚马逊 CEO Jassy 据报先向政府示警 Fable 5 的越狱隐患",
+    "url": "https://techcrunch.com/2026/06/13/amazon-ceo-reportedly-raised-anthropic-model-concerns-before-government-crackdown/",
+    "summary": "据 TechCrunch，亚马逊 CEO Andy Jassy 向财政部长 Scott Bessent 等官员通报 Fable 5 可被用于获取网络攻击信息，成为政府随后下全球访问禁令的引线。David Sacks 称一个同时受双方信任的合作伙伴拿出了越狱演示，政府要求修复或下线、Amodei 据称拒绝。亚马逊是 Anthropic 最大投资方之一（承诺约 50 亿美元），示警方即金主；Anthropic 回应称相关能力其它公开模型也有。",
+    "selected": true
+   },
+   {
+    "source": "The Decoder",
+    "layer": "model",
+    "title": "Epoch AI 实测：Claude Fable 5 在 FrontierMath 最难档拿 88 分，领先 GPT-5.5 十三分",
+    "url": "https://the-decoder.com/claude-fable-5-outpaces-gpt-5-5-by-13-points-on-frontiermaths-toughest-problems/",
+    "summary": "Epoch AI 用标准 scaffold、最大推理强度实测：Claude Fable 5 在 FrontierMath 最难的 tier 4（v2）拿 88%、tier 1-3 拿 87%，OpenAI GPT-5.5 在 tier 4 约 75%，领先约 13 分。对照之下 Opus 4.5 在 2026 年初于 tier 4 还低于 10%。FrontierMath 是刻意难被污染刷分的研究级数学基准，tier 4 最硬。属第三方评测、特定 scaffold，与日常体感不能直接画等号。",
+    "selected": true
+   },
+   {
+    "source": "TechCrunch",
+    "layer": "business",
+    "title": "北京勒令下，Meta 开始拆解 20 亿美元收购的 AI 公司 Manus",
+    "url": "https://techcrunch.com/2026/06/13/meta-reportedly-moves-to-unwind-2b-manus-deal-after-beijings-demand/",
+    "summary": "据 TechCrunch，Meta 开始拆解对 agent 公司 Manus 的 20 亿美元收购，起因是约 2026 年 4 月北京以国家安全、可能违反技术出口管制与外资规则为由下令撤销交易。Manus 母公司 Butterfly Effect 有中国背景、团队曾迁新加坡，收购于 2025 年 12 月宣布。Meta 已切断内部系统访问、停止数据共享；Manus 联创据报正洽谈约 10 亿美元融资想把公司买回。",
+    "selected": true
+   },
+   {
+    "source": "TechCrunch",
+    "layer": "business",
+    "title": "监管压力扩散：OpenAI 收到纽约等多州总检察长传票",
+    "url": "https://techcrunch.com/2026/06/13/openai-faces-investigation-from-state-attorneys-general/",
+    "summary": "OpenAI 于 6/13 周五收到纽约州总检察长牵头、多州联合的传票（具体哪些州未披露），调查涵盖广告政策、用户参与与留存、模型谄媚、消费者与健康数据处理、对未成年人和老年人的对待。OpenAI 强调其年龄保护与家长管控功能。此前 6 月 1 日佛州已对 OpenAI 及 Sam Altman 提起诉讼，监管审视正从单点变多线。",
+    "selected": true
+   },
+   {
+    "source": "量子位",
+    "layer": "model",
+    "title": "1500 美元训出的 1B 小模型 HRM-Text，把「分层递归推理」推到讨论中心",
+    "url": "https://www.qbitai.com/2026/06/435483.html",
+    "summary": "Sapient Intelligence 的 HRM-Text：约 1B 参数、从零预训练、约 1500 美元（16×H100 不到两天）。自报 MATH 56.2/GSM8K 84.5/ARC-Challenge 81.9/DROP 82.2，无 post-training/RLHF/显式思维链，论文权重代码全开。HuggingFace CEO Clem Delangue 转发，Bengio 共同参与的 GRAM 论文复用了同样的分层递归骨架。看点是「开口前先在脑子里递归想完」的架构路线；上述为自报基准，需第三方验证。",
+    "selected": true
+   },
+   {
+    "source": "TechCrunch",
+    "layer": "business",
+    "title": "KPMG 因报告中的 AI 幻觉撤稿：又一例「用 AI 写 AI」反被坑",
+    "url": "https://techcrunch.com/2026/06/13/kpmg-pulls-report-on-ai-usage-due-to-apparent-hallucinations/",
+    "summary": "KPMG 撤回 2025 年 10 月报告《Redefining excellence in the age of agentic AI》，因含对各机构 AI 使用情况的失实陈述。GPTZero 指出失实源于 AI 幻觉，即疑似用 AI 写了这份关于 AI 的报告。被错误点名的 UBS、英国 NHS、瑞士联邦铁路、伦敦交通局均称说法不实或误导。KPMG 重申负责任用 AI、强调人工校验；原文未给被伪造引用的具体数量。近期 EY 也曾因假脚注撤稿。",
+    "selected": true
+   },
+   {
+    "source": "AlignmentForum · Google DeepMind",
+    "layer": "safety",
+    "title": "DeepMind 发现：Gemini 的安全属性主要来自预训练 + SFT，而非 RL",
+    "url": "https://www.alignmentforum.org/posts/nLrrYweeFxgXACSmS/sft-drives-gemini-s-safety-properties-1",
+    "summary": "DeepMind 可解释性团队（系列第三篇，作者含 Josh Engels、Neel Nanda）发现：Gemini 多数安全相关属性似乎来自预训练 + SFT 的组合，而非 RL。在仅预训练的 Gemini 3.1 Pro/3 Flash 上做 SFT，与生产版本在 ODCV、基于 Petri 的对齐评测、安全评测、reward hacking 环境等基准上「惊人地相似」。团队强调未必推广到其它模型族。挑战了「安全主要靠 RL 调出来」的直觉。",
+    "selected": true
+   },
+   {
+    "source": "marktechpost",
+    "layer": "model",
+    "title": "Anthropic Disables Claude Fable 5 and Mythos 5 After US Government Order",
+    "url": "https://www.marktechpost.com/2026/06/13/anthropic-disables-claude-fable-5-and-mythos-5-after-us-government-order/",
+    "summary": "MarkTechPost 对下架事件的事实报道：Anthropic 在美国政府援引国家安全的出口管制指令后停用 Fable 5、Mythos 5，其余模型（含 Opus 4.8）仍可用。与本期 group 中的 Zvi 分析、TechCrunch 触发链报道同属一事件，作次要并入。",
+    "selected": false
+   },
+   {
+    "source": "TechCrunch",
+    "layer": "business",
+    "title": "Anthropic's safety warnings may have just backfired — the government has pulled the plug on its most powerful AI",
+    "url": "https://techcrunch.com/2026/06/12/anthropics-safety-warnings-may-have-just-backfired-the-government-has-pulled-the-plug-on-its-most-powerful-ai/",
+    "summary": "TechCrunch 的「安全示警反噬」框架报道：Anthropic 表态不认同「一个狭窄的潜在越狱就该召回一个服务数亿人的商业模型」。属同一下架事件的不同角度，与 group 内 Zvi/TechCrunch 触发链报道重叠，作次要。",
+    "selected": false
+   },
+   {
+    "source": "simonwillison",
+    "layer": "devtool",
+    "title": "Statement on the US government directive to suspend access to Fable 5 and Mythos 5",
+    "url": "https://simonwillison.net/2026/Jun/13/us-government-directive-to-suspend-access/#atom-everything",
+    "summary": "Simon Willison 转载并评论 Anthropic 关于政府指令的声明：政府于今日 5:21pm（ET）下达出口管制指令，未提供具体国安细节；Anthropic 称其审查显示所谓越狱只触及若干已知小漏洞、其它公开模型也能发现。属同一下架事件一手声明的转述，作次要。",
+    "selected": false
+   },
+   {
+    "source": "latent-space",
+    "layer": "agent",
+    "title": "[AINews] Fable and Mythos officially too dangerous to release",
+    "url": "https://www.latent.space/p/ainews-fable-and-mythos-officially",
+    "summary": "Latent Space AINews 对 Fable/Mythos 被判定「过于危险而不能发布」的综述。属同一下架事件的聚合报道，作次要。",
+    "selected": false
+   },
+   {
+    "source": "the-decoder",
+    "layer": "model",
+    "title": "Microsoft's SkillOpt boosts GPT-5.5 by using nothing but a trained Markdown file",
+    "url": "https://the-decoder.com/microsofts-skillopt-boosts-gpt-5-5-by-using-nothing-but-a-trained-markdown-file/",
+    "summary": "微软与三所中国高校提出 SkillOpt，用类似模型训练的原则优化 agent 的指令文档（skill），在六个基准上把 GPT-5.5 平均提升约 23 分，skill 可跨模型/环境（Codex、Claude Code）迁移。但论文 arXiv 编号 2605.23904 为 2026 年 5 月提交——本体早于本期窗口，今日仅为媒体转载，故不入选。",
+    "selected": false
+   },
+   {
+    "source": "the-decoder",
+    "layer": "model",
+    "title": "Google Research's Gemini-SQL2 tops text-to-SQL benchmarks by a wide margin",
+    "url": "https://the-decoder.com/google-researchs-gemini-sql2-tops-text-to-sql-benchmarks-by-a-wide-margin/",
+    "summary": "Google Research 的 Gemini-SQL2（基于 Gemini 3.1 Pro）在 BIRD text-to-SQL 基准上以 80.04% 准确率大幅领先 OpenAI、Anthropic。媒体 6/13 转载，本体属此前发布，作次要不入选以免与更早窗口重复。",
+    "selected": false
+   },
+   {
+    "source": "the-decoder",
+    "layer": "model",
+    "title": "New AI model called \"Count Anything\" does exactly what it says",
+    "url": "https://the-decoder.com/new-ai-model-called-count-anything-does-exactly-what-it-says-and-thats-harder-than-it-sounds/",
+    "summary": "「Count Anything」号称首个能用纯文本提示对任意图像（人群、显微细胞样本等）计数的模型，对比测试误差率减半，但在极密集目标和歧义术语上仍吃力。属媒体转述的研究成果，量化点有限，作次要不入选。",
+    "selected": false
+   },
+   {
+    "source": "the-decoder",
+    "layer": "business",
+    "title": "Microsoft CEO Satya Nadella admits he's a token-maxer, too: \"It's addictive\"",
+    "url": "https://the-decoder.com/microsoft-ceo-satya-nadella-admits-hes-a-token-maxer-too-its-addictive/",
+    "summary": "微软 CEO Satya Nadella 警告「token-maxing」（凡事都上最强模型），称前沿模型不该浪费在日常任务上、生产率边际收益要匹配 token 成本，但也承认自己「也是个 token-maxer，很上瘾」。属观点性表态，无实质新事件，作次要不入选。",
+    "selected": false
+   },
+   {
+    "source": "qbitai",
+    "layer": "embodied",
+    "title": "Agent 终于长出了身体：Jiuwen Symbiosis 背后的思考与实践",
+    "url": "https://www.qbitai.com/2026/06/435455.html",
+    "summary": "openJiuwen 社区开源面向 physical AI 的 Symbiosis（共生）架构，主打跨本体泛化、长程复合任务编排与故障定位，意在突破单一 VLA 模型技能固化、缺乏组合泛化的局限。偏架构理念与社区发布、量化指标有限，作雷达观察不入 group。",
+    "selected": false
+   },
+   {
+    "source": "qbitai",
+    "layer": "business",
+    "title": "2026 智源大会开幕：推动 AI、物理世界和生命科学「三体互动」",
+    "url": "https://www.qbitai.com/2026/06/435394.html",
+    "summary": "第八届北京智源大会开幕（6/12），聚焦世界模型、通用智能体、具身智能、AI 安全等方向；智源称累计开源模型超 200 个、全球下载超 10 亿次，并介绍研发中的悟界·Physis。属会议综述、本体在 6/12，作次要不入选。",
+    "selected": false
+   },
+   {
+    "source": "marktechpost",
+    "layer": "model",
+    "title": "Moonshot AI Releases Kimi K2.7-Code: Reporting +21.8% on Kimi Code Bench v2 Over K2.6",
+    "url": "https://www.marktechpost.com/2026/06/12/moonshot-ai-releases-kimi-k2-7-code-a-coding-model-reporting-21-8-on-kimi-code-bench-v2-over-k2-6/",
+    "summary": "Moonshot 以 Modified MIT 协议开源 Kimi K2.7-Code（基于 K2.6 的 agentic coding 模型，256K 上下文、推理 token 用量降约 30%），自报六个基准提升、KCB v2 +21.8%。本体发布日为 2026-06-12，早于本期窗口，故不入选。",
+    "selected": false
+   },
+   {
+    "source": "techcrunch-ai",
+    "layer": "business",
+    "title": "Andrew Yang thinks the next big startup opportunity is lowering the cost of living",
+    "url": "https://techcrunch.com/2026/06/12/andrew-yang-thinks-the-next-big-startup-opportunity-is-lowering-the-cost-of-living/",
+    "summary": "Andrew Yang 认为下一波创业机会在降低住房、食品、通信等生活成本。与 AI 全栈关联弱、本体在 6/12，不入选。",
+    "selected": false
+   },
+   {
+    "source": "qbitai",
+    "layer": "business",
+    "title": "马斯克远程敲钟穿了老黄的皮衣！SpaceX 员工集体穿上绿鞋",
+    "url": "https://www.qbitai.com/2026/06/435339.html",
+    "summary": "SpaceX 完成史上最大 IPO、马斯克成首位万亿美元富豪的花絮报道。与 AI 全栈关联弱、偏花边，且 SpaceX IPO 主线已在 6/15 期覆盖，不入选。",
+    "selected": false
+   },
+   {
+    "source": "simonwillison",
+    "layer": "devtool",
+    "title": "Publishing WASM wheels to PyPI for use with Pyodide",
+    "url": "https://simonwillison.net/2026/Jun/13/publishing-wasm-wheels/#atom-everything",
+    "summary": "Pyodide 314.0 起，按 PEP 783 可直接把为 Pyodide 构建的 WASM wheel 发布到 PyPI 并运行时安装，省去维护者自行托管 300+ 包的负担。属 Python 打包生态进展，与 AI 全栈关联弱，作次要不入选。",
+    "selected": false
+   },
+   {
+    "source": "simonwillison",
+    "layer": "devtool",
+    "title": "luau-wasm 0.1a0",
+    "url": "https://simonwillison.net/2026/Jun/13/luau-wasm/#atom-everything",
+    "summary": "Simon Willison 发布 luau-wasm 0.1a0，作为 Pyodide WASM wheel 发布到 PyPI 的演示项目。属个人小工具发布，不入选。",
+    "selected": false
+   },
+   {
+    "source": "simonwillison",
+    "layer": "devtool",
+    "title": "Mapping SQLite result columns back to their source table.column",
+    "url": "https://simonwillison.net/2026/Jun/13/sqlite-column-provenance/#atom-everything",
+    "summary": "Simon Willison 用 Claude Code（因 Fable 被美国政府封禁而改用 Opus 4.8）探索把任意 SQL 查询结果列映射回源 table.column 的几种方案（apsw、ctypes 调 sqlite3_column_table_name、解析 EXPLAIN）。属个人研究笔记，作次要不入选。",
+    "selected": false
+   },
+   {
+    "source": "hn-frontpage",
+    "layer": "product",
+    "title": "Show HN: Trace – Offline Mac meeting transcripts you can flag mid-call",
+    "url": "https://traceapp.info",
+    "summary": "Show HN：一款离线 Mac 会议转录工具，可在通话中即时标记。131 points/52 comments。属产品发布、AI 含量有限，作次要不入选。",
+    "selected": false
+   },
+   {
+    "source": "marktechpost",
+    "layer": "agent",
+    "title": "How to Build a QwenPaw Agent Workspace with Custom Skills, Model Providers, Console Access",
+    "url": "https://www.marktechpost.com/2026/06/13/how-to-build-a-qwenpaw-agent-workspace-with-custom-skills-model-providers-console-access-and-streaming-api-testing/",
+    "summary": "教程类：如何用 QwenPaw 搭建带自定义 skill、模型 provider、控制台访问与流式 API 测试的 agent 工作区。属操作教程、无新事件，不入选。",
+    "selected": false
+   },
+   {
+    "source": "marktechpost",
+    "layer": "model",
+    "title": "A Coding Implementation on Spatial Graph Neural Networks for Urban Function Inference",
+    "url": "https://www.marktechpost.com/2026/06/12/a-coding-implementation-on-spatial-graph-neural-networks-for-urban-function-inference-using-city2graph-osmnx-and-pytorch-geometric/",
+    "summary": "教程类：用 city2graph、OSMnx、PyTorch Geometric 构建空间图学习流水线、训练 GraphSAGE 预测 POI 类别。属操作教程、本体在 6/12，不入选。",
+    "selected": false
+   },
+   {
+    "source": "leiphone",
+    "layer": "business",
+    "title": "湖州超级五电工厂落地，零跑奔赴百万销量制造突围",
+    "url": "https://www.leiphone.com/category/transportation/Qf0Wvm27ZkWJU9M9.html",
+    "summary": "零跑湖州 50 万平方米超级五电工厂报道，主打电池/电驱等五大核心零部件全链路自制与 CTC 电池底盘一体化。属汽车制造业内容，与 AI 全栈关联弱，不入选。",
+    "selected": false
+   },
+   {
+    "source": "claude-code-releases",
+    "layer": "devtool",
+    "title": "claude-code v2.1.177",
+    "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.177",
+    "summary": "Claude Code v2.1.177 发布，release notes 为空（No content）。属常规小版本，无实质功能信息，不入选。",
+    "selected": false
+   },
+   {
+    "source": "x-swyx",
+    "layer": "agent",
+    "title": "RT Alex Atallah: OpenRouter Fusion API announcement",
+    "url": "https://x.com/swyx/status/2065893584528957877",
+    "summary": "转推：OpenRouter 发布 Fusion API，号称以一半成本达到 Fable 级深度研究表现。属转推/社交宣传、自报口径，不入选。",
+    "selected": false
+   },
+   {
+    "source": "x-_akhaliq",
+    "layer": "model",
+    "title": "RT Niels Rogge: Modality Forcing gets SOTA on monocular depth estimation",
+    "url": "https://x.com/_akhaliq/status/2065924377720295745",
+    "summary": "转推：Modality Forcing 在 5 个单目深度估计基准中的 4 个上取得 SOTA（论文 2606.13676）。属社交转推，作雷达观察、不入 group。",
+    "selected": false
+   },
+   {
+    "source": "x-_akhaliq",
+    "layer": "agent",
+    "title": "RT Peter Gostev: The only thing there is to do",
+    "url": "https://x.com/_akhaliq/status/2066151241026080852",
+    "summary": "纯社交转推、无实质信息，不入选。",
+    "selected": false
+   }
+  ]
+ },
+ "perspectives": {
+  "technical": {
+   "lede": "技术面这天的硬数据来自模型与对齐两侧：Epoch AI 实测 Fable 5 在 FrontierMath 最难 tier 4 拿 88%、领先 GPT-5.5 约 13 分，半年内从 Opus 4.5 的个位数跳到接近 90%；DeepMind 可解释性团队则发现 Gemini 的安全属性主要来自预训练 + SFT 而非 RL。"
+  },
+  "product": {
+   "lede": "产品/落地侧最直接的冲击是可用性：Fable 5 与 Mythos 5 被实际关停，依赖它们的产品被迫切换（Simon Willison 当天就把 Claude Code 从 Fable 换回 Opus 4.8）；Anthropic 其它模型不受影响。"
+  },
+  "business": {
+   "lede": "商业与地缘是今天的主轴：Anthropic 旗舰被联邦下架、亚马逊 CEO 被指是触发方，OpenAI 同日收到多州总检察长传票，Meta 在北京勒令下拆解 20 亿美元的 Manus 收购，KPMG 因 AI 幻觉撤稿——监管与地缘风险同时压向多家。"
+  },
+  "research": {
+   "lede": "研究面两条值得记：HRM-Text 用约 1500 美元、1B 参数验证「分层递归推理」路线（Bengio 共著的 GRAM 复用同一骨架），以及 DeepMind 关于 SFT 主导 Gemini 安全属性的发现——都在追问「能力与安全到底从哪一步来」。"
+  },
+  "embodied": {
+   "lede": "具身侧本期只有 openJiuwen 开源 Symbiosis 共生架构一条社区发布，量化指标有限，留作雷达观察，未入精选。"
+  }
+ },
+ "radar": [
+  {
+   "layer": "embodied",
+   "title": "openJiuwen 开源 Symbiosis 共生架构，面向 physical AI 的跨本体泛化",
+   "note": "偏架构理念与社区发布、缺量化指标，先放雷达观察后续是否有实测数据",
+   "link": "https://www.qbitai.com/2026/06/435455.html"
+  },
+  {
+   "layer": "model",
+   "title": "Modality Forcing 在 5 个单目深度估计基准中的 4 个上取 SOTA",
+   "note": "来自社交转推（论文 2606.13676），需核实一手评测后再考虑",
+   "link": "https://x.com/_akhaliq/status/2065924377720295745"
+  }
+ ],
+ "gaps": [
+  "本期覆盖 safety/business/model 三层；serving、infra、embodied 等层当天没有窗口内、可核实的一手实质进展，未硬凑。",
+  "the-decoder 的 SkillOpt（论文 arXiv 2605.23904，5 月提交）、Gemini-SQL2 等多为今日媒体转载、本体早于窗口，按新鲜度规则剔除。",
+  "x/swyx 等社交源多为转推（RT）宣传或自报口径，未作为一手事件采纳。"
+ ],
+ "selected": [
+  {
+   "layer": "safety",
+   "source": "Don't Worry About the Vase · Zvi Mowshowitz",
+   "title": "政府下架令实际落地：Anthropic 被迫全球关停 Claude Fable 5 与 Mythos 5",
+   "url": "https://thezvi.substack.com/p/american-government-takes-down-claude",
+   "links": {
+    "primary": "https://thezvi.substack.com/p/american-government-takes-down-claude"
+   },
+   "facts": [
+    "美国商务部以出口管制为由，发出指令禁止任何外国国民（含身处美国境内者、含 Anthropic 的外籍员工）访问 Fable 5 与 Mythos 5，实际效果是 Anthropic 必须对全部用户关停这两个模型。",
+    "指令在某个周五下午 5:21（ET）下达，Zvi 引用业内说法「下午 5 点后才宣布的政策没有好政策」。",
+    "导火索据称是亚马逊发现了绕过 Fable 护栏的越狱方法并上报白宫；政府要求 Anthropic 修复，Anthropic 认为该漏洞轻微、与竞品同类问题相当而未照办。",
+    "署名涉及商务部长 Howard Lutnick（发出指令）、David Sacks（代表政府表态）、Anthropic CEO Dario Amodei。其余 Anthropic 模型（含 Opus 4.8）不受影响。",
+    "Zvi 的判断：此次行动既缺乏对越狱与纵深防御的技术理解，又开了「国家直接控制 AI 模型上下线」的危险先例。"
+   ],
+   "readable": "如果说这个周六只有一条新闻绕不开，那就是政府下架令从「指令」变成了「现实」——Anthropic 已经被迫对全球用户关停了它最强的两个模型 Fable 5 和 Mythos 5。Zvi Mowshowitz 这篇复盘，把这件事的来龙去脉和荒诞之处拆得最清楚。\n\n指令本身的措辞很硬：美国商务部以出口管制为由，禁止任何外国国民——包括身处美国境内的人，甚至包括 Anthropic 自己的外籍员工——访问这两个模型。这条「禁止外国人用」的红线，实际效果是 Anthropic 不得不对所有客户一刀切关停，否则无法合规。指令在一个周五下午 5:21（美东时间）才下达，Zvi 借业内的老话调侃：「下午 5 点之后才宣布的政策，没有一条是好政策。」\n\n导火索同样耐人寻味。据称是亚马逊发现了一种能绕过 Fable 护栏的越狱（jailbreak）手法，并把它捅到了白宫；政府随即要求 Anthropic 修复，而 Anthropic 认为这个漏洞相当轻微、和竞品的同类问题没什么两样，没有照单全收。一边是最大投资方，一边推动监管把旗舰模型摁下线，立场错位本身就够戏剧性。署名其中的有商务部长 Howard Lutnick、代表政府发声的 David Sacks，以及 Anthropic CEO Dario Amodei；好在 Opus 4.8 等其它模型不受影响。\n\nZvi 的态度很明确：他认为这次行动既没真正理解越狱和纵深防御是怎么回事，又开了一个危险的先例——国家可以直接决定一个商业模型的上下线。对做前沿模型、也对做开源权重的人，这条信号很冷峻：当能力强到被当成战略资产，「发不发、对谁发」就不再只是实验室自己的事，而要先过政治这一关。",
+   "rank": 1,
+   "score": 4.12,
+   "scores": {
+    "novelty": 4,
+    "leading_edge": 4,
+    "impact": 5,
+    "cross_stack": 3
+   },
+   "image": {
+    "url": "https://substackcdn.com/image/fetch/$s_!zUeW!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F3eddfcdb-f90b-4176-bca6-8d5190c88342_1015x662.png",
+    "credit": "thezvi.substack.com",
+    "source": "https://thezvi.substack.com/p/american-government-takes-down-claude"
+   }
+  },
+  {
+   "layer": "business",
+   "source": "TechCrunch",
+   "title": "是谁按下了开关：亚马逊 CEO Jassy 据报先向政府示警 Fable 5 的越狱隐患",
+   "url": "https://techcrunch.com/2026/06/13/amazon-ceo-reportedly-raised-anthropic-model-concerns-before-government-crackdown/",
+   "links": {
+    "primary": "https://techcrunch.com/2026/06/13/amazon-ceo-reportedly-raised-anthropic-model-concerns-before-government-crackdown/"
+   },
+   "facts": [
+    "据 TechCrunch，亚马逊 CEO Andy Jassy 向财政部长 Scott Bessent 等政府官员通报：亚马逊研究人员发现 Claude Fable 5 可被利用来获取用于网络攻击的信息。",
+    "随后政府以出口管制为由，对 Fable 5 和 Mythos 5 下了全球访问禁令。",
+    "David Sacks（特朗普前任 AI 事务负责人）称「一个同时受 Anthropic 和美国政府高度信任的合作伙伴」拿出了越狱演示；政府要求 Anthropic 修复或下线，CEO Dario Amodei 据称拒绝。",
+    "亚马逊是 Anthropic 的主要投资方，投资承诺被报道为约 50 亿美元——示警方与最大金主是同一家。",
+    "Anthropic 回应称被指出的能力「在其它可公开访问的模型里也已经存在」。"
+   ],
+   "readable": "下架令落地后，最关键的追问是：到底是谁按下了那个开关？TechCrunch 的这篇报道给出了一个很有分量的指向——亚马逊 CEO Andy Jassy。\n\n报道称，Jassy 向财政部长 Scott Bessent 等政府官员通报，说亚马逊的研究人员发现 Claude Fable 5 可以被利用来获取用于发动网络攻击的信息。正是这条来自「自己人」的隐患示警，成了政府随后对 Fable 5、Mythos 5 下全球访问禁令的引线。David Sacks（特朗普政府前任 AI 事务负责人）的说法可以对上：他称「一个同时受 Anthropic 和美国政府高度信任的合作伙伴」拿出了越狱演示，政府据此要求 Anthropic 要么修复、要么下线，而 CEO Dario Amodei 据称拒绝了。\n\n这件事的微妙之处在于身份的错位。亚马逊不是旁观者，而是 Anthropic 的最大投资方之一——投资承诺被报道为约 50 亿美元。换句话说，把被投公司旗舰模型推下线的隐患示警，恰恰来自它最重要的金主。这种「投了钱又递了刀」的关系，让整件事远不止是一次普通的安全合规。\n\nAnthropic 的回应则是反驳口径：它表示被点名的那些能力「在其它可以公开访问的模型里也早已存在」，暗示单拿 Fable 开刀缺乏依据。无论最终事实如何，这条新闻把「政府为何突然出手」从猜测推进到了一个具体的触发链，也让人看清：在前沿模型这张桌子上，投资方、监管方和实验室的利益并不总是站在一边。",
+   "rank": 2,
+   "score": 3.8,
+   "scores": {
+    "novelty": 4,
+    "leading_edge": 3,
+    "impact": 4,
+    "cross_stack": 3
+   },
+   "image": {
+    "url": "https://techcrunch.com/wp-content/uploads/2022/07/GettyImages-1348139958.jpg?resize=1200,767",
+    "credit": "techcrunch.com",
+    "source": "https://techcrunch.com/2026/06/13/amazon-ceo-reportedly-raised-anthropic-model-concerns-before-government-crackdown/"
+   }
+  },
+  {
+   "layer": "model",
+   "source": "The Decoder",
+   "title": "Epoch AI 实测：Claude Fable 5 在 FrontierMath 最难档拿 88 分，领先 GPT-5.5 十三分",
+   "url": "https://the-decoder.com/claude-fable-5-outpaces-gpt-5-5-by-13-points-on-frontiermaths-toughest-problems/",
+   "links": {
+    "primary": "https://the-decoder.com/claude-fable-5-outpaces-gpt-5-5-by-13-points-on-frontiermaths-toughest-problems/"
+   },
+   "facts": [
+    "Claude Fable 5 在 FrontierMath 最难的 tier 4（v2）拿到 88% 准确率，在 tier 1-3 拿到 87%。",
+    "OpenAI 的 GPT-5.5 在同一 tier 4 约为 75%，Fable 5 领先约 13 分。",
+    "作为对照，Anthropic 上一代 Opus 4.5 在 2026 年初于 tier 4 的得分「低于 10%」。",
+    "评测由 Epoch AI 完成，使用其标准 scaffold 并开到最大推理强度（maximum reasoning effort）。",
+    "FrontierMath 是面向研究级数学难题、设计上极难被刷分的基准；tier 4 是其中最硬的一档。"
+   ],
+   "readable": "在治理风暴之外，模型能力本身也给了周六一条硬货：被政府下架的 Claude Fable 5，在数学推理上刚刚交出一份相当惊人的成绩单。对做评测和做推理模型的人，这条值得看——它落在 FrontierMath 这个公认最难刷分的研究级数学基准上。\n\nEpoch AI 用自家标准的 scaffold、开到最大推理强度跑出的结果是：Fable 5 在 FrontierMath 最难的 tier 4（v2 版）拿到 88% 准确率，在相对容易的 tier 1-3 拿到 87%；同档位上，OpenAI 的 GPT-5.5 大约是 75%，被 Fable 5 甩开约 13 分。FrontierMath 是专门用研究级难题设计、刻意难被数据污染刷高的基准，tier 4 又是其中最硬的一档，能上 80 分段本身就不寻常。\n\n更能说明速度的是纵向对比：就在 2026 年初，Anthropic 上一代旗舰 Opus 4.5 在同一个 tier 4 的得分还「低于 10%」。也就是说，不到半年，同门模型在最难数学档上的准确率从个位数跳到了接近 90%——这个曲线的陡峭程度，比单纯的「谁领先谁」更值得停下来想。\n\n当然要留一句保留：这是第三方 Epoch AI 的评测、用的是特定 scaffold 和最大推理预算，和日常调用的体感不能直接画等号；而且 Fable 5 此刻正被关停，普通用户暂时也用不上。但作为一个数据点，它说明前沿数学推理的进步并没有放缓——哪怕模型本身正卷在一场监管风暴里。",
+   "rank": 3,
+   "score": 3.64,
+   "scores": {
+    "novelty": 4,
+    "leading_edge": 4,
+    "impact": 3,
+    "cross_stack": 0
+   },
+   "image": {
+    "url": "https://the-decoder.com/wp-content/uploads/2025/12/ai_in_science_math.jpeg",
+    "credit": "the-decoder.com",
+    "source": "https://the-decoder.com/claude-fable-5-outpaces-gpt-5-5-by-13-points-on-frontiermaths-toughest-problems/"
+   }
+  },
+  {
+   "layer": "business",
+   "source": "TechCrunch",
+   "title": "北京勒令下，Meta 开始拆解 20 亿美元收购的 AI 公司 Manus",
+   "url": "https://techcrunch.com/2026/06/13/meta-reportedly-moves-to-unwind-2b-manus-deal-after-beijings-demand/",
+   "links": {
+    "primary": "https://techcrunch.com/2026/06/13/meta-reportedly-moves-to-unwind-2b-manus-deal-after-beijings-demand/"
+   },
+   "facts": [
+    "据 TechCrunch，Meta 已开始拆解其对 AI 创业公司 Manus 的 20 亿美元收购，起因是约两个月前（2026 年 4 月）北京监管方下令撤销该交易。",
+    "Manus 是一家凭病毒式 agent 演示走红的智能体公司，母公司 Butterfly Effect 有中国背景，团队曾于 2025 年中迁往新加坡；Meta 的收购于 2025 年 12 月宣布。",
+    "中国监管方援引「可能违反技术出口管制与外资规则」、以国家安全为由叫停交易。",
+    "Meta 已在操作层面切断内部系统访问、停止两家之间的数据共享，员工不能再用 Manus 工具做内部项目。",
+    "Manus 联创据报正在进行约 10 亿美元的初步融资洽谈，意图把公司买回来。"
+   ],
+   "readable": "AI 的地缘裂痕又添一例实锤：Meta 正在亲手拆掉自己 20 亿美元买下的 AI 公司 Manus，原因不在商业，而在北京的一纸命令。对关注跨境 AI 投资和 agent 赛道的人，这条很能说明当下的环境。\n\nManus 不是无名之辈——它凭一连串病毒式的 agent（智能体）演示走红，是过去一年最出圈的通用智能体创业公司之一。它的母公司 Butterfly Effect 有中国背景，团队曾在 2025 年中把人迁往新加坡，随后 Meta 在 2025 年 12 月宣布收购。但好景不长：大约两个月前（2026 年 4 月），中国监管方援引「可能违反技术出口管制与外资规则」、以国家安全为由，直接下令撤销这笔交易。\n\n如今 Meta 的「拆解」已经落到操作层面：切断 Manus 对内部系统的访问、停止两家公司之间的数据共享，员工也不能再用 Manus 的工具做内部项目。一桩高调收购，就这样被一步步往回拧。\n\n戏剧性的尾声是，Manus 的联合创始人据报正在洽谈约 10 亿美元的融资，想把公司从 Meta 手里买回来——绕一圈又回到原点。这件事的分量不在金额，而在它再次确认：在中美科技博弈下，一笔 AI 收购能不能成、能不能保住，越来越取决于两国监管而非买卖双方的意愿。对任何做跨境 AI 资本运作的人，这是必须算进去的变量。",
+   "rank": 4,
+   "score": 3.52,
+   "scores": {
+    "novelty": 4,
+    "leading_edge": 2,
+    "impact": 4,
+    "cross_stack": 3
+   },
+   "image": {
+    "url": "https://techcrunch.com/wp-content/uploads/2026/06/Meta-image.jpg?w=1024",
+    "credit": "techcrunch.com",
+    "source": "https://techcrunch.com/2026/06/13/meta-reportedly-moves-to-unwind-2b-manus-deal-after-beijings-demand/"
+   }
+  }
+ ],
+ "all_candidates": [
+  {
+   "source": "Don't Worry About the Vase · Zvi Mowshowitz",
+   "layer": "safety",
+   "title": "政府下架令实际落地：Anthropic 被迫全球关停 Claude Fable 5 与 Mythos 5",
+   "url": "https://thezvi.substack.com/p/american-government-takes-down-claude",
+   "summary": "美国商务部以出口管制为由，禁止任何外国国民访问 Fable 5、Mythos 5，实际效果是 Anthropic 必须对全部用户关停这两个模型；指令在周五 5:21pm（ET）下达。导火索据称是亚马逊发现越狱手法并上报白宫，政府要求修复、Anthropic 认为漏洞轻微未照办。Zvi 认为此举既缺乏技术理解，又开了国家直接控制模型上下线的危险先例。其它模型（含 Opus 4.8）不受影响。",
+   "selected": true
+  },
+  {
+   "source": "TechCrunch",
+   "layer": "business",
+   "title": "是谁按下了开关：亚马逊 CEO Jassy 据报先向政府示警 Fable 5 的越狱隐患",
+   "url": "https://techcrunch.com/2026/06/13/amazon-ceo-reportedly-raised-anthropic-model-concerns-before-government-crackdown/",
+   "summary": "据 TechCrunch，亚马逊 CEO Andy Jassy 向财政部长 Scott Bessent 等官员通报 Fable 5 可被用于获取网络攻击信息，成为政府随后下全球访问禁令的引线。David Sacks 称一个同时受双方信任的合作伙伴拿出了越狱演示，政府要求修复或下线、Amodei 据称拒绝。亚马逊是 Anthropic 最大投资方之一（承诺约 50 亿美元），示警方即金主；Anthropic 回应称相关能力其它公开模型也有。",
+   "selected": true
+  },
+  {
+   "source": "The Decoder",
+   "layer": "model",
+   "title": "Epoch AI 实测：Claude Fable 5 在 FrontierMath 最难档拿 88 分，领先 GPT-5.5 十三分",
+   "url": "https://the-decoder.com/claude-fable-5-outpaces-gpt-5-5-by-13-points-on-frontiermaths-toughest-problems/",
+   "summary": "Epoch AI 用标准 scaffold、最大推理强度实测：Claude Fable 5 在 FrontierMath 最难的 tier 4（v2）拿 88%、tier 1-3 拿 87%，OpenAI GPT-5.5 在 tier 4 约 75%，领先约 13 分。对照之下 Opus 4.5 在 2026 年初于 tier 4 还低于 10%。FrontierMath 是刻意难被污染刷分的研究级数学基准，tier 4 最硬。属第三方评测、特定 scaffold，与日常体感不能直接画等号。",
+   "selected": true
+  },
+  {
+   "source": "TechCrunch",
+   "layer": "business",
+   "title": "北京勒令下，Meta 开始拆解 20 亿美元收购的 AI 公司 Manus",
+   "url": "https://techcrunch.com/2026/06/13/meta-reportedly-moves-to-unwind-2b-manus-deal-after-beijings-demand/",
+   "summary": "据 TechCrunch，Meta 开始拆解对 agent 公司 Manus 的 20 亿美元收购，起因是约 2026 年 4 月北京以国家安全、可能违反技术出口管制与外资规则为由下令撤销交易。Manus 母公司 Butterfly Effect 有中国背景、团队曾迁新加坡，收购于 2025 年 12 月宣布。Meta 已切断内部系统访问、停止数据共享；Manus 联创据报正洽谈约 10 亿美元融资想把公司买回。",
+   "selected": true
+  },
+  {
+   "source": "TechCrunch",
+   "layer": "business",
+   "title": "监管压力扩散：OpenAI 收到纽约等多州总检察长传票",
+   "url": "https://techcrunch.com/2026/06/13/openai-faces-investigation-from-state-attorneys-general/",
+   "summary": "OpenAI 于 6/13 周五收到纽约州总检察长牵头、多州联合的传票（具体哪些州未披露），调查涵盖广告政策、用户参与与留存、模型谄媚、消费者与健康数据处理、对未成年人和老年人的对待。OpenAI 强调其年龄保护与家长管控功能。此前 6 月 1 日佛州已对 OpenAI 及 Sam Altman 提起诉讼，监管审视正从单点变多线。",
+   "selected": true
+  },
+  {
+   "source": "量子位",
+   "layer": "model",
+   "title": "1500 美元训出的 1B 小模型 HRM-Text，把「分层递归推理」推到讨论中心",
+   "url": "https://www.qbitai.com/2026/06/435483.html",
+   "summary": "Sapient Intelligence 的 HRM-Text：约 1B 参数、从零预训练、约 1500 美元（16×H100 不到两天）。自报 MATH 56.2/GSM8K 84.5/ARC-Challenge 81.9/DROP 82.2，无 post-training/RLHF/显式思维链，论文权重代码全开。HuggingFace CEO Clem Delangue 转发，Bengio 共同参与的 GRAM 论文复用了同样的分层递归骨架。看点是「开口前先在脑子里递归想完」的架构路线；上述为自报基准，需第三方验证。",
+   "selected": true
+  },
+  {
+   "source": "TechCrunch",
+   "layer": "business",
+   "title": "KPMG 因报告中的 AI 幻觉撤稿：又一例「用 AI 写 AI」反被坑",
+   "url": "https://techcrunch.com/2026/06/13/kpmg-pulls-report-on-ai-usage-due-to-apparent-hallucinations/",
+   "summary": "KPMG 撤回 2025 年 10 月报告《Redefining excellence in the age of agentic AI》，因含对各机构 AI 使用情况的失实陈述。GPTZero 指出失实源于 AI 幻觉，即疑似用 AI 写了这份关于 AI 的报告。被错误点名的 UBS、英国 NHS、瑞士联邦铁路、伦敦交通局均称说法不实或误导。KPMG 重申负责任用 AI、强调人工校验；原文未给被伪造引用的具体数量。近期 EY 也曾因假脚注撤稿。",
+   "selected": true
+  },
+  {
+   "source": "AlignmentForum · Google DeepMind",
+   "layer": "safety",
+   "title": "DeepMind 发现：Gemini 的安全属性主要来自预训练 + SFT，而非 RL",
+   "url": "https://www.alignmentforum.org/posts/nLrrYweeFxgXACSmS/sft-drives-gemini-s-safety-properties-1",
+   "summary": "DeepMind 可解释性团队（系列第三篇，作者含 Josh Engels、Neel Nanda）发现：Gemini 多数安全相关属性似乎来自预训练 + SFT 的组合，而非 RL。在仅预训练的 Gemini 3.1 Pro/3 Flash 上做 SFT，与生产版本在 ODCV、基于 Petri 的对齐评测、安全评测、reward hacking 环境等基准上「惊人地相似」。团队强调未必推广到其它模型族。挑战了「安全主要靠 RL 调出来」的直觉。",
+   "selected": true
+  },
+  {
+   "source": "marktechpost",
+   "layer": "model",
+   "title": "Anthropic Disables Claude Fable 5 and Mythos 5 After US Government Order",
+   "url": "https://www.marktechpost.com/2026/06/13/anthropic-disables-claude-fable-5-and-mythos-5-after-us-government-order/",
+   "summary": "MarkTechPost 对下架事件的事实报道：Anthropic 在美国政府援引国家安全的出口管制指令后停用 Fable 5、Mythos 5，其余模型（含 Opus 4.8）仍可用。与本期 group 中的 Zvi 分析、TechCrunch 触发链报道同属一事件，作次要并入。",
+   "selected": false
+  },
+  {
+   "source": "TechCrunch",
+   "layer": "business",
+   "title": "Anthropic's safety warnings may have just backfired — the government has pulled the plug on its most powerful AI",
+   "url": "https://techcrunch.com/2026/06/12/anthropics-safety-warnings-may-have-just-backfired-the-government-has-pulled-the-plug-on-its-most-powerful-ai/",
+   "summary": "TechCrunch 的「安全示警反噬」框架报道：Anthropic 表态不认同「一个狭窄的潜在越狱就该召回一个服务数亿人的商业模型」。属同一下架事件的不同角度，与 group 内 Zvi/TechCrunch 触发链报道重叠，作次要。",
+   "selected": false
+  },
+  {
+   "source": "simonwillison",
+   "layer": "devtool",
+   "title": "Statement on the US government directive to suspend access to Fable 5 and Mythos 5",
+   "url": "https://simonwillison.net/2026/Jun/13/us-government-directive-to-suspend-access/#atom-everything",
+   "summary": "Simon Willison 转载并评论 Anthropic 关于政府指令的声明：政府于今日 5:21pm（ET）下达出口管制指令，未提供具体国安细节；Anthropic 称其审查显示所谓越狱只触及若干已知小漏洞、其它公开模型也能发现。属同一下架事件一手声明的转述，作次要。",
+   "selected": false
+  },
+  {
+   "source": "latent-space",
+   "layer": "agent",
+   "title": "[AINews] Fable and Mythos officially too dangerous to release",
+   "url": "https://www.latent.space/p/ainews-fable-and-mythos-officially",
+   "summary": "Latent Space AINews 对 Fable/Mythos 被判定「过于危险而不能发布」的综述。属同一下架事件的聚合报道，作次要。",
+   "selected": false
+  },
+  {
+   "source": "the-decoder",
+   "layer": "model",
+   "title": "Microsoft's SkillOpt boosts GPT-5.5 by using nothing but a trained Markdown file",
+   "url": "https://the-decoder.com/microsofts-skillopt-boosts-gpt-5-5-by-using-nothing-but-a-trained-markdown-file/",
+   "summary": "微软与三所中国高校提出 SkillOpt，用类似模型训练的原则优化 agent 的指令文档（skill），在六个基准上把 GPT-5.5 平均提升约 23 分，skill 可跨模型/环境（Codex、Claude Code）迁移。但论文 arXiv 编号 2605.23904 为 2026 年 5 月提交——本体早于本期窗口，今日仅为媒体转载，故不入选。",
+   "selected": false
+  },
+  {
+   "source": "the-decoder",
+   "layer": "model",
+   "title": "Google Research's Gemini-SQL2 tops text-to-SQL benchmarks by a wide margin",
+   "url": "https://the-decoder.com/google-researchs-gemini-sql2-tops-text-to-sql-benchmarks-by-a-wide-margin/",
+   "summary": "Google Research 的 Gemini-SQL2（基于 Gemini 3.1 Pro）在 BIRD text-to-SQL 基准上以 80.04% 准确率大幅领先 OpenAI、Anthropic。媒体 6/13 转载，本体属此前发布，作次要不入选以免与更早窗口重复。",
+   "selected": false
+  },
+  {
+   "source": "the-decoder",
+   "layer": "model",
+   "title": "New AI model called \"Count Anything\" does exactly what it says",
+   "url": "https://the-decoder.com/new-ai-model-called-count-anything-does-exactly-what-it-says-and-thats-harder-than-it-sounds/",
+   "summary": "「Count Anything」号称首个能用纯文本提示对任意图像（人群、显微细胞样本等）计数的模型，对比测试误差率减半，但在极密集目标和歧义术语上仍吃力。属媒体转述的研究成果，量化点有限，作次要不入选。",
+   "selected": false
+  },
+  {
+   "source": "the-decoder",
+   "layer": "business",
+   "title": "Microsoft CEO Satya Nadella admits he's a token-maxer, too: \"It's addictive\"",
+   "url": "https://the-decoder.com/microsoft-ceo-satya-nadella-admits-hes-a-token-maxer-too-its-addictive/",
+   "summary": "微软 CEO Satya Nadella 警告「token-maxing」（凡事都上最强模型），称前沿模型不该浪费在日常任务上、生产率边际收益要匹配 token 成本，但也承认自己「也是个 token-maxer，很上瘾」。属观点性表态，无实质新事件，作次要不入选。",
+   "selected": false
+  },
+  {
+   "source": "qbitai",
+   "layer": "embodied",
+   "title": "Agent 终于长出了身体：Jiuwen Symbiosis 背后的思考与实践",
+   "url": "https://www.qbitai.com/2026/06/435455.html",
+   "summary": "openJiuwen 社区开源面向 physical AI 的 Symbiosis（共生）架构，主打跨本体泛化、长程复合任务编排与故障定位，意在突破单一 VLA 模型技能固化、缺乏组合泛化的局限。偏架构理念与社区发布、量化指标有限，作雷达观察不入 group。",
+   "selected": false
+  },
+  {
+   "source": "qbitai",
+   "layer": "business",
+   "title": "2026 智源大会开幕：推动 AI、物理世界和生命科学「三体互动」",
+   "url": "https://www.qbitai.com/2026/06/435394.html",
+   "summary": "第八届北京智源大会开幕（6/12），聚焦世界模型、通用智能体、具身智能、AI 安全等方向；智源称累计开源模型超 200 个、全球下载超 10 亿次，并介绍研发中的悟界·Physis。属会议综述、本体在 6/12，作次要不入选。",
+   "selected": false
+  },
+  {
+   "source": "marktechpost",
+   "layer": "model",
+   "title": "Moonshot AI Releases Kimi K2.7-Code: Reporting +21.8% on Kimi Code Bench v2 Over K2.6",
+   "url": "https://www.marktechpost.com/2026/06/12/moonshot-ai-releases-kimi-k2-7-code-a-coding-model-reporting-21-8-on-kimi-code-bench-v2-over-k2-6/",
+   "summary": "Moonshot 以 Modified MIT 协议开源 Kimi K2.7-Code（基于 K2.6 的 agentic coding 模型，256K 上下文、推理 token 用量降约 30%），自报六个基准提升、KCB v2 +21.8%。本体发布日为 2026-06-12，早于本期窗口，故不入选。",
+   "selected": false
+  },
+  {
+   "source": "techcrunch-ai",
+   "layer": "business",
+   "title": "Andrew Yang thinks the next big startup opportunity is lowering the cost of living",
+   "url": "https://techcrunch.com/2026/06/12/andrew-yang-thinks-the-next-big-startup-opportunity-is-lowering-the-cost-of-living/",
+   "summary": "Andrew Yang 认为下一波创业机会在降低住房、食品、通信等生活成本。与 AI 全栈关联弱、本体在 6/12，不入选。",
+   "selected": false
+  },
+  {
+   "source": "qbitai",
+   "layer": "business",
+   "title": "马斯克远程敲钟穿了老黄的皮衣！SpaceX 员工集体穿上绿鞋",
+   "url": "https://www.qbitai.com/2026/06/435339.html",
+   "summary": "SpaceX 完成史上最大 IPO、马斯克成首位万亿美元富豪的花絮报道。与 AI 全栈关联弱、偏花边，且 SpaceX IPO 主线已在 6/15 期覆盖，不入选。",
+   "selected": false
+  },
+  {
+   "source": "simonwillison",
+   "layer": "devtool",
+   "title": "Publishing WASM wheels to PyPI for use with Pyodide",
+   "url": "https://simonwillison.net/2026/Jun/13/publishing-wasm-wheels/#atom-everything",
+   "summary": "Pyodide 314.0 起，按 PEP 783 可直接把为 Pyodide 构建的 WASM wheel 发布到 PyPI 并运行时安装，省去维护者自行托管 300+ 包的负担。属 Python 打包生态进展，与 AI 全栈关联弱，作次要不入选。",
+   "selected": false
+  },
+  {
+   "source": "simonwillison",
+   "layer": "devtool",
+   "title": "luau-wasm 0.1a0",
+   "url": "https://simonwillison.net/2026/Jun/13/luau-wasm/#atom-everything",
+   "summary": "Simon Willison 发布 luau-wasm 0.1a0，作为 Pyodide WASM wheel 发布到 PyPI 的演示项目。属个人小工具发布，不入选。",
+   "selected": false
+  },
+  {
+   "source": "simonwillison",
+   "layer": "devtool",
+   "title": "Mapping SQLite result columns back to their source table.column",
+   "url": "https://simonwillison.net/2026/Jun/13/sqlite-column-provenance/#atom-everything",
+   "summary": "Simon Willison 用 Claude Code（因 Fable 被美国政府封禁而改用 Opus 4.8）探索把任意 SQL 查询结果列映射回源 table.column 的几种方案（apsw、ctypes 调 sqlite3_column_table_name、解析 EXPLAIN）。属个人研究笔记，作次要不入选。",
+   "selected": false
+  },
+  {
+   "source": "hn-frontpage",
+   "layer": "product",
+   "title": "Show HN: Trace – Offline Mac meeting transcripts you can flag mid-call",
+   "url": "https://traceapp.info",
+   "summary": "Show HN：一款离线 Mac 会议转录工具，可在通话中即时标记。131 points/52 comments。属产品发布、AI 含量有限，作次要不入选。",
+   "selected": false
+  },
+  {
+   "source": "marktechpost",
+   "layer": "agent",
+   "title": "How to Build a QwenPaw Agent Workspace with Custom Skills, Model Providers, Console Access",
+   "url": "https://www.marktechpost.com/2026/06/13/how-to-build-a-qwenpaw-agent-workspace-with-custom-skills-model-providers-console-access-and-streaming-api-testing/",
+   "summary": "教程类：如何用 QwenPaw 搭建带自定义 skill、模型 provider、控制台访问与流式 API 测试的 agent 工作区。属操作教程、无新事件，不入选。",
+   "selected": false
+  },
+  {
+   "source": "marktechpost",
+   "layer": "model",
+   "title": "A Coding Implementation on Spatial Graph Neural Networks for Urban Function Inference",
+   "url": "https://www.marktechpost.com/2026/06/12/a-coding-implementation-on-spatial-graph-neural-networks-for-urban-function-inference-using-city2graph-osmnx-and-pytorch-geometric/",
+   "summary": "教程类：用 city2graph、OSMnx、PyTorch Geometric 构建空间图学习流水线、训练 GraphSAGE 预测 POI 类别。属操作教程、本体在 6/12，不入选。",
+   "selected": false
+  },
+  {
+   "source": "leiphone",
+   "layer": "business",
+   "title": "湖州超级五电工厂落地，零跑奔赴百万销量制造突围",
+   "url": "https://www.leiphone.com/category/transportation/Qf0Wvm27ZkWJU9M9.html",
+   "summary": "零跑湖州 50 万平方米超级五电工厂报道，主打电池/电驱等五大核心零部件全链路自制与 CTC 电池底盘一体化。属汽车制造业内容，与 AI 全栈关联弱，不入选。",
+   "selected": false
+  },
+  {
+   "source": "claude-code-releases",
+   "layer": "devtool",
+   "title": "claude-code v2.1.177",
+   "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.177",
+   "summary": "Claude Code v2.1.177 发布，release notes 为空（No content）。属常规小版本，无实质功能信息，不入选。",
+   "selected": false
+  },
+  {
+   "source": "x-swyx",
+   "layer": "agent",
+   "title": "RT Alex Atallah: OpenRouter Fusion API announcement",
+   "url": "https://x.com/swyx/status/2065893584528957877",
+   "summary": "转推：OpenRouter 发布 Fusion API，号称以一半成本达到 Fable 级深度研究表现。属转推/社交宣传、自报口径，不入选。",
+   "selected": false
+  },
+  {
+   "source": "x-_akhaliq",
+   "layer": "model",
+   "title": "RT Niels Rogge: Modality Forcing gets SOTA on monocular depth estimation",
+   "url": "https://x.com/_akhaliq/status/2065924377720295745",
+   "summary": "转推：Modality Forcing 在 5 个单目深度估计基准中的 4 个上取得 SOTA（论文 2606.13676）。属社交转推，作雷达观察、不入 group。",
+   "selected": false
+  },
+  {
+   "source": "x-_akhaliq",
+   "layer": "agent",
+   "title": "RT Peter Gostev: The only thing there is to do",
+   "url": "https://x.com/_akhaliq/status/2066151241026080852",
+   "summary": "纯社交转推、无实质信息，不入选。",
+   "selected": false
+  }
+ ]
+}

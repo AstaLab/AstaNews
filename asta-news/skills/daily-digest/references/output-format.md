@@ -26,8 +26,8 @@ item 可选 `image`: `{url, credit, source}`（配图，见 enrich-images skill 
 {
   "date": "2026-06-12",
   "weekday": "星期五",
-  "headline": "标题（≤20 字，抓主线）",
-  "overview": "一句话当日总览：今天的主线是什么",
+  "headline": "新闻标题（≤20 字，抓主线；不是流程说明）",
+  "overview": "给读者的当日导语：今天的主线是什么。只讲新闻，禁止出现条数/窗口/'剔除旧论文'等策展过程话术",
   "stats": {"candidates": 483, "sources_ok": 25, "sources_failed": 2,
             "layers_covered": ["model", "embodied", "safety", "devtool", "agent"]},
   "selected": [
