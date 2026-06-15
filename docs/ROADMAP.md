@@ -156,7 +156,9 @@ group  : 目标 5（上限 8），最严，微信群发
 - ✅ **前端·用户vs内部**（2026-06-14，按用户反馈）逐页用浏览器以普通用户身份审查，清掉 UI 上「给自己看」的内容：删「编者按·今日未覆盖」流水线日志(429/抓取失败/人工读)、相关&搜索去掉原始相似度分数、删「全部 134」原始候选计数、关于页/页脚改读者口吻(去 脚本/agent/embedding/GitHub Actions/微信群发 术语)、搜索提示去技术细节、**「控制台」开发者页从公开导航隐藏(仅本地连后端显示)**、空态不再露内部命令。原则记入 memory。判断法：build→serve→headless Chrome 截图逐页看，可见文字里凡流水线状态/分数/实现术语/admin 工具皆不入产品。
 
 - ✅ **健壮** 云端 daily-digest 无 ANTHROPIC_API_KEY 时优雅跳过(不再每日失败,设了即每日自动跑)
-- ✅ **新鲜窗口·按出期**（2026-06-15，按用户反馈）fetch 新鲜窗口从固定 36h 改为「上一期→现在」：`fetch_sources.py --since-from $OUT/data` 读最新一期日期作起点，漏跑的日子自动覆盖、不漏不重（重复仍由 dedup 仓库即状态挡）；`--max-window-hours`(默认120) 兜底长 gap；首跑/本地无历史期回退 window_hours。修掉「06-13 的报道在 06-15 那期以今天出现」的固定窗口边界泄漏。实测 last=06-15 时旧条目正确排除。SKILL 第1步与 rules.yaml 已同步。**遗留**：06-15 那期是周一刊、内容含 06-13/14 周末料（漏了 06-14 一期所致）；按报刊惯例尚可接受，是否回标/补期见与用户讨论。
+- ✅ **新鲜窗口·按出期**（2026-06-15，按用户反馈）fetch 新鲜窗口从固定 36h 改为「上一期→现在」：`fetch_sources.py --since-from $OUT/data` 读最新一期日期作起点，漏跑的日子自动覆盖、不漏不重（重复仍由 dedup 仓库即状态挡）；`--max-window-hours`(默认120) 兜底长 gap；首跑/本地无历史期回退 window_hours。修掉「06-13 的报道在 06-15 那期以今天出现」的固定窗口边界泄漏。实测 last=06-15 时旧条目正确排除。SKILL 第1步与 rules.yaml 已同步。
+- ✅ **严格本体日窗口 + 清档重跑**（2026-06-15，ultracode）用户要"一手源不在窗口内的一律不收、宁缺毋滥"。① 清掉全部历史期重跑一期；② 窗口严格 [6/14 9am, 6/15 9am]，按【本体发生日】判（论文=提交日/发布=release/事件=发生日），媒体转载旧工作一律剔除；③ **ultracode 工作流 10 agent 并发逐条核验**候选真实日期(195→确定性剔 121→74 待核→保留 10/丢 64→去重 8)，揪出 Mirage(arXiv 06-08)/gh-vllm(feed 时间戳假象,真实 06-12)/anthropic 博文(05-25) 等转载/陈旧；④ durable 防复发：hf_daily_papers 改用真实公布日(让严格窗口能筛旧论文上榜)、publish_site 写 `generated_at`、fetch `--since-from` 读它实现精确"上次9am→这次9am"接续、check_freshness arXiv 月级兜底。8 条真·窗口内事件成刊(治理/SMIC/IPO/模型溯源/注入安全/EAGLE3/Partner Network/SFT 对齐)。
+- ⬜ **域名不一致(待修)**：线上实际是 **astalab.github.io/AstaNews/**(200)，而 ylxmf2005.github.io 已 404；但 web/lib/config.js 的 `SITE.repo` 与 layout.jsx 的 `SITE_URL` 仍指 ylxmf2005 → OG/canonical/RSS 链接指向 404 域名，需改为 astalab。
 
 ## 5. 循环工作准则（5am 起的自我迭代）
 
