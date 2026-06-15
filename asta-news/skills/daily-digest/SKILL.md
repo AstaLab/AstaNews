@@ -86,7 +86,7 @@ uv run ${CLAUDE_PLUGIN_ROOT}/scripts/dedup.py --filter <candidates 路径>
 
 提取与改写分开做——派 subagent，喂它**上一步的完整记录** + `references/readiness.md`，产出面向微信群跨栈受众的稿子：
 - `group` 条目：完整 `readable`（新闻体 3-4 段，见 readiness.md）。
-- `daily` 中非 group 的条目：精简 `take`（2-3 句新闻体短评，含量化点）——日报量大，不必每条 3-4 段。
+- `daily` 中非 group 的条目：`take` 写成**一段完整短文**（约 4-6 句 / 200-350 字），含背景、量化点与「关你什么事」——比群聊 `readable` 精简，但不能只两三句带过：详情页(`/item/`)正文就是这段，太短读者会觉得空。
 - 整期的 `headline` 与 `overview`。
 - 各视角的一句导语（读 `${CLAUDE_PLUGIN_ROOT}/config/perspectives.yaml`，按当天 daily 内容点名该视角下最值得看的 1-2 条）。
 要点全在 readiness.md：先桥接"关你什么事"、保留技术锚点并解释、诚实标注保留、不丢任何数字。改写不改事实，只重写表达，不新增、不脑补。
