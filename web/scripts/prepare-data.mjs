@@ -48,7 +48,7 @@ writeFileSync(join(pubDir, "index.json"), JSON.stringify({ editions: index }));
 writeFileSync(join(pubDir, "corpus.json"), JSON.stringify({ items: corpus }));
 
 // Atom 订阅 feed：最近若干期的精选(group)，可在任意 RSS 阅读器订阅
-const SITE = "https://ylxmf2005.github.io/AstaNews";
+const SITE = "https://astalab.github.io/AstaNews";
 const esc = (s) => String(s || "").replace(/[<>&]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;" }[c]));
 const feedItems = [];
 for (const f of files.slice(0, 14)) {

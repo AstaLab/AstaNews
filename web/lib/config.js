@@ -1,7 +1,7 @@
 // 前端用配置（镜像 asta-news/config/*.yaml；以 yaml 为准，改 yaml 时同步这里）。
 export const SITE = {
   name: "AstaNews", tagline: "AI 全栈每日情报", lab: "Asta Lab",
-  repo: "ylxmf2005/AstaNews",
+  repo: "AstaLab/AstaNews",
 };
 
 export const LAYERS = {

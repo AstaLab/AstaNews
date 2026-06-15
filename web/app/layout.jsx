@@ -3,7 +3,7 @@ import Link from "next/link";
 import Nav from "../components/Nav";
 import { SITE } from "../lib/config";
 
-const SITE_URL = "https://ylxmf2005.github.io/AstaNews/";
+const SITE_URL = "https://astalab.github.io/AstaNews/";
 const DESC = "AI 全栈每日情报：论文、模型发布、评测、infra、agent、具身、安全、产品商业、devtool。每天精选，按级别与领域筛选。";
 export const metadata = {
   metadataBase: new URL(SITE_URL),
