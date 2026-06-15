@@ -176,6 +176,11 @@ def main() -> int:
         return 2
 
     date = digest["date"]
+    # generated_at：本期新鲜窗口的"结束锚点"——下次跑 fetch --since-from 读它作窗口起点，
+    # 保证 9am→9am 这样的精确接续。digest 没带就用当前时刻兜底。
+    if not digest.get("generated_at"):
+        from datetime import datetime, timezone
+        digest["generated_at"] = datetime.now(timezone.utc).isoformat()
     out = data_dir / f"{date}.json"
     out.write_text(json.dumps(digest, ensure_ascii=False, indent=1))
     # 微信可读 md 落到仓库 editions/（site 的同级），供归档/直接粘群

@@ -100,15 +100,24 @@ def within(published: str | None, cutoff: datetime) -> bool:
 
 
 def last_edition_date(site_data: Path) -> datetime | None:
-    """读 $OUT/data 里最新一期的日期（UTC 当天 00:00）。新鲜窗口的"上次跑"锚点：
-    窗口 = [上一期日期, 现在]，天然覆盖被跳过的日子（如漏跑一天），重复由 dedup(仓库即状态)挡。"""
+    """新鲜窗口的"上次跑"锚点：取 $OUT/data 最新一期的 generated_at（精确到点，如每日 9am）；
+    没有该字段则回退到那一期日期的当天 00:00。窗口=[上次跑, 现在]，天然覆盖被跳过的日子，
+    重复由 dedup(仓库即状态)挡。"""
     if not site_data or not site_data.exists():
         return None
-    dates = sorted(p.stem for p in site_data.glob("20*.json")
+    files = sorted(p for p in site_data.glob("20*.json")
                    if re.fullmatch(r"20\d\d-\d\d-\d\d", p.stem))
-    if not dates:
+    if not files:
         return None
-    return datetime.strptime(dates[-1], "%Y-%m-%d").replace(tzinfo=timezone.utc)
+    latest = files[-1]
+    try:
+        ga = (json.loads(latest.read_text()) or {}).get("generated_at")
+        if ga:
+            dt = datetime.fromisoformat(ga.replace("Z", "+00:00"))
+            return dt if dt.tzinfo else dt.replace(tzinfo=timezone.utc)
+    except (json.JSONDecodeError, OSError, ValueError):
+        pass
+    return datetime.strptime(latest.stem, "%Y-%m-%d").replace(tzinfo=timezone.utc)
 
 
 def resolve_cutoff(now: datetime, since: str | None, since_from: Path | None,
@@ -205,14 +214,13 @@ def parse_feed(source: dict, text: str) -> list[dict]:
 # ---------- json parsers（全部防御式：结构不符 -> 空列表而非崩溃）----------
 
 def p_hf_daily_papers(source, data):
-    # publishedAt 是论文提交日（常 >36h，会被时间窗整批误杀）；上榜本身就是"今天"的事件，
-    # 统一盖当前时间戳，跨天重复交给 seen.db 去重
-    now = datetime.now(timezone.utc).isoformat()
+    # 用论文【真实公布日】(publishedAt = arXiv 公布日) 作 published，让"上一期→现在"的严格窗口
+    # 能把"旧论文今天才上 HF 榜"筛掉——本体新≠转载/上榜新。当天公布的新论文仍会落在窗口内。
     out = []
     for it in data if isinstance(data, list) else []:
         p = it.get("paper", {})
         out.append(mk(source, p.get("title", ""), f"https://huggingface.co/papers/{p.get('id','')}",
-                      now, p.get("summary", ""),
+                      it.get("publishedAt"), p.get("summary", ""),
                       {"upvotes": p.get("upvotes"), "arxiv_id": p.get("id"),
                        "paper_date": it.get("publishedAt")}))
     return out
