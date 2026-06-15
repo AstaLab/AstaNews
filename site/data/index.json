@@ -1,6 +1,20 @@
 {
  "editions": [
   {
+   "date": "2026-06-16",
+   "overview": "今天最扎实的一批进展都落在「智能体到底安不安全、好不好用」上。一篇研究把 LLM 护栏从「盾」变成「靶」——构造一句话就能让护栏陷入推理死循环,token 放大 13–63 倍、延迟最高 148 倍,一份投毒文档就能拖垮整片共享护栏;另一篇给 agentic 浏览器补上「同源策略」,发现现有产品频繁越权跨源取数。WorkBench 两年回访给了乐观的一面:最强 agent 任务完成率从 GPT-4 的 43% 升到 Claude Opus 4.8 的 89%、闯祸率从 26% 降到 2.5%,这次能力与安全是同向的。开源侧,Noiz AI 联合港科大、清华把音频生成做到 4 步出声、单卡 0.24 秒并全部开源;具身侧,世航智能拿下全球海洋机器人最大单轮融资、ORCA 把灵巧操作整套研究栈开源。",
+   "selected": 6,
+   "layers": [
+    "safety",
+    "agent",
+    "model",
+    "business",
+    "embodied",
+    "eval"
+   ],
+   "candidates": 9
+  },
+  {
    "date": "2026-06-15",
    "overview": "Nathan Lambert 复盘了美国政府首次强令 Anthropic 全球暂停 Claude 5 访问——AI 发布从此要过政治关；里约号称「自研」的 397B 开源模型，被 GitHub 上的权重分析实锤为 Nex 与 Qwen 的合并；The Register 用一起 jqwik 注入事件提醒，编程 agent 仍会盲目执行藏在代码里的指令。商业面，Anthropic 与 OpenAI 双双秘密递交 IPO、OpenAI 砸 1.5 亿美元搭伙伴网络；硬件面，SemiAnalysis 拆开 SMIC N+3，给中国先进制程一个量化读数。",
    "selected": 5,
