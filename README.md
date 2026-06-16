@@ -112,4 +112,3 @@ docs/                       # ARCHITECTURE（设计与数据流）· ROADMAP（P
 .github/workflows/          # daily-digest（生产）· deploy-pages · validate（贡献门）
 ```
 
-<div align="center"><sub>Built with <a href="https://claude.com/claude-code">Claude Code</a> · 一份每天都值得点开的 AI 情报</sub></div>
