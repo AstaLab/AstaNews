@@ -14,10 +14,11 @@ v2 在 v1 基础上加 `tiers` 与 `perspectives`，并保留 `selected`/`all_ca
     "full":  [ {source,layer,title,url,summary,selected} ]                                         // 全部候选，不限量
   },
   // 每条两层正文（见 references/readiness.md）：
-  //   summary = 列表卡片用的 1-2 句短摘要（≤~120 字）
+  //   summary = 列表卡片用的摘要 = 一段完整的话（约 150-260 字 / 3-5 句，单段不换行）
   //   deep    = 详情页 /item/ 正文 = 深度全文解读，比摘要更深更详细（~600-1000 字 / 5-8 段）
   //   readable= 仅 group 需要：微信群发的新闻体 3-4 段（concise）。daily 非精选无需 readable。
   //   ⚠️ 列表是摘要、点进去要更详细——summary 与 deep 不能是同一段，deep 必须真正展开。
+  // overview（日报摘要）汇总多条新闻：必须用 \n 换行把不同新闻簇分开（前端 white-space:pre-line 渲染）；单条 summary 不分行。
   "perspectives": { "technical":{"lede":"…"},"product":{…},"business":{…},"research":{…},"embodied":{…} },
   "radar":[…], "gaps":[…],
   "selected": "= tiers.group（兼容）", "all_candidates": "= tiers.full（兼容）"

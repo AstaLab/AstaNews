@@ -70,7 +70,7 @@ a { color: inherit; text-decoration: none; }
   letter-spacing: -.01em; line-height: 1.04; margin: 6px 0 16px; color: var(--ink); }
 .ed-headline .wd { color: var(--seal); font-weight: 600; font-size: .5em; letter-spacing: .02em; }
 .ed-abstract { font-family: var(--cn-serif); font-size: clamp(14.5px, 1.05vw, 16px); line-height: 1.62;
-  color: var(--ink-2); font-weight: 400; margin: 0 0 26px; }
+  color: var(--ink-2); font-weight: 400; margin: 0 0 26px; white-space: pre-line; }
 .deck { font-family: var(--cn-serif); font-size: clamp(20px, 2.4vw, 27px); line-height: 1.5;
   color: var(--ink); font-weight: 600; margin: 0 0 22px; }
 

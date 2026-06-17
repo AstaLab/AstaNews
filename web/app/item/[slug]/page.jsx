@@ -27,7 +27,7 @@ export default async function ItemPage({ params }) {
   const body = it.deep || it.readable || it.take || ""; // 详情页正文 = 深读全文解读（比列表摘要更深）
   const rel = (it.related || []).filter((r) => r.score >= 0.3).slice(0, 6);
   return (
-    <article style={{ maxWidth: 760 }}>
+    <article>
       <div className="dateline">
         {it.date} · {layerEmoji(it.layer)} {layerName(it.layer)}
         <Link href={`/edition/${it.date}`} style={{ marginLeft: "auto", fontFamily: "var(--mono)", fontSize: 12 }}>← 本期</Link>

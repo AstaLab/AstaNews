@@ -85,10 +85,10 @@ uv run ${CLAUDE_PLUGIN_ROOT}/scripts/dedup.py --filter <candidates 路径>
 ## 5. Readiness 改写（独立 subagent）
 
 提取与改写分开做——派 subagent，喂它**上一步的完整记录** + `references/readiness.md`，产出稿子。**每条 group/daily 都要两层正文**（铁律：列表是摘要、点进详情要更深更详细，不能进去还是摘要）：
-- `summary`（列表卡片）：1-2 句、≤~120 字短摘要，"发生了什么 + 为什么值得点开"。所有 group/daily 都要。
+- `summary`（列表卡片）：**一段完整的话、约 150-260 字 / 3-5 句**，自成一体说清"发生了什么 + 关键点/数字 + 为什么值得看"。**单段不换行**。所有 group/daily 都要。
 - `deep`（详情页 `/item/` 正文）：**深度全文解读，~600-1000 字 / 5-8 段**，明显比 summary/readable 更深更详细（结构见 readiness.md）。所有 group/daily 都要。
 - `readable`（仅 group）：微信新闻体 3-4 段（concise），群发用。daily 非精选不进微信、无需 readable。
-- 整期的 `headline` 与 `overview`。
+- 整期的 `headline` 与 `overview`（**overview 是日报摘要，汇总多条新闻，必须用 `\n` 换行把不同新闻簇分开；单条 summary 不分行**，见 readiness.md）。
 - 各视角的一句导语（读 `${CLAUDE_PLUGIN_ROOT}/config/perspectives.yaml`，按当天 daily 内容点名该视角下最值得看的 1-2 条）。
 要点全在 readiness.md：先桥接"关你什么事"、保留技术锚点并解释、诚实标注保留、不丢任何数字。改写不改事实，只重写表达，不新增、不脑补。
 
