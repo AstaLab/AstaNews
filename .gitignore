@@ -3,6 +3,7 @@ research/rsshub-test/
 .DS_Store
 __pycache__/
 .asta-runtime/
+.asta-data/
 site/data/vectors.npz
 site/data/vectors.meta.json
 editions/*.wechat.html
