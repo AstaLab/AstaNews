@@ -1,23 +1,27 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { LAYERS, lz, layerName, layerEmoji, layerColor, TIERS, SHARPNESS, PERSPECTIVES, BASE, slug } from "../lib/config";
+import { LAYERS, lz, layerName, layerEmoji, layerColor, TIERS, PERSPECTIVES, BASE, slug } from "../lib/config";
 
-function Story({ it, n, related, lead, level }) {
-  const body = (level === "deep" && it.deep) || (level === "sharp" && it.sharp) || it.readable || it.take || "";
-  const facts = Array.isArray(it.facts) ? it.facts : it.facts ? [it.facts] : [];
+function Story({ it, n, related, lead }) {
+  // 列表 = 摘要视图：每条只给短摘要(summary)。详情页(/item/)才展开深读(deep)。
+  // full 级精简候选只有 summary/url，逐级回退兜底。
+  const body = it.summary || it.take || it.readable || "";
+  const primary = it.links?.primary || it.url || "";
+  const hasDetail = !!it.links?.primary; // 仅 group/daily 有内页（见 lib/data.allItems），full 直链外部源
   const links = [];
-  if (it.links?.primary) links.push(["一手源", it.links.primary]);
+  if (primary) links.push(["一手源", primary]);
   if (it.links?.discussion) links.push(["讨论", it.links.discussion]);
-  const rel = (related?.[it.links?.primary] || []).filter((r) => r.score >= 0.35).slice(0, 3);
+  const rel = (related?.[primary] || []).filter((r) => r.score >= 0.35).slice(0, 3);
   return (
     <article className={lead ? "story lead" : "story"}>
       <div className="num">{n}</div>
       <div className="dept"><span>{layerEmoji(it.layer)}</span>{layerName(it.layer)}</div>
-      <h2>{it.links?.primary ? <Link href={`/item/${slug(it.links.primary)}`}>{it.title}</Link> : it.title}</h2>
+      <h2>{hasDetail
+        ? <Link href={`/item/${slug(primary)}`}>{it.title}</Link>
+        : primary ? <a href={primary} target="_blank" rel="noopener">{it.title}</a> : it.title}</h2>
       {it.image?.url && <img className="thumb" src={it.image.url} alt="" loading="lazy" onError={(e) => { e.currentTarget.style.display = "none"; }} />}
       {body && <div className="body">{body}</div>}
-      {facts.length > 0 && <ul className="facts">{facts.map((f, i) => <li key={i}>{f}</li>)}</ul>}
       {links.length > 0 && (
         <div className="links">{links.map(([t, u]) => <a key={u} href={u} target="_blank" rel="noopener">{t}</a>)}</div>
       )}
@@ -39,7 +43,6 @@ export default function EditionView({ edition }) {
   const [tier, setTier] = useState("daily");
   const [persp, setPersp] = useState("all");    // 视角（大）：软重排 + 导语
   const [cat, setCat] = useState("all");        // 类别（小）：按 layer 硬筛
-  const [level, setLevel] = useState("neutral");  // 犀利度：中性 / 锐评 / 深读（按数据门控）
   const [related, setRelated] = useState(null); // 预计算的相关新闻（向量近邻）
   useEffect(() => {
     fetch(`${BASE}/data/related.json`).then((r) => r.json()).then(setRelated).catch(() => setRelated({}));
@@ -71,13 +74,6 @@ export default function EditionView({ edition }) {
     return raw;
   }, [tier, cat, persp, edition.date]);
 
-  // 当前 tier 有哪些犀利度档可选：中性恒在，锐评/深读需有对应数据（it.sharp / it.deep）
-  const levels = useMemo(
-    () => SHARPNESS.filter((l) => l.key === "neutral" || (tiers[tier] || []).some((it) => it[l.key])),
-    [tier, edition.date]
-  );
-  const activeLevel = levels.some((l) => l.key === level) ? level : "neutral"; // 切 tier 后档位不可用则回退
-
   return (
     <div>
       <div className="controls">
@@ -99,16 +95,6 @@ export default function EditionView({ edition }) {
             ))}
           </div>
         </div>
-        {levels.length > 1 && (
-          <div className="ctl-group">
-            <span className="ctl-label">犀利度</span>
-            <div className="seg">
-              {levels.map((l) => (
-                <button key={l.key} className={activeLevel === l.key ? "on" : ""} onClick={() => setLevel(l.key)}>{l.label}</button>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
 
       {persp !== "all" && perspLede && (
@@ -135,7 +121,7 @@ export default function EditionView({ edition }) {
 
       {items.length === 0
         ? <p className="empty">该类别下暂无条目。</p>
-        : items.map((it, i) => <Story key={it.id || i} it={it} n={i + 1} related={related} lead={i === 0} level={activeLevel} />)}
+        : items.map((it, i) => <Story key={it.id || i} it={it} n={i + 1} related={related} lead={i === 0} />)}
     </div>
   );
 }

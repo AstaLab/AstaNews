@@ -30,13 +30,9 @@ export default async function EditionPage({ params }) {
   const older = i >= 0 && i < dates.length - 1 ? dates[i + 1] : null; // 更旧的一期
   return (
     <>
-      <div className="dateline">{ed.date} · {ed.weekday || ""}</div>
-      {ed.overview && (
-        <p className="deck">
-          {ed.headline && <span className="lead-in">{ed.headline}。</span>}
-          {ed.overview}
-        </p>
-      )}
+      <div className="dateline">往期</div>
+      <h1 className="ed-headline">{ed.date}<span className="wd">{ed.weekday ? ` · ${ed.weekday}` : ""}</span></h1>
+      {ed.overview && <p className="ed-abstract">{ed.overview}</p>}
       <EditionView edition={ed} />
       <nav style={{ marginTop: 34, paddingTop: 16, borderTop: "1px solid var(--rule)", display: "flex", justifyContent: "space-between", fontFamily: "var(--mono)", fontSize: 13 }}>
         <span>{older ? <Link href={`/edition/${older}`}>← {older}</Link> : <span style={{ color: "var(--faint)" }}>没有更早</span>}</span>

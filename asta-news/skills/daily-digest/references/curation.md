@@ -24,7 +24,10 @@
 
 **cross_stack 跨层性**——牵动 2+ 层加分项：0（单层）/ 3（两层）/ 5（三层以上，如"新模型+新 serving 优化+新评测"的发布）
 
-加权总分 = Σ rules.scoring.weights × 维度分。**3.0 以上才有资格入选**；2.5-3.0 进雷达。
+加权总分 = Σ rules.scoring.weights × 维度分。**各级入选阈值与数量的唯一事实源 = `config/tiers.yaml`**（`uv run scripts/tiers.py --summary` 查看，别在这里复述死数字）：
+- **精选 group**：≥ `group.score_threshold`（默认 3.0）才入选，目标 ~`group.target`（默认 5，上限 8）。最严，群发用。
+- **日报 daily**：≥ `daily.score_threshold`（默认 2.2，**显著低于 group**）即可，目标 ~`daily.target`（默认 20）——用 daily 的宽口径把长尾补足到 ~20。⚠️ **别拿 group 的 3.0/5 卡 daily**：那会让日报掉到个位数（此前几期的 bug）。daily 必含全部 group 条目。
+- **雷达**：够不上 daily 阈值但接近的几条（约 2.0-2.2 档）放雷达，给"差一点"的留个位置。
 
 ## 富化 subagent prompt 模板
 

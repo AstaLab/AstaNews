@@ -29,14 +29,12 @@ function story(it, i) {
   const links = [];
   if (it.links?.primary) links.push(`<a href="${esc(it.links.primary)}" target="_blank" rel="noopener">一手源</a>`);
   if (it.links?.discussion) links.push(`<a href="${esc(it.links.discussion)}" target="_blank" rel="noopener">讨论</a>`);
-  const facts = (it.facts || []).map((f) => `<li>${esc(f)}</li>`).join("");
   const [emoji] = LAYER[lz(it.layer)] || ["", ""];
   return `<article class="story" style="--i:${i}">
     <div class="num">${it.rank ?? i + 1}</div>
     <div class="dept"><span class="emoji">${emoji}</span>${esc(dept(it.layer))}</div>
     <h2>${esc(it.title)}</h2>
     <div class="body">${esc(it.readable)}</div>
-    ${facts ? `<ul class="facts">${facts}</ul>` : ""}
     ${links.length ? `<div class="links">${links.join("")}</div>` : ""}
   </article>`;
 }
@@ -73,8 +71,9 @@ function renderIssue(d) {
     `<li><span class="tag">${esc(dept(r.layer))}</span>${esc(r.title)}${r.note ? "，" + esc(r.note) : ""}${r.link ? ` <a href="${esc(r.link)}" target="_blank" rel="noopener">↗</a>` : ""}</li>`).join("");
   const gaps = (d.gaps || []).map((g) => `<li>${esc(g)}</li>`).join("");
   el.innerHTML = `
-    <div class="dateline">${esc(d.date)} · ${esc(d.weekday || "")} · ${(st.layers_covered || []).length} LAYERS</div>
-    ${d.overview ? `<p class="deck"><span class="lead-in">${esc(d.headline ? d.headline + "。" : "")}</span>${esc(d.overview)}</p>` : ""}
+    <div class="dateline">今日日报 · ${(st.layers_covered || []).length} LAYERS</div>
+    <h1 class="ed-headline">${esc(d.date)}<span class="wd">${d.weekday ? " · " + esc(d.weekday) : ""}</span></h1>
+    ${d.overview ? `<p class="ed-abstract">${esc(d.overview)}</p>` : ""}
     <div class="statbar">
       <span><b>${(d.selected || []).length}</b> 条精选</span><span class="sep">/</span>
       <span>覆盖 <b>${layers || "—"}</b></span><span class="sep">/</span>

@@ -9,10 +9,15 @@ v2 在 v1 基础上加 `tiers` 与 `perspectives`，并保留 `selected`/`all_ca
 {
   "date","weekday","headline","overview","stats","schema_version":2,
   "tiers": {
-    "group": [ {rank,layer,source,title,readable(3-4段),facts,links,scores,image?} ],   // ~5
-    "daily": [ {id,layer,source,title,take(2-3句)|readable,facts,links,score,image?} ], // ~20，含 group
-    "full":  [ {source,layer,title,url,summary,selected} ]                              // 全部
+    "group": [ {rank,layer,source,title,summary,deep,readable(微信),facts,links,scores,image?} ], // ~group.target（见 config/tiers.yaml）
+    "daily": [ {id,layer,source,title,summary,deep,facts,links,score,image?} ],                    // ~daily.target（见 config/tiers.yaml），含 group
+    "full":  [ {source,layer,title,url,summary,selected} ]                                         // 全部候选，不限量
   },
+  // 每条两层正文（见 references/readiness.md）：
+  //   summary = 列表卡片用的 1-2 句短摘要（≤~120 字）
+  //   deep    = 详情页 /item/ 正文 = 深度全文解读，比摘要更深更详细（~600-1000 字 / 5-8 段）
+  //   readable= 仅 group 需要：微信群发的新闻体 3-4 段（concise）。daily 非精选无需 readable。
+  //   ⚠️ 列表是摘要、点进去要更详细——summary 与 deep 不能是同一段，deep 必须真正展开。
   "perspectives": { "technical":{"lede":"…"},"product":{…},"business":{…},"research":{…},"embodied":{…} },
   "radar":[…], "gaps":[…],
   "selected": "= tiers.group（兼容）", "all_candidates": "= tiers.full（兼容）"
@@ -25,9 +30,9 @@ item 可选 `image`: `{url, credit, source}`（配图，见 enrich-images skill 
 ```json
 {
   "date": "2026-06-12",
-  "weekday": "星期五",
-  "headline": "新闻标题（≤20 字，抓主线；不是流程说明）",
-  "overview": "给读者的当日导语：今天的主线是什么。只讲新闻，禁止出现条数/窗口/'剔除旧论文'等策展过程话术",
+  "weekday": "周五",
+  "headline": "一行短标题，≤24 字、两个对称分句（如『前沿实验室扎堆冲 IPO，技术面多点开花』）；不堆三段以上、不是流程说明。站点主标题是日期，headline 只作归档列表副标题与 SEO",
+  "overview": "当期摘要(abstract)：新闻体 1–2 段、约 200–360 字，自成一体讲清当天主线与几条重点；站点作为日期标题下的正文摘要单独成段。只讲新闻，禁止条数/窗口/'剔除旧论文'等策展过程话术",
   "stats": {"candidates": 483, "sources_ok": 25, "sources_failed": 2,
             "layers_covered": ["model", "embodied", "safety", "devtool", "agent"]},
   "selected": [

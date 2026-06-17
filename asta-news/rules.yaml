@@ -3,11 +3,9 @@
 layers: [model, post-training, eval, data, infra, serving, maas, agent, embodied, safety, product, business, devtool]
 
 edition:
-  max_items: 8            # 硬上限
-  default_items: 5        # 默认目标；候选质量不足时宁可少于 5
-  min_layers: 3           # 当日 digest 必须覆盖的最少 layer 数
-  max_per_layer: 2        # 单 layer 最多条数
-  max_per_source: 2       # 单一源最多条数（防单源垄断）
+  # 各级条数/层数/单源约束（精选 group / 日报 daily / full）已迁到 config/tiers.yaml——
+  # 那是唯一事实源，按分级配置。读法：uv run scripts/tiers.py --summary
+  # 这里只保留与"分级"无关的全局编辑项。
   language: zh            # 中文为主，专有名词/术语保留英文
   staleness_skip_hours: 2 # 启动时间晚于预期窗口 2 小时以上：声明过期跳过，不补发旧闻
 

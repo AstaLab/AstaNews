@@ -1,5 +1,10 @@
-# 多级筛选：同一批候选层层筛，数量可配。网站/本地可覆盖。
+# 多级筛选：同一批候选层层筛，数量可配。
+# ★ 这是各级（group/daily/full）数量与阈值的【唯一事实源】——SKILL.md / curation.md /
+#   editor 裁决 / 生成的 build 脚本都从这里读（`uv run scripts/tiers.py [--summary|--get daily.target]`），
+#   别在别处把 5 / 8 / 20 写死。本地可用 $DATA/tiers.local.yaml 同键深合并覆盖（不进 git）。
 # full ⊇ daily ⊇ group。评分一次，按分数+多样性分层切。
+# ⚠️ daily 用 daily 自己的（更低）阈值放宽、补足到 ~target，【绝不套用 group 的严格度】——
+#    拿 group 的 3.0/5 卡 daily 会让日报掉到个位数（这正是此前几期 daily<20 的根因）。
 tiers:
   full:
     label: 完整级

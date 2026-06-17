@@ -1,7 +1,12 @@
 # 本地规则覆盖（rules.local.yaml）——只写想改的键，深合并进默认 rules.yaml
+# 注：各级条数/阈值（精选/日报/full）已迁到 config/tiers.yaml；要本地调数量改 tiers.local.yaml（见下）。
 # 示例：
 # edition:
-#   default_items: 6
 #   language: zh
 # scoring:
 #   weights: { novelty: 0.4, leading_edge: 0.3, impact: 0.2, cross_stack: 0.1 }
+#
+# 本地分级覆盖（tiers.local.yaml，深合并进 config/tiers.yaml）：
+# tiers:
+#   daily: { target: 25 }   # 例：本机想要更长的日报
+#   group: { target: 6 }

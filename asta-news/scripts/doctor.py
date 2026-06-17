@@ -130,7 +130,7 @@ def main() -> int:
     cfg = F.PLUGIN_ROOT / "config"
     try:
         import yaml
-        names = ["tiers", "perspectives", "sharpness", "site", "search", "prerank", "llm"]
+        names = ["tiers", "perspectives", "site", "search", "prerank", "llm"]
         missing = [n for n in names if not (cfg / f"{n}.yaml").exists()]
         bad = []
         for n in names:
@@ -141,7 +141,7 @@ def main() -> int:
                 except Exception:
                     bad.append(n)
         ok = not missing and not bad
-        check("配置 config/", ok, "tiers/perspectives/sharpness/site/search/prerank/llm 齐全且合法" if ok
+        check("配置 config/", ok, "tiers/perspectives/site/search/prerank/llm 齐全且合法" if ok
               else f"缺 {missing} 坏 {bad}")
     except Exception as exc:
         check("配置 config/", False, str(exc))

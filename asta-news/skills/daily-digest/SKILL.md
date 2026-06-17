@@ -1,11 +1,11 @@
 ---
 name: daily-digest
-description: 生成当日 AI 全栈 digest（日报）。当用户要求"跑今天的 digest / 日报 / AI 新闻推送 / asta news / 今天有什么值得看的 AI 进展"，或由定时任务触发每日情报汇总时使用。覆盖论文、模型发布、评测、infra/serving、MaaS、agent、具身、安全、产品商业、devtool 共 13 层，产出默认 5 条（最多 8 条、≥3 层）的策展结果。
+description: 生成当日 AI 全栈 digest（日报）。当用户要求"跑今天的 digest / 日报 / AI 新闻推送 / asta news / 今天有什么值得看的 AI 进展"，或由定时任务触发每日情报汇总时使用。覆盖论文、模型发布、评测、infra/serving、MaaS、agent、具身、安全、产品商业、devtool 共 13 层，产出分级策展结果（精选 ~5 / 日报 ~20，数量与阈值见 config/tiers.yaml）。
 ---
 
 # Daily Digest 工作流
 
-你是 AstaNews 的主编。目标：从全栈数据源中选出**今天真正值得 Asta Lab 成员花 30 秒读的 5 条**（上限 8 条），而不是罗列新闻。质量不足宁可少发。
+你是 AstaNews 的主编。目标：从全栈数据源中选出**今天真正值得 Asta Lab 成员读的**精选（group，数量见 `config/tiers.yaml`，默认 ~5/上限 8），并在其上放宽补出日报（daily，默认 ~20），而不是罗列新闻。各级数量与阈值都从 `config/tiers.yaml` 读（`uv run ${CLAUDE_PLUGIN_ROOT}/scripts/tiers.py --summary`），别在脑子里写死。质量不足宁可少发。
 
 脚本都是黑盒：先 `--help`，不要读源码。两个目录：
 
@@ -70,23 +70,24 @@ uv run ${CLAUDE_PLUGIN_ROOT}/scripts/dedup.py --filter <candidates 路径>
 1. 负向兴趣（profile.md）一票否决。
 1.5. **本体新鲜度一票否决**：一手源是论文/模型/发布时，看**本体**日期而非转载日期（arXiv ID 前缀=提交年月）。本体早于本期新鲜窗口、又无当日实质新进展的，不选——别被"今天才转载"骗。第 6 步的 check_freshness 会兜底审计。
 2. 同一事件多条 → 合并为一条，链接用官方一手源，社区讨论（HN/HF）作附注。
-3. 按 `scoring.weights` 加权分排序，选 `edition.default_items` 条（质量不足可更少；硬上限 `max_items`）。
-4. 校验约束：覆盖 ≥ `min_layers` 层、单层 ≤ `max_per_layer`、单源 ≤ `max_per_source`。不满足就用次优候选替换补足；补不足层数时减条数也要保住多样性。
+3. 按 `scoring.weights` 加权分排序，选出**精选 group**：取 `group.target` 条（默认 5，质量不足可更少；上限 `group.max`=8）。各级数量/阈值读 `config/tiers.yaml`（`uv run ${CLAUDE_PLUGIN_ROOT}/scripts/tiers.py --summary`），不用写死的数字。
+4. 校验 group 约束（来自 tiers.yaml 的 `group.*`）：覆盖 ≥ `group.min_layers` 层、单层 ≤ `group.max_per_layer`、单源 ≤ `group.max_per_source`。不满足就用次优候选替换补足；补不足层数时减条数也要保住多样性。
 5. 落选但接近的 3-5 条放进"雷达"。
 
-**多级筛选**（读 `${CLAUDE_PLUGIN_ROOT}/config/tiers.yaml`）：一次评分，切三层。
-- `group`（群聊级，~5/上限 8，最严）= 上面选出的精选。
-- `daily`（日报级，目标 ~20）= 在 group 之上放宽（score_threshold 更低、min_layers≥6、单层≤4、单源≤3），按分数补足到 ~20，覆盖更多 layer 与长尾。**daily 必须包含全部 group 条目**。
-- `full` = 全部候选（all_candidates）。
+**多级筛选**（数量/阈值的唯一源 = `${CLAUDE_PLUGIN_ROOT}/config/tiers.yaml`，跑 `uv run ${CLAUDE_PLUGIN_ROOT}/scripts/tiers.py --summary` 拿当前值）：一次评分，切三层。
+- `group`（精选/群聊级）= 上面选出的精选，取 `group.target`（默认 ~5，上限 `group.max`=8），最严。
+- `daily`（日报级）= **另起一轮、用 daily 自己的宽口径**：阈值降到 `daily.score_threshold`（默认 2.2，比 group 低）、`min_layers`/`max_per_layer`/`max_per_source` 都放宽，按分数把长尾**补足到 `daily.target`（默认 ~20）**，覆盖更多 layer。⚠️ **这一步必须真正放宽——别拿 group 的 3.0/5 严格度卡 daily，否则日报会掉到个位数（曾经的 bug）。** daily 必须包含全部 group 条目。
+- `full` = 全部候选（all_candidates），不限量。
 
 对每个 group 与 daily 条目整理**信息很全**的记录（下一步改写的输入，facts 越全越不会写错）：
-`{id, rank, layer, source, title（忠实转述）, facts:[尽量全的量化点], why_matters, links:{primary, discussion}, scores, source_excerpt（原文摘要/正文截断 ~400 字，供网页"深读"展示）}`。
+`{id, rank, layer, source, title（忠实转述）, facts:[尽量全的量化点], why_matters, links:{primary, discussion}, scores}`。改写层会据此（必要时 WebFetch 一手源）写出列表 `summary` 与详情页 `deep`。
 
 ## 5. Readiness 改写（独立 subagent）
 
-提取与改写分开做——派 subagent，喂它**上一步的完整记录** + `references/readiness.md`，产出面向微信群跨栈受众的稿子：
-- `group` 条目：完整 `readable`（新闻体 3-4 段，见 readiness.md）。
-- `daily` 中非 group 的条目：`take` 写成**一段完整短文**（约 4-6 句 / 200-350 字），含背景、量化点与「关你什么事」——比群聊 `readable` 精简，但不能只两三句带过：详情页(`/item/`)正文就是这段，太短读者会觉得空。
+提取与改写分开做——派 subagent，喂它**上一步的完整记录** + `references/readiness.md`，产出稿子。**每条 group/daily 都要两层正文**（铁律：列表是摘要、点进详情要更深更详细，不能进去还是摘要）：
+- `summary`（列表卡片）：1-2 句、≤~120 字短摘要，"发生了什么 + 为什么值得点开"。所有 group/daily 都要。
+- `deep`（详情页 `/item/` 正文）：**深度全文解读，~600-1000 字 / 5-8 段**，明显比 summary/readable 更深更详细（结构见 readiness.md）。所有 group/daily 都要。
+- `readable`（仅 group）：微信新闻体 3-4 段（concise），群发用。daily 非精选不进微信、无需 readable。
 - 整期的 `headline` 与 `overview`。
 - 各视角的一句导语（读 `${CLAUDE_PLUGIN_ROOT}/config/perspectives.yaml`，按当天 daily 内容点名该视角下最值得看的 1-2 条）。
 要点全在 readiness.md：先桥接"关你什么事"、保留技术锚点并解释、诚实标注保留、不丢任何数字。改写不改事实，只重写表达，不新增、不脑补。

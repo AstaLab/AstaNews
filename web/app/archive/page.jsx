@@ -14,7 +14,7 @@ export default function Archive() {
           {eds.map((e, i) => (
             <li key={e.date}>
               <Link className="issue-row" href={`/edition/${e.date}`}>
-                <span className="d">{e.date} · {e.weekday}</span>
+                <div className="d">{e.date}{e.weekday ? ` · ${e.weekday}` : ""}</div>
                 <div className="h">{e.headline || "AI 全栈每日情报"}</div>
                 <div className="o">{e.overview}</div>
                 <div className="m">No.{String(eds.length - i).padStart(3, "0")} · {(e.layers || []).map(layerName).join(" / ")}</div>

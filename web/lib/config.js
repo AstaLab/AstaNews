@@ -27,13 +27,7 @@ export const layerColor = (l) => LAYERS[lz(l)]?.color || "#6a6150";
 export const TIERS = [
   { key: "daily", label: "日报", desc: "当天全栈精选" },
   { key: "group", label: "精选", desc: "每日最重要的几条" },
-];
-
-// 犀利度档位（对齐 config/sharpness.yaml）。中性恒在；锐评/深读按数据存在与否门控显示。
-export const SHARPNESS = [
-  { key: "neutral", label: "中性", field: "readable" },
-  { key: "sharp", label: "锐评", field: "sharp" },
-  { key: "deep", label: "深读", field: "deep" },
+  { key: "full", label: "全部", desc: "当天全部候选（未精选的完整列表）" },
 ];
 
 // 视角（大分类 / 大 filter，对齐 config/perspectives.yaml）：按受众的大镜头，对同一批候选
