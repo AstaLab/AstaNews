@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { LAYERS, lz, layerName, layerEmoji, layerColor, TIERS, SHARPNESS, BASE, slug } from "../lib/config";
+import { LAYERS, lz, layerName, layerEmoji, layerColor, TIERS, SHARPNESS, PERSPECTIVES, BASE, slug } from "../lib/config";
 
 function Story({ it, n, related, lead, level }) {
   const body = (level === "deep" && it.deep) || (level === "sharp" && it.sharp) || it.readable || it.take || "";
@@ -37,7 +37,8 @@ function Story({ it, n, related, lead, level }) {
 
 export default function EditionView({ edition }) {
   const [tier, setTier] = useState("daily");
-  const [cat, setCat] = useState("all");        // 类别：按 layer 硬筛
+  const [persp, setPersp] = useState("all");    // 视角（大）：软重排 + 导语
+  const [cat, setCat] = useState("all");        // 类别（小）：按 layer 硬筛
   const [level, setLevel] = useState("neutral");  // 犀利度：中性 / 锐评 / 深读（按数据门控）
   const [related, setRelated] = useState(null); // 预计算的相关新闻（向量近邻）
   useEffect(() => {
@@ -52,11 +53,23 @@ export default function EditionView({ edition }) {
     return Object.entries(cnt).sort((a, b) => b[1] - a[1]);
   }, [tier, edition.date]);
 
+  const perspDef = PERSPECTIVES.find((p) => p.key === persp) || PERSPECTIVES[0];
+  const perspLede = edition.perspectives?.[persp]?.lede || "";
+
   const items = useMemo(() => {
     let raw = tiers[tier] || [];
     if (cat !== "all") raw = raw.filter((it) => lz(it.layer) === cat);
+    // 视角软重排：基础顺序分 + 该 layer 的 boost。稳定排序，不增删条目、不改事实。
+    const boost = perspDef.boost || {};
+    if (persp !== "all" && Object.keys(boost).length) {
+      const n = raw.length;
+      raw = raw
+        .map((it, i) => ({ it, i, score: (n - i) + (boost[lz(it.layer)] || 0) * n }))
+        .sort((a, b) => b.score - a.score || a.i - b.i)
+        .map((x) => x.it);
+    }
     return raw;
-  }, [tier, cat, edition.date]);
+  }, [tier, cat, persp, edition.date]);
 
   // 当前 tier 有哪些犀利度档可选：中性恒在，锐评/深读需有对应数据（it.sharp / it.deep）
   const levels = useMemo(
@@ -78,6 +91,14 @@ export default function EditionView({ edition }) {
             ))}
           </div>
         </div>
+        <div className="ctl-group">
+          <span className="ctl-label">视角</span>
+          <div className="seg">
+            {PERSPECTIVES.map((p) => (
+              <button key={p.key} className={persp === p.key ? "on" : ""} onClick={() => setPersp(p.key)}>{p.label}</button>
+            ))}
+          </div>
+        </div>
         {levels.length > 1 && (
           <div className="ctl-group">
             <span className="ctl-label">犀利度</span>
@@ -89,6 +110,10 @@ export default function EditionView({ edition }) {
           </div>
         )}
       </div>
+
+      {persp !== "all" && perspLede && (
+        <p className="persp-lede"><span className="persp-tag">{perspDef.label}视角</span>{perspLede}</p>
+      )}
 
       {/* 类别（小）：独立的 layer 硬筛 */}
       <div className="cats">

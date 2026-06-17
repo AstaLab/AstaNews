@@ -36,6 +36,18 @@ export const SHARPNESS = [
   { key: "deep", label: "深读", field: "deep" },
 ];
 
+// 视角（大分类 / 大 filter，对齐 config/perspectives.yaml）：按受众的大镜头，对同一批候选
+// 软重排（基础顺序 + Σ layer_boost[该条 layer]），并展示该视角的一句导语（来自 edition.perspectives[k].lede）。
+// 与「类别」（layer 硬筛）正交，可组合。视角不增删条目、不改事实，只调顺序与框定语。
+export const PERSPECTIVES = [
+  { key: "all", label: "全栈", boost: {} },
+  { key: "technical", label: "技术", boost: { model: 1.5, "post-training": 1.5, infra: 1.2, serving: 1.2, eval: 1.0 } },
+  { key: "product", label: "产品", boost: { product: 1.5, agent: 1.4, devtool: 1.3, maas: 1.2, model: 0.6 } },
+  { key: "business", label: "商业", boost: { business: 1.8, product: 1.0, maas: 0.8, model: 0.5 } },
+  { key: "research", label: "研究", boost: { eval: 1.4, model: 1.2, "post-training": 1.2, safety: 1.1, data: 1.1 } },
+  { key: "embodied", label: "具身", boost: { embodied: 2.0, model: 0.6 } },
+];
+
 export const BASE = process.env.NEXT_PUBLIC_BASE_PATH || "";
 export const asset = (p) => `${BASE}${p}`;
 // 本地/全功能模式：services 后端地址（静态 Pages 为空 → 控制台只读+引导）
