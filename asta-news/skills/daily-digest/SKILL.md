@@ -52,6 +52,16 @@ uv run ${CLAUDE_PLUGIN_ROOT}/scripts/dedup.py --filter <candidates 路径>
 
 产出 `fresh.jsonl`。同时读 `$OUT/data/` 最近 3 天的 digest.json 标题——editor 裁决时避免报道"同一事件的后续碎片"。
 
+### 2.5 语义去重（向量 + LLM 兜底）
+
+```bash
+uv run ${CLAUDE_PLUGIN_ROOT}/scripts/embed.py --check <fresh.jsonl 路径> --index $OUT/data/vectors.npz
+```
+
+用历史向量索引对 fresh 候选做语义比对。cosine ≥ 0.92 自动过滤（几乎相同事件）；0.72–0.92 交小模型 LLM 判断是"旧闻翻炒/后续碎片"还是"同领域新进展"——这正是 URL/标题去重抓不住、但"本体新 ≠ 转载新"铁律要求拦的那类。LLM 不可用时退化为仅标注不过滤（失败开放）。被过滤的条目从 fresh.jsonl 移除；幸存条目可能带 `semantic_similar` 标注供 editor 参考。
+
+**注意**：此步必须在本期 `embed.py --build` 之前跑，否则当期候选已进索引会自我匹配。
+
 ## 3. 并行富化评分（subagent fan-out）
 
 读 `references/curation.md` 拿评分 rubric 与 prompt 模板，然后把 fresh 候选按 layer 分 3-5 组（如 papers / releases+maas / infra+serving+eval / agent+devtool / 其他），**每组派一个 subagent 并行**处理：

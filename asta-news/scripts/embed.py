@@ -11,8 +11,10 @@
 用法:
   embed.py --build site/data            # 扫所有 edition.json 的候选 → 建/更新索引
   embed.py --search "查询词" [--top 10]  # 向量检索
+  embed.py --check fresh.jsonl          # 语义去重：和历史向量比对，高相似交 LLM 判断
   embed.py --self-test                  # 跨语言相似度自检
 索引默认落 ${ASTA_INDEX:-<data>/vectors.npz}
+语义去重阈值: --soft 0.72（标注+LLM）--hard 0.92（自动过滤）
 """
 import argparse
 import json
@@ -133,6 +135,94 @@ def search(query: str, index_path: Path, top: int = 10):
     return [{**meta[i], "score": float(scores[i])} for i in order]
 
 
+def cmd_check(fresh_path: Path, index_path: Path, soft: float, hard: float) -> int:
+    """语义去重：fresh 候选逐条和历史向量比对。
+    - cosine >= hard → 自动标 semantic_dup（几乎相同的事件）
+    - soft <= cosine < hard → 调 LLM 判断是"旧闻翻炒"还是"同领域新进展"
+    LLM 不可用时退化为仅标注、不过滤（失败开放）。
+    输出覆写原 fresh.jsonl，每条可能多出 semantic_similar / semantic_dup 字段。
+    """
+    vecs, meta = load_index(index_path)
+    items = [json.loads(l) for l in fresh_path.read_text().splitlines() if l.strip()]
+    if not items:
+        print("无候选", file=sys.stderr)
+        return 0
+    texts = [f"{it.get('title','')}. {it.get('summary','')}"[:512] for it in items]
+    qvecs = embed(texts)
+
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    import llm
+
+    from urllib.parse import urlsplit
+    def _norm(u):
+        p = urlsplit(u.strip())
+        return (p.netloc.lower().removeprefix("www.") + p.path.rstrip("/")).lower()
+
+    n_hard, n_llm_filter, n_llm_pass = 0, 0, 0
+    for i, item in enumerate(items):
+        scores = vecs @ qvecs[i]
+        item_url = _norm(item.get("url", ""))
+        top_idx = np.argsort(-scores)[:10]
+        matches = []
+        for j in top_idx:
+            if _norm(meta[j].get("url", "")) == item_url:
+                continue
+            s = float(scores[j])
+            if s < soft or np.isnan(s):
+                break
+            matches.append({
+                "title": meta[j]["title"], "date": meta[j]["date"],
+                "url": meta[j]["url"], "score": round(s, 3)
+            })
+            if len(matches) >= 3:
+                break
+        if not matches:
+            continue
+        item["semantic_similar"] = matches
+        best = matches[0]["score"]
+
+        if best >= hard:
+            item["semantic_dup"] = True
+            n_hard += 1
+            print(f"  ✗ DUP  {best:.3f}  {item.get('title','')[:50]}", file=sys.stderr)
+            print(f"         ↔ {matches[0]['title'][:50]} ({matches[0]['date']})", file=sys.stderr)
+            continue
+
+        # soft <= best < hard → LLM 判断
+        if not llm.available():
+            print(f"  ? SKIP {best:.3f}  {item.get('title','')[:50]}  (LLM 不可用，放行)", file=sys.stderr)
+            continue
+
+        verdict = llm.chat_json(
+            "你是新闻去重判断器。判断候选新闻是否和已发布新闻是同一事件的重复/后续碎片。"
+            "只返回 JSON: {\"dup\": true/false, \"reason\": \"一句话\"}",
+            f"候选: {item.get('title','')} ({item.get('published','')})\n"
+            f"  摘要: {item.get('summary','')[:300]}\n"
+            f"已发布: {matches[0]['title']} ({matches[0]['date']})\n"
+            f"语义相似度: {best:.3f}\n"
+            f"判断: 候选是同一事件的旧闻/翻炒/后续评论吗? 还是同一领域但确实是新的不同事件/进展?"
+        )
+        if verdict and verdict.get("dup"):
+            item["semantic_dup"] = True
+            item["semantic_dup_reason"] = verdict.get("reason", "")
+            n_llm_filter += 1
+            print(f"  ✗ LLM  {best:.3f}  {item.get('title','')[:50]}  → {verdict.get('reason','')[:40]}", file=sys.stderr)
+        else:
+            n_llm_pass += 1
+            reason = verdict.get("reason", "") if verdict else "LLM 返回异常，放行"
+            print(f"  ✓ PASS {best:.3f}  {item.get('title','')[:50]}  → {reason[:40]}", file=sys.stderr)
+
+    # 写回：过滤掉 semantic_dup=true 的条目，保留的带上 semantic_similar 标注
+    kept = [it for it in items if not it.get("semantic_dup")]
+    removed = len(items) - len(kept)
+    with fresh_path.open("w") as f:
+        for it in kept:
+            f.write(json.dumps(it, ensure_ascii=False) + "\n")
+    print(f"语义去重: {len(items)} 候选 → 硬过滤 {n_hard} + LLM 过滤 {n_llm_filter} + LLM 放行 {n_llm_pass}"
+          f" = 去除 {removed} 条 → {len(kept)} 条", file=sys.stderr)
+    return 0
+
+
 def cmd_self_test() -> int:
     pairs = [("开源编程模型", "open-source coding model"),
              ("块级稀疏注意力降低长文本显存", "block sparse attention reduces long-context memory")]
@@ -151,9 +241,15 @@ def main() -> int:
     g = ap.add_mutually_exclusive_group(required=True)
     g.add_argument("--build", metavar="DATA_DIR", help="扫该目录所有 edition json 建索引")
     g.add_argument("--search", metavar="QUERY")
+    g.add_argument("--check", metavar="FRESH_JSONL",
+                   help="语义去重：对 fresh 候选逐条比对历史向量，高相似交 LLM 判断")
     g.add_argument("--self-test", action="store_true")
     ap.add_argument("--index", default=str(default_index()))
     ap.add_argument("--top", type=int, default=10)
+    ap.add_argument("--soft", type=float, default=0.72,
+                    help="语义软阈值：超过则标注 + 交 LLM 判断（默认 0.72）")
+    ap.add_argument("--hard", type=float, default=0.92,
+                    help="语义硬阈值：超过则自动过滤（默认 0.92）")
     args = ap.parse_args()
     idx = Path(args.index)
     if args.self_test:
@@ -161,6 +257,8 @@ def main() -> int:
     if args.build:
         idx.parent.mkdir(parents=True, exist_ok=True)
         return cmd_build(Path(args.build), idx)
+    if args.check:
+        return cmd_check(Path(args.check), idx, args.soft, args.hard)
     for r in search(args.search, idx, args.top):
         star = "★" if r["selected"] else " "
         print(f"{r['score']:.3f} {star} [{r['date']}] {r['title'][:70]}")
