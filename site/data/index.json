@@ -1,3 +1,22 @@
 {
- "editions": []
+ "editions": [
+  {
+   "date": "2026-06-23",
+   "overview": "今天是研究密集的一天，最集中的两条线一是 agent 编排，二是推理系统的效率与可靠性。Sakana 放出 Fugu 系列编排者模型，把临场设计多模型协作方案训练成模型自身的能力；Ai2 联合华盛顿大学开源 TMax，给出训练终端 agent 的完整强化学习配方与一个 9B 模型，连权重、数据和训练 rollout 一并摊开。\n推理与系统层面扎堆出新：Keyless Attention 直接删掉 key 投影、把 KV cache 精确砍半且质量基本不掉；HEAL 定位并缓解 16-bit 推理跨 GPU 不可复现的根因；另有自适应 KV 缓存（命中率最高 +10.8%）、面向实时语音的 LiveServe 与面向 MoE 的解耦异步服务 ASAP。\n安全与对齐同样热闹：分级语言模型（TLM）想让一套开源权重按密钥分出公开与私有两档能力；SpliceLeak 揭出非前缀 KV 缓存融合的侧信道风险；另有针对 agent 工具调用的防护工作。\n具身与产品侧，阿里 Vesta 主打通用具身推理，配合 VLA 解耦与机器人自我改进等论文；网易有道开源 Confucius4-TTS，1.3B、Apache 协议，主打 14 语种零参考文本的跨语种声音克隆。",
+   "selected": 5,
+   "layers": [
+    "agent",
+    "data",
+    "embodied",
+    "eval",
+    "infra",
+    "model",
+    "post-training",
+    "product",
+    "safety",
+    "serving"
+   ],
+   "candidates": 593
+  }
+ ]
 }
