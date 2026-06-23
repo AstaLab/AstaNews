@@ -4,7 +4,9 @@ import { layerName, layerEmoji } from "../../../lib/config";
 import Img from "../../../components/Img";
 
 export function generateStaticParams() {
-  return Object.keys(allItems()).map((slug) => ({ slug }));
+  const slugs = Object.keys(allItems());
+  // output: export 要求动态路由至少产出一个 param；无条目时用占位（页面会渲染"未找到"空态）。
+  return slugs.length ? slugs.map((slug) => ({ slug })) : [{ slug: "none" }];
 }
 
 export async function generateMetadata({ params }) {

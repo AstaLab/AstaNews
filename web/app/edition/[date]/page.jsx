@@ -3,7 +3,9 @@ import EditionView from "../../../components/EditionView";
 import Link from "next/link";
 
 export function generateStaticParams() {
-  return allDates().map((date) => ({ date }));
+  const dates = allDates();
+  // output: export 要求动态路由至少产出一个 param；空档期用占位（页面会渲染"未找到"空态）。
+  return dates.length ? dates.map((date) => ({ date })) : [{ date: "none" }];
 }
 
 export async function generateMetadata({ params }) {
