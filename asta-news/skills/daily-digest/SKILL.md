@@ -78,7 +78,7 @@ uv run ${CLAUDE_PLUGIN_ROOT}/scripts/embed.py --check <fresh.jsonl 路径> --ind
 汇总各组推荐，按 `references/curation.md` 的 editor 准则做最终选择：
 
 1. 负向兴趣（profile.md）一票否决。
-1.5. **本体新鲜度一票否决**：一手源是论文/模型/发布时，看**本体**日期而非转载日期（arXiv ID 前缀=提交年月）。本体早于本期新鲜窗口、又无当日实质新进展的，不选——别被"今天才转载"骗。第 6 步的 check_freshness 会兜底审计。
+1.5. **本体新鲜度一票否决**：看**本体**发生日而非转载日期——论文看 arXiv 首次提交日、模型/产品看 release 日、事件看发生日（arXiv ID 前缀=提交年月，但同月内要查准到日）。本体早于本期新鲜窗口起点、又无当日实质新进展的，不选——别被"今天才转载"骗（引二次综述把旧发布当头条就是反面教材）。**每条都要在记录里落 `subject_date`（本体发生日，见第 4 步 schema）**。第 6 步 check_freshness 会按 `subject_date` 对**所有**条目硬审，但它判的是**你填的本体日是否在窗口内**——填错=审错，它不替你查日期。
 2. 同一事件多条 → 合并为一条，链接用官方一手源，社区讨论（HN/HF）作附注。
 3. 按 `scoring.weights` 加权分排序，选出**精选 group**：取 `group.target` 条（默认 5，质量不足可更少；上限 `group.max`=8）。各级数量/阈值读 `config/tiers.yaml`（`uv run ${CLAUDE_PLUGIN_ROOT}/scripts/tiers.py --summary`），不用写死的数字。
 4. 校验 group 约束（来自 tiers.yaml 的 `group.*`）：覆盖 ≥ `group.min_layers` 层、单层 ≤ `group.max_per_layer`、单源 ≤ `group.max_per_source`。不满足就用次优候选替换补足；补不足层数时减条数也要保住多样性。
@@ -90,7 +90,7 @@ uv run ${CLAUDE_PLUGIN_ROOT}/scripts/embed.py --check <fresh.jsonl 路径> --ind
 - `full` = 全部候选（all_candidates），不限量。
 
 对每个 group 与 daily 条目整理**信息很全**的记录（下一步改写的输入，facts 越全越不会写错）：
-`{id, rank, layer, source, title（忠实转述）, facts:[尽量全的量化点], why_matters, links:{primary, discussion}, scores}`。改写层会据此（必要时 WebFetch 一手源）写出列表 `summary` 与详情页 `deep`。
+`{id, rank, layer, source, subject_date（本体发生日 ISO：论文取 arXiv 首次提交日、模型/产品取 release 日、事件取发生日；转载/二次报道日不算）, source_kind（primary=一手源 / secondary=二次综述转载）, title（忠实转述）, facts:[尽量全的量化点], why_matters, links:{primary, discussion}, scores}`。**subject_date 必须是本体日**：二次源（latent.space / the-decoder / 媒体综述）填它指向的本体的发生日，不是综述发布日；拿不准就 WebFetch 一手源核实，仍拿不准则填 `subject_date: null` 并默认不选（宁缺毋滥，第 6 步会以退出码 4 拦下）。`subject_date` 与 `source_kind` 要透传进第 6 步 digest.json 的每条 group/daily（写入 item 顶层或 extra），否则审计无据可依。改写层会据此（必要时 WebFetch 一手源）写出列表 `summary` 与详情页 `deep`。
 
 ## 5. Readiness 改写（独立 subagent）
 
@@ -112,10 +112,15 @@ uv run ${CLAUDE_PLUGIN_ROOT}/scripts/embed.py --check <fresh.jsonl 路径> --ind
 写到 run 目录后，先**审新鲜度**，再配图发布：
 
 ```bash
-# 新鲜度审计：按 arXiv ID 判"本体"年龄，揪出"别人今天才转载的陈年论文"（退出码 3=有陈旧）
-uv run ${CLAUDE_PLUGIN_ROOT}/scripts/check_freshness.py --edition $DATA/runs/<today>/digest.json
+# 新鲜度审计：对【所有】group/daily 条目按 subject_date（优先）/URL 内嵌日期/arXiv ID 判本体日。
+# --window-start 传本期窗口起点（=上一期 generated_at，与第 1 步 fetch 的 --since-from 同锚点）。
+# 退出码：0=过  3=本体陈旧（本体日早于窗口起点）  4=本体日缺失/不可判定（需补 subject_date 或剔除）
+uv run ${CLAUDE_PLUGIN_ROOT}/scripts/check_freshness.py --edition $DATA/runs/<today>/digest.json --window-start <上一期 generated_at>
 ```
-若报 STALE：回到第 4 步把那几条**剔除或改挂更新的进展/一手源**（一篇三周前的论文不该当今日头条），重组 digest 后再过一遍审计为 0 才继续。然后配图发布：
+退出**非 0 一律不得发布**，两类都回第 4 步处理后重审至 0：
+- **3（陈旧）**：把那几条**剔除或改挂更新的进展/一手源**（一篇三周前的论文不该当今日头条）。
+- **4（本体日缺失）**：给该条补准 `subject_date`（WebFetch 一手源核实本体发生日）或直接剔除——绝不放行"日期不明"的条目。
+重组 digest 后再过一遍审计为 0 才继续。然后配图发布：
 
 ```bash
 # 配图（橘鸦式"用图说话"：og:image / GitHub 社交预览 / HF 卡图；抓不到则前端用 layer 色兜底）
