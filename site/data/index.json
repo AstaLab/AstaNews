@@ -1,6 +1,24 @@
 {
  "editions": [
   {
+   "date": "2026-06-25",
+   "overview": "今天最重的一条来自硬件：OpenAI 联手博通发布首款自研推理芯片 Jalapeño，9 个月走完一个周期，瞄准 2026 年底吉瓦级部署，微软预计吃下首批四成产能——前沿实验室开始把算力命脉攥进自己手里，能效数字仍为自报、待验证。\n模型与能力侧多点开花：谷歌把 computer use 做成 Gemini 3.5 Flash 的原生内置工具，覆盖浏览器、移动端和桌面端的智能体；Mistral OCR 4 称盲测 72% 胜率、支持 170 种语言；Krea 2 开源 12B 文生图基础模型挤进文生图榜前十；NVIDIA 用 NVFP4 4-bit 量化 MiniMax-M3（428B MoE、百万上下文），显存砍半而 GPQA Diamond 几乎不掉点。\n商业格局在重排：高通收购 AI 基础设施创业公司 Modular（Mojo 语言 / MAX 推理引擎）；Anthropic 推出 Claude Tag，在 Slack 里 @Claude 派活，并称内部产品团队 65% 的代码已由其生成；周鸿祎在 ISC.AI 2026 发布对标 Anthropic Mythos 的漏洞挖掘智能体「图龙锋」，称累计挖洞 3432 个。\n研究侧密度同样高：Qwen-AgentWorld 推出首个能模拟智能体环境的语言世界模型并配套 AgentWorldBench；NatureBench 发现最强智能体仅在 17.8% 的科研任务上超越已发表 SOTA；SHERLOC 把代码故障定位做到 SWE-Bench Lite 84.33% acc@1；Zyphra 拟合出持续训练中可塑性丧失的 scaling law。\n具身长尾里，World Value Model 把世界模型与价值估计结合成通用机器人价值模型，并提出多本体的 Suboptimal-Value-Bench。",
+   "selected": 5,
+   "layers": [
+    "agent",
+    "business",
+    "embodied",
+    "eval",
+    "infra",
+    "maas",
+    "model",
+    "post-training",
+    "product",
+    "serving"
+   ],
+   "candidates": 455
+  },
+  {
    "date": "2026-06-23",
    "overview": "今天是研究密集的一天，最集中的两条线一是 agent 编排，二是推理系统的效率与可靠性。Sakana 放出 Fugu 系列编排者模型，把临场设计多模型协作方案训练成模型自身的能力；Ai2 联合华盛顿大学开源 TMax，给出训练终端 agent 的完整强化学习配方与一个 9B 模型，连权重、数据和训练 rollout 一并摊开。\n推理与系统层面扎堆出新：Keyless Attention 直接删掉 key 投影、把 KV cache 精确砍半且质量基本不掉；HEAL 定位并缓解 16-bit 推理跨 GPU 不可复现的根因；另有自适应 KV 缓存（命中率最高 +10.8%）、面向实时语音的 LiveServe 与面向 MoE 的解耦异步服务 ASAP。\n安全与对齐同样热闹：分级语言模型（TLM）想让一套开源权重按密钥分出公开与私有两档能力；SpliceLeak 揭出非前缀 KV 缓存融合的侧信道风险；另有针对 agent 工具调用的防护工作。\n具身与产品侧，阿里 Vesta 主打通用具身推理，配合 VLA 解耦与机器人自我改进等论文；网易有道开源 Confucius4-TTS，1.3B、Apache 协议，主打 14 语种零参考文本的跨语种声音克隆。",
    "selected": 5,
