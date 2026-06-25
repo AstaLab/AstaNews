@@ -43,6 +43,7 @@ export default function EditionView({ edition }) {
   const [tier, setTier] = useState("daily");
   const [persp, setPersp] = useState("all");    // 视角（大）：软重排 + 导语
   const [cat, setCat] = useState("all");        // 类别（小）：按 layer 硬筛
+  const [src, setSrc] = useState("all");        // 数据源筛选
   const [related, setRelated] = useState(null); // 预计算的相关新闻（向量近邻）
   useEffect(() => {
     fetch(`${BASE}/data/related.json`).then((r) => r.json()).then(setRelated).catch(() => setRelated({}));
@@ -56,12 +57,22 @@ export default function EditionView({ edition }) {
     return Object.entries(cnt).sort((a, b) => b[1] - a[1]);
   }, [tier, edition.date]);
 
+  // 当前 tier + layer 筛选后出现的数据源
+  const srcs = useMemo(() => {
+    let pool = tiers[tier] || [];
+    if (cat !== "all") pool = pool.filter((it) => lz(it.layer) === cat);
+    const cnt = {};
+    for (const it of pool) { const s = it.source; if (s) cnt[s] = (cnt[s] || 0) + 1; }
+    return Object.entries(cnt).sort((a, b) => b[1] - a[1]);
+  }, [tier, cat, edition.date]);
+
   const perspDef = PERSPECTIVES.find((p) => p.key === persp) || PERSPECTIVES[0];
   const perspLede = edition.perspectives?.[persp]?.lede || "";
 
   const items = useMemo(() => {
     let raw = tiers[tier] || [];
     if (cat !== "all") raw = raw.filter((it) => lz(it.layer) === cat);
+    if (src !== "all") raw = raw.filter((it) => it.source === src);
     // 视角软重排：基础顺序分 + 该 layer 的 boost。稳定排序，不增删条目、不改事实。
     const boost = perspDef.boost || {};
     if (persp !== "all" && Object.keys(boost).length) {
@@ -72,7 +83,7 @@ export default function EditionView({ edition }) {
         .map((x) => x.it);
     }
     return raw;
-  }, [tier, cat, persp, edition.date]);
+  }, [tier, cat, src, persp, edition.date]);
 
   return (
     <div>
@@ -104,14 +115,27 @@ export default function EditionView({ edition }) {
       {/* 类别（小）：独立的 layer 硬筛 */}
       <div className="cats">
         <span className="ctl-label">类别</span>
-        <button className={`chip ${cat === "all" ? "on" : ""}`} onClick={() => setCat("all")}>全部</button>
+        <button className={`chip ${cat === "all" ? "on" : ""}`} onClick={() => { setCat("all"); setSrc("all"); }}>全部</button>
         {cats.map(([k, n]) => (
-          <button key={k} className={`chip ${cat === k ? "on" : ""}`} onClick={() => setCat(cat === k ? "all" : k)}
+          <button key={k} className={`chip ${cat === k ? "on" : ""}`} onClick={() => { setCat(cat === k ? "all" : k); setSrc("all"); }}
             style={cat === k ? { background: layerColor(k), borderColor: layerColor(k), color: "#f4efe6" } : { borderColor: layerColor(k) + "66" }}>
             {layerEmoji(k)} {layerName(k)} <span style={{ opacity: .6 }}>{n}</span>
           </button>
         ))}
       </div>
+
+      {/* 数据源：按 source 硬筛 */}
+      {srcs.length > 1 && (
+        <div className="cats sources">
+          <span className="ctl-label">来源</span>
+          <button className={`chip ${src === "all" ? "on" : ""}`} onClick={() => setSrc("all")}>全部</button>
+          {srcs.map(([s, n]) => (
+            <button key={s} className={`chip ${src === s ? "on" : ""}`} onClick={() => setSrc(src === s ? "all" : s)}>
+              {s} <span style={{ opacity: .6 }}>{n}</span>
+            </button>
+          ))}
+        </div>
+      )}
 
       <div className="sec">
         {TIERS.find((t) => t.key === tier)?.label}

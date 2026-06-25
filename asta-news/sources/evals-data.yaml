@@ -6,10 +6,10 @@ sources:
     type: json
     parser: swebench
     url: https://raw.githubusercontent.com/swe-bench/swe-bench.github.io/master/data/leaderboards.json
-    priority: P0
-    freq: monthly
-    verified: 2026-06-12
-    notes: "raw 在 master 分支（main 404、swebench.com 路径 404）。diff 型：条目 date 严重滞后实际合并，按快照增量报而非时间窗。上游自 2026-02-27 起休眠，醒来后自动恢复报新条目"
+    priority: P2
+    freq: dormant
+    verified: 2026-06-25
+    notes: "上游自 2026-02-26 起休眠（最后条目 mini-SWE-agent + Claude 4.5 Opus），恢复更新后自动报新条目。降 P2 避免每天白抓"
 
   - id: evalplus
     name: EvalPlus Results
@@ -18,9 +18,9 @@ sources:
     parser: evalplus
     url: https://evalplus.github.io/results.json
     priority: P2
-    freq: monthly
-    verified: 2026-06-12
-    notes: "HumanEval+/MBPP+ pass@1，按新增模型报"
+    freq: dormant
+    verified: 2026-06-25
+    notes: "HumanEval+/MBPP+ pass@1，无日期字段无法增量检测。数据格式为 {model: {pass@1: ...}}，上游长期未见新模型加入"
 
   - id: aider-polyglot
     name: Aider Polyglot Leaderboard
@@ -29,9 +29,9 @@ sources:
     parser: aider_yaml
     url: https://raw.githubusercontent.com/Aider-AI/aider/main/aider/website/_data/polyglot_leaderboard.yml
     priority: P2
-    freq: monthly
-    verified: 2026-06-12
-    notes: "YAML 格式（parser 处理）；含 pass_rate 与成本"
+    freq: dormant
+    verified: 2026-06-25
+    notes: "YAML 格式（parser 处理）。最后条目 2025-10-03，休眠超 8 个月"
 
   - id: livebench
     name: LiveBench

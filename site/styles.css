@@ -173,7 +173,17 @@ a { color: inherit; text-decoration: none; }
 .ledger > summary:hover { color: var(--seal); }
 .ledger > summary .chev { transition: .2s; color: var(--seal); }
 .ledger[open] > summary .chev { transform: rotate(90deg); }
-.ledger-note { font-size: 12.5px; color: var(--faint); margin: 0 0 22px; font-style: italic; font-family: var(--cn-serif); }
+.lf-bar {
+  display: flex; flex-wrap: wrap; gap: 6px; padding: 12px 0 18px; border-bottom: 1px solid var(--rule);
+  margin-bottom: 18px;
+}
+.lf-chip {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .06em;
+  padding: 4px 10px; border: 1px solid var(--rule-2); border-radius: 3px;
+  background: transparent; color: var(--muted); cursor: pointer; transition: .15s;
+}
+.lf-chip:hover { color: var(--ink); border-color: var(--ink); }
+.lf-chip.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 .lcol { columns: 2; column-gap: 44px; }
 @media (max-width: 900px) { .lcol { columns: 1; } }
 .lgroup { break-inside: avoid; margin-bottom: 22px; }

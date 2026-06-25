@@ -39,26 +39,48 @@ function story(it, i) {
   </article>`;
 }
 
-function ledger(d) {
-  const all = d.all_candidates || [];
-  if (!all.length) return "";
-  const selUrls = new Set((d.selected || []).concat(d.radar || []).map((x) => x.links?.primary || x.link).filter(Boolean));
+let _ledgerAll = [];
+
+function ledgerRender(items) {
+  const selUrls = new Set();
   const by = {};
-  for (const c of all) (by[c.source] = by[c.source] || []).push(c);
-  const groups = Object.keys(by).sort().map((src) => {
-    const items = by[src].map((c) => {
-      const sel = c.selected || selUrls.has(c.url);
+  for (const c of items) (by[c.source] = by[c.source] || []).push(c);
+  return Object.keys(by).sort().map((src) => {
+    const rows = by[src].map((c) => {
+      const sel = c.selected;
       const sum = c.summary ? `<div class="lsum">${esc(c.summary)}</div>` : "";
       return `<li class="${sel ? "sel" : ""}">
         <div class="lhead"><span class="lb">${esc(dept(c.layer))}</span>
         <a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.title)}</a></div>${sum}</li>`;
     }).join("");
-    return `<div class="lgroup"><h4>${esc(src)}<span class="cnt">${by[src].length}</span></h4><ul>${items}</ul></div>`;
+    return `<div class="lgroup"><h4>${esc(src)}<span class="cnt">${by[src].length}</span></h4><ul>${rows}</ul></div>`;
   }).join("");
+}
+
+function ledgerFilter(layer) {
+  const items = layer ? _ledgerAll.filter((c) => c.layer === layer) : _ledgerAll;
+  const el = document.getElementById("ledger-items");
+  if (el) {
+    el.innerHTML = ledgerRender(items);
+    document.getElementById("ledger-count").textContent = `${items.length} 条`;
+  }
+  document.querySelectorAll(".lf-chip").forEach((c) => c.classList.toggle("active", c.dataset.layer === (layer || "")));
+}
+
+function ledger(d) {
+  const all = d.all_candidates || [];
+  if (!all.length) return "";
+  _ledgerAll = all;
+  const layers = {};
+  for (const c of all) { const l = c.layer; if (l) layers[l] = (layers[l] || 0) + 1; }
+  const chips = Object.entries(layers)
+    .sort((a, b) => b[1] - a[1])
+    .map(([l, n]) => { const v = LAYER[l]; const label = v ? `${v[0]} ${v[1]}` : l; return `<button class="lf-chip" data-layer="${esc(l)}">${label} ${n}</button>`; })
+    .join("");
   return `<details class="ledger">
-    <summary><span>全部信息 · ${all.length} 条候选（含未精选）</span><span class="chev">▸</span></summary>
-    <p class="ledger-note">这是当天抓到的全部候选，★ 为精选。精选只是为微信群做的减法；要全景、原文链接与摘要，看这里。</p>
-    <div class="lcol">${groups}</div>
+    <summary><span>全部信息 · <span id="ledger-count">${all.length} 条</span>候选（含未精选）</span><span class="chev">▸</span></summary>
+    <div class="lf-bar"><button class="lf-chip active" data-layer="">全部 ${all.length}</button>${chips}</div>
+    <div class="lcol" id="ledger-items">${ledgerRender(all)}</div>
   </details>`;
 }
 
@@ -112,5 +134,8 @@ async function boot() {
   show(EDS.some((e) => e.date === want) ? want : EDS[0].date);
 }
 window.addEventListener("hashchange", () => { const d = location.hash.slice(1); if (d) show(d); });
-document.addEventListener("click", (e) => { const a = e.target.closest(".iss"); if (a) { e.preventDefault(); location.hash = a.dataset.date; } });
+document.addEventListener("click", (e) => {
+  const a = e.target.closest(".iss"); if (a) { e.preventDefault(); location.hash = a.dataset.date; }
+  const chip = e.target.closest(".lf-chip"); if (chip) { ledgerFilter(chip.dataset.layer || ""); }
+});
 boot();

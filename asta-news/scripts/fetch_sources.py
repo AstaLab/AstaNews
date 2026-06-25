@@ -148,13 +148,43 @@ def resolve_cutoff(now: datetime, since: str | None, since_from: Path | None,
 SESSION = requests.Session()
 SESSION.trust_env = False
 
+import threading as _th
+from collections import defaultdict as _dd
+from urllib.parse import urlparse as _urlparse
+_proxy_lock = _th.Lock()
+_detected_proxy: str | None = None
+_proxy_probed = False
+_domain_locks: dict[str, _th.Lock] = _dd(_th.Lock)
+
+
+def _auto_detect_proxy() -> str | None:
+    """ASTA_PROXY 未设时，依次探测常见本地代理端口（线程安全）"""
+    global _detected_proxy, _proxy_probed
+    with _proxy_lock:
+        if _proxy_probed:
+            return _detected_proxy
+        for port in (7897, 7890, 1087):
+            cand = f"http://127.0.0.1:{port}"
+            try:
+                r = SESSION.get("https://huggingface.co/api/daily_papers?limit=1",
+                                proxies={"http": cand, "https": cand},
+                                timeout=8, headers={"User-Agent": UA})
+                if r.status_code == 200:
+                    _detected_proxy = cand
+                    print(f"[proxy] 自动探测到可用代理 {cand}", file=sys.stderr)
+                    break
+            except Exception:
+                continue
+        _proxy_probed = True
+        return _detected_proxy
+
 
 def fetch(url: str, source: dict, as_json: bool = False):
-    proxy = os.environ.get("ASTA_PROXY")
+    proxy = os.environ.get("ASTA_PROXY") or _auto_detect_proxy()
     proxied = {"http": proxy, "https": proxy} if proxy else None
     if source.get("needs_proxy"):
         if not proxy:
-            raise RuntimeError("needs_proxy 但未设置 ASTA_PROXY")
+            raise RuntimeError("needs_proxy 但未设置 ASTA_PROXY 且未探测到本地代理")
         attempts = [proxied, proxied]
     else:
         # 直连优先；失败且有代理时走代理兜底（GFW 环境下 github.com 等直连时好时坏）
@@ -170,12 +200,16 @@ def fetch(url: str, source: dict, as_json: bool = False):
     for i, proxies in enumerate(attempts):
         try:
             r = SESSION.get(url, timeout=TIMEOUT, proxies=proxies, headers=headers)
+            if r.status_code == 429:
+                retry_after = int(r.headers.get("Retry-After", 30))
+                time.sleep(min(retry_after, 60))
+                r = SESSION.get(url, timeout=TIMEOUT, proxies=proxies, headers=headers)
             r.raise_for_status()
             return r.json() if as_json else r.text
         except Exception as exc:
             last_exc = exc
             if i < len(attempts) - 1:
-                time.sleep(1)
+                time.sleep(2)
     raise last_exc
 
 
@@ -415,6 +449,15 @@ def fetch_source(source: dict, cutoff: datetime) -> tuple[str, list[dict], str]:
     if stype == "rsshub":
         base = os.environ.get("ASTA_RSSHUB", "http://127.0.0.1:1200")
         url = base.rstrip("/") + url
+    domain = _urlparse(url).netloc
+    with _domain_locks[domain]:
+        result = _fetch_source_inner(source, stype, url, cutoff)
+        if "reddit.com" in domain:
+            time.sleep(3)
+        return result
+
+
+def _fetch_source_inner(source, stype, url, cutoff):
     try:
         if stype in ("rss", "atom", "github-releases", "rsshub"):
             items = parse_feed(source, fetch(url, source))
@@ -463,6 +506,8 @@ def main() -> int:
             continue
         if only is None:
             if not s.get("enabled", True) and not args.include_disabled:
+                continue
+            if s.get("freq") == "dormant" and not args.include_disabled:
                 continue
             if s.get("priority") not in prios:
                 continue
