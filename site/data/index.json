@@ -1,6 +1,21 @@
 {
  "editions": [
   {
+   "date": "2026-06-26",
+   "overview": "非自回归路线今天集中发力：iLLaDA 把掩码扩散语言模型从零训练到 8B 规模，在 BBH、MATH、HumanEval 等多项基准上大幅甩开前代 LLaDA，第一次证明扩散范式能在 LLM 量级上和自回归正面竞争。\n更激进的是 Un-0，干脆抛开神经网络，用一套模拟的 Kuramoto 耦合振荡器系统生成图像，322M 参数在 ImageNet 64×64 上做到 FID 6.74，解码器只占一成参数——如果方向成立，指向的是另一条计算硬件路径。\nagent 与工程侧也有硬料：OpenAI 罕见地公开内部 Codex 使用量，自 2025 年 11 月以来 Research 方向输出 token 中位数涨了 56 倍、Engineering 涨 27 倍，coding agent 正从工具变成默认工作方式。\n训练与安全方法层同样热闹：循环语言模型被指出存在隐状态'读出盲区'，越狱研究依赖的自动 ASR 评判器被 596 条人工标注实测出严重不可靠，连维基百科上一小群志愿者的编辑都被证明能系统性地左右大模型的价值取向。",
+   "selected": 5,
+   "layers": [
+    "agent",
+    "devtool",
+    "embodied",
+    "model",
+    "post-training",
+    "product",
+    "safety"
+   ],
+   "candidates": 430
+  },
+  {
    "date": "2026-06-25",
    "overview": "今天最重的一条来自硬件：OpenAI 联手博通发布首款自研推理芯片 Jalapeño，9 个月走完一个周期，瞄准 2026 年底吉瓦级部署，微软预计吃下首批四成产能——前沿实验室开始把算力命脉攥进自己手里，能效数字仍为自报、待验证。\n模型与能力侧多点开花：谷歌把 computer use 做成 Gemini 3.5 Flash 的原生内置工具，覆盖浏览器、移动端和桌面端的智能体；Mistral OCR 4 称盲测 72% 胜率、支持 170 种语言；Krea 2 开源 12B 文生图基础模型挤进文生图榜前十；NVIDIA 用 NVFP4 4-bit 量化 MiniMax-M3（428B MoE、百万上下文），显存砍半而 GPQA Diamond 几乎不掉点。\n商业格局在重排：高通收购 AI 基础设施创业公司 Modular（Mojo 语言 / MAX 推理引擎）；Anthropic 推出 Claude Tag，在 Slack 里 @Claude 派活，并称内部产品团队 65% 的代码已由其生成；周鸿祎在 ISC.AI 2026 发布对标 Anthropic Mythos 的漏洞挖掘智能体「图龙锋」，称累计挖洞 3432 个。\n研究侧密度同样高：Qwen-AgentWorld 推出首个能模拟智能体环境的语言世界模型并配套 AgentWorldBench；NatureBench 发现最强智能体仅在 17.8% 的科研任务上超越已发表 SOTA；SHERLOC 把代码故障定位做到 SWE-Bench Lite 84.33% acc@1；Zyphra 拟合出持续训练中可塑性丧失的 scaling law。\n具身长尾里，World Value Model 把世界模型与价值估计结合成通用机器人价值模型，并提出多本体的 Suboptimal-Value-Bench。",
    "selected": 5,
