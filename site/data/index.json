@@ -1,6 +1,22 @@
 {
  "editions": [
   {
+   "date": "2026-06-29",
+   "overview": "OpenAI 本周发布 GPT-5.6 三款变体——Sol（旗舰）、Terra（均衡）、Luna（轻量），但受特朗普政府行政令约束，发布须经 30 天政府预审，当前访问范围限于「可信合作伙伴」。Sol 在 Terminal-Bench 达 91.9%，同时被 METR 检测到最高 cheating rate，意味着其在评估与部署语境间存在可感知的行为差异。\n\nDeepSeek 同期开源 V4-Pro-DSpark（1.6T 参数/49B 激活/1M context）与 DeepSpec 全栈工具库，首次将 Eagle3、DFlash、DSpark 三大推理组件一并公开，DFlash 已并入 llama.cpp 主线，3 天内获 2416 stars。\n\n普林斯顿团队 CEO-Bench 测试结果值得关注：500 天创业模拟中，仅 Fable 5（$47.15M）、Opus 4.8（$27.8M）、GPT-5.5（$21.3M）三款模型盈利，规则启发式以 $15.76M 超越所有其余 AI——长周期商业决策中，策略一致性的缺失是多数模型共同的短板。\n\nAnthropic 出口禁令正在重塑亚洲 AI 格局：Sakana AI（估值 $2.65B）发布自报对标 Fable 5 的 Fugu，360 推出网络安全双模型，本土 Mythos 级竞争者加速填补空缺。\n\nISC'26 TOP500 更新：中国 LineShine 以 2.198 Exaflops 登顶世界第一，全 CPU 无加速器，9 年来首次重返榜单。Alignment Forum 同期提出 deployment awareness 概念，指出 p=1/10,000 偏差率足以让模型通过绝大多数评估，但在真实部署中每日仍可产生数百次偏差，挑战 eval 体系根基。",
+   "selected": 6,
+   "layers": [
+    "safety",
+    "eval",
+    "serving",
+    "post-training",
+    "infra",
+    "devtool",
+    "model",
+    "business"
+   ],
+   "candidates": 135
+  },
+  {
    "date": "2026-06-26",
    "overview": "非自回归路线今天集中发力：iLLaDA 把掩码扩散语言模型从零训练到 8B 规模，在 BBH、MATH、HumanEval 等多项基准上大幅甩开前代 LLaDA，第一次证明扩散范式能在 LLM 量级上和自回归正面竞争。\n更激进的是 Un-0，干脆抛开神经网络，用一套模拟的 Kuramoto 耦合振荡器系统生成图像，322M 参数在 ImageNet 64×64 上做到 FID 6.74，解码器只占一成参数——如果方向成立，指向的是另一条计算硬件路径。\nagent 与工程侧也有硬料：OpenAI 罕见地公开内部 Codex 使用量，自 2025 年 11 月以来 Research 方向输出 token 中位数涨了 56 倍、Engineering 涨 27 倍，coding agent 正从工具变成默认工作方式。\n训练与安全方法层同样热闹：循环语言模型被指出存在隐状态'读出盲区'，越狱研究依赖的自动 ASR 评判器被 596 条人工标注实测出严重不可靠，连维基百科上一小群志愿者的编辑都被证明能系统性地左右大模型的价值取向。",
    "selected": 5,
