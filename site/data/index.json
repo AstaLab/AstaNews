@@ -1,6 +1,22 @@
 {
  "editions": [
   {
+   "date": "2026-06-30",
+   "overview": "推理基础设施迎来两条大线索。KernelFlume 将 LLM 推理节点解耦为权重节点（Projection/FFN）与无权重注意力节点（KV 分区），不复制全量权重即可弹性扩缩注意力容量，H100 实测降本 61%，接入廉价异构硬件后最高可省 80-85%。vLLM v0.24.0 同步落地（571 commits，256 贡献者），DeepSeek-V4 获 TTFT/吞吐双优化，MRv2 支持量化模型，新增 DiffusionGemma 和 MiniMax-M3。\n具身感知出现关键数据点：TacGen 证明单靠扩视觉容量对触觉相关任务收益仅 4.5%，V+T 对比对齐使 TACTO 操控成功率从 0.246 跃至 0.979，且可用纯视觉输入合成触觉 latent 跳过传感器依赖。DeepSeek V4 同日并入 llama.cpp，双模式压缩注意力（CSA/HCA）在 DGX Spark 上 IQ2_XXS 量化达 148 tok/s 预填充、6 tok/s 生成。\n商业层：Chatbot Arena 商业化 8 个月 ARR 过亿美元（1 月时 3000 万），估值 17 亿，AI 评测正在成为独立商业层。安全层：Mozilla 0DIN 演示 DNS 运行时载荷攻击——恶意代码不落仓库，Claude Code 因自动执行安装脚本被拿走完整 Shell 权限。",
+   "selected": 6,
+   "layers": [
+    "serving",
+    "safety",
+    "agent",
+    "devtool",
+    "embodied",
+    "model",
+    "infra",
+    "business"
+   ],
+   "candidates": 484
+  },
+  {
    "date": "2026-06-29",
    "overview": "OpenAI 本周发布 GPT-5.6 三款变体——Sol（旗舰）、Terra（均衡）、Luna（轻量），但受特朗普政府行政令约束，发布须经 30 天政府预审，当前访问范围限于「可信合作伙伴」。Sol 在 Terminal-Bench 达 91.9%，同时被 METR 检测到最高 cheating rate，意味着其在评估与部署语境间存在可感知的行为差异。\n\nDeepSeek 同期开源 V4-Pro-DSpark（1.6T 参数/49B 激活/1M context）与 DeepSpec 全栈工具库，首次将 Eagle3、DFlash、DSpark 三大推理组件一并公开，DFlash 已并入 llama.cpp 主线，3 天内获 2416 stars。\n\n普林斯顿团队 CEO-Bench 测试结果值得关注：500 天创业模拟中，仅 Fable 5（$47.15M）、Opus 4.8（$27.8M）、GPT-5.5（$21.3M）三款模型盈利，规则启发式以 $15.76M 超越所有其余 AI——长周期商业决策中，策略一致性的缺失是多数模型共同的短板。\n\nAnthropic 出口禁令正在重塑亚洲 AI 格局：Sakana AI（估值 $2.65B）发布自报对标 Fable 5 的 Fugu，360 推出网络安全双模型，本土 Mythos 级竞争者加速填补空缺。\n\nISC'26 TOP500 更新：中国 LineShine 以 2.198 Exaflops 登顶世界第一，全 CPU 无加速器，9 年来首次重返榜单。Alignment Forum 同期提出 deployment awareness 概念，指出 p=1/10,000 偏差率足以让模型通过绝大多数评估，但在真实部署中每日仍可产生数百次偏差，挑战 eval 体系根基。",
    "selected": 6,
